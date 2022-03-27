@@ -1,0 +1,76 @@
+[
+{
+  "directory": "/home/chenyong/my/loginsight/playground",
+  "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-o", "build/.objs/core/linux/x86_64/release/src/main.cpp.o", "src/main.cpp"],
+  "file": "src/main.cpp"
+},
+{
+  "directory": "/home/chenyong/my/loginsight/playground",
+  "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-o", "build/.objs/utest/linux/x86_64/release/test/benchmark.cpp.o", "test/benchmark.cpp"],
+  "file": "test/benchmark.cpp"
+},
+{
+  "directory": "/home/chenyong/my/loginsight/playground",
+  "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-o", "build/.objs/utest/linux/x86_64/release/test/filelog.cpp.o", "test/filelog.cpp"],
+  "file": "test/filelog.cpp"
+},
+{
+  "directory": "/home/chenyong/my/loginsight/playground",
+  "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-o", "build/.objs/utest/linux/x86_64/release/test/mem.cpp.o", "test/mem.cpp"],
+  "file": "test/mem.cpp"
+},
+{
+  "directory": "/home/chenyong/my/loginsight/playground",
+  "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-o", "build/.objs/utest/linux/x86_64/release/test/stdout.cpp.o", "test/stdout.cpp"],
+  "file": "test/stdout.cpp"
+},
+{
+  "directory": "/home/chenyong/my/loginsight/playground",
+  "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-o", "build/.objs/utest/linux/x86_64/release/test/calculation.cpp.o", "test/calculation.cpp"],
+  "file": "test/calculation.cpp"
+},
+{
+  "directory": "/home/chenyong/my/loginsight/playground",
+  "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-o", "build/.objs/utest/linux/x86_64/release/test/main.cpp.o", "test/main.cpp"],
+  "file": "test/main.cpp"
+},
+{
+  "directory": "/home/chenyong/my/loginsight/playground",
+  "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-o", "build/.objs/utest/linux/x86_64/release/test/blocklogview.cpp.o", "test/blocklogview.cpp"],
+  "file": "test/blocklogview.cpp"
+},
+{
+  "directory": "/home/chenyong/my/loginsight/playground",
+  "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-o", "build/.objs/corelib/linux/x86_64/release/src/filelog.cpp.o", "src/filelog.cpp"],
+  "file": "src/filelog.cpp"
+},
+{
+  "directory": "/home/chenyong/my/loginsight/playground",
+  "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-o", "build/.objs/corelib/linux/x86_64/release/src/mem.cpp.o", "src/mem.cpp"],
+  "file": "src/mem.cpp"
+},
+{
+  "directory": "/home/chenyong/my/loginsight/playground",
+  "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-o", "build/.objs/corelib/linux/x86_64/release/src/stdout.cpp.o", "src/stdout.cpp"],
+  "file": "src/stdout.cpp"
+},
+{
+  "directory": "/home/chenyong/my/loginsight/playground",
+  "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-o", "build/.objs/corelib/linux/x86_64/release/src/eventloop.cpp.o", "src/eventloop.cpp"],
+  "file": "src/eventloop.cpp"
+},
+{
+  "directory": "/home/chenyong/my/loginsight/playground",
+  "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-o", "build/.objs/corelib/linux/x86_64/release/src/calculation.cpp.o", "src/calculation.cpp"],
+  "file": "src/calculation.cpp"
+},
+{
+  "directory": "/home/chenyong/my/loginsight/playground",
+  "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-o", "build/.objs/corelib/linux/x86_64/release/src/blocklogview.cpp.o", "src/blocklogview.cpp"],
+  "file": "src/blocklogview.cpp"
+},
+{
+  "directory": "/home/chenyong/my/loginsight/playground",
+  "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-o", "build/.objs/corelib/linux/x86_64/release/src/linux/platform.cpp.o", "src/linux/platform.cpp"],
+  "file": "src/linux/platform.cpp"
+}]

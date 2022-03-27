@@ -1,0 +1,10 @@
+platform:
+
+- mmap
+- 获取文件fd
+- 监听文件变化（也可以timer轮询文件的status）
+- 执行程序并pipe监听其标准输出
+
+MultiFileLog
+ProcessLog
+业务接口
