@@ -5,14 +5,13 @@
 class MultiFileLog : public ILog {
 private:
     vector<unique_ptr<FileLog>> mLogs;
+    LogLineI mCount;
 public:
-    shared_ptr<LogView> view() const override;
+    shared_ptr<LogView> view(LogLineI from = 0, LogLineI to = InvalidLogLine) const override;
     Range range() const override;
 
 public:
-    bool open(const vector<string_view>& path);
-    //1. future + bool*
-    //2. Calculation = MyPromise + schedule; returns MyPromise instead
-    Calculation& scheduleBuildBlocks();
+    bool open(const vector<string_view>& paths);
+    unique_ptr<Promise> scheduleBuildBlocks();
     void close();
 };

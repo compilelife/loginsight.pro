@@ -27,6 +27,19 @@ BlockLogView::BlockLogView(const vector<Block*>& blocks, const Memory* memory, B
     }
 }
 
+BlockLogView::BlockLogView(vector<BlockRef>&& blocks)
+    :mBlocks(blocks), 
+    mFirstLineInBlock(0),
+    mLineIndexInBlock(0),
+    mBlockIndex(0) {
+    
+    size_t count = 0;
+    for_each_n(blocks.begin(), blocks.size(), [&count](BlockRef& b){count+=b.block->lines.size();});
+    mCount = count;
+
+    mFinalLineInBlock = LastIndex(LastItem(mBlocks).block->lines);
+}
+
 LogLineI BlockLogView::size() const {
     return mCount;
 }

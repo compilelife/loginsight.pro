@@ -128,9 +128,12 @@ void FileLog::collectBlocks(const vector<any>& rets) {
     mCount = count;
 }
 
-shared_ptr<LogView> FileLog::view() const {
-    auto view = new BlockLogView(mBlocks, &mBuf);
-    return shared_ptr<LogView>(view);
+shared_ptr<LogView> FileLog::view(LogLineI from, LogLineI to) const {
+    auto view = make_unique<LogView>(mBlocks, &mBuf);
+    if (from == 0 && to == InvalidLogLine)
+        return make_shared<LogView>(view.release());
+    
+    return view->subview(from, to - from + 1);
 }
 
 Range FileLog::range() const {

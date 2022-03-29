@@ -41,6 +41,6 @@ struct Block {
 class ILog {
 public:
     virtual ~ILog() {}
-    virtual shared_ptr<LogView> view() const = 0;
+    virtual shared_ptr<LogView> view(LogLineI from = 0, LogLineI to = InvalidLogLine) const = 0;
     virtual Range range() const = 0;
 };

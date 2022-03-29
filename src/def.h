@@ -3,6 +3,7 @@
 #include <memory>
 #include <cstdint>
 #include <functional>
+#include <limits>
 
 using namespace std;
 
@@ -12,6 +13,8 @@ using namespace std;
  * @brief 整个文件里的行号、行数量
  */
 using LogLineI = uint64_t;
+constexpr LogLineI InvalidLogLine = numeric_limits<LogLineI>::max();
+
 /**
  * @brief Block里的行序号、行数量
  */

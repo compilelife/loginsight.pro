@@ -25,6 +25,8 @@ public:
             BlockLineI firstLineInBlock = 0,
             BlockLineI finalLineInBlock = BLOCK_LINE_NUM);
 
+    BlockLogView(vector<BlockRef>&& blocks);
+
 public:
     LogLineI size() const override;
     LineRef current() const override;

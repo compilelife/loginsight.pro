@@ -8,6 +8,7 @@
 
 class FileLog: public ILog {
 private:
+    friend class MultiFileLog;
     using BlockChain = vector<Block*>;
     Memory mBuf;
     MMapInfo mMapInfo;
@@ -15,7 +16,7 @@ private:
     LogLineI mCount;
 
 public:
-    shared_ptr<LogView> view() const override;
+    shared_ptr<LogView> view(LogLineI from = 0, LogLineI to = InvalidLogLine) const override;
     Range range() const override;
 
 public:
