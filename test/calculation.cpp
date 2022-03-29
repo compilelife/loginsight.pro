@@ -12,25 +12,20 @@ TEST(Calculation, cancel) {
     vector<string_view> tasks{"1","2"};
 
     bool thenExecuted = false;
-    bool finalExecuted = false;
 
-    Calculation::instance()
-        .schedule(tasks, [](string_view s){
+    auto p = Calculation::instance()
+        .schedule(tasks, [](bool* cancel, string_view s){
             LOGI("%s", s.data());
             this_thread::sleep_for(300ms);//稍作等待，让cancel有机会在任务完成前被执行到
             return s;
-        })
-        .then([&thenExecuted](vector<any>){thenExecuted=true;})
-        .finally([&finalExecuted]{finalExecuted=true;})
-        .sealed();
+        });
+    p->then([&thenExecuted](Promise&){thenExecuted=true;});
 
-    ASSERT_FALSE(Calculation::instance().isCancelled());
-    ASSERT_TRUE(Calculation::instance().isBusy());
+    ASSERT_TRUE(p->isBusy());
 
-    Calculation::instance().cancel();
+    p->cancel();
 
-    ASSERT_TRUE(Calculation::instance().isCancelled());
-    ASSERT_FALSE(Calculation::instance().isBusy());
-    ASSERT_FALSE(thenExecuted);
-    ASSERT_TRUE(finalExecuted);
+    ASSERT_TRUE(p->isCancelled());
+    ASSERT_FALSE(p->isBusy());
+    ASSERT_TRUE(thenExecuted);
 }

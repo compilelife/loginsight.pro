@@ -15,16 +15,16 @@ private:
     LogLineI mCount;
 
 public:
-    unique_ptr<LogView> view() const override;
+    shared_ptr<LogView> view() const override;
     Range range() const override;
 
 public:
     bool open(string_view path);
-    Calculation& scheduleBuildBlocks();
+    unique_ptr<Promise> scheduleBuildBlocks();
     void close();
 
 private:
     friend class FileLog_buildBlock_Test;
-    any buildBlock(string_view buf);
-    void collectBlocks(vector<any>& rets);
+    any buildBlock(bool* cancel, string_view buf);
+    void collectBlocks(const vector<any>& rets);
 };

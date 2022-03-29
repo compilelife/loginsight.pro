@@ -29,7 +29,7 @@ public:
     LogLineI size() const override;
     LineRef current() const override;
     void next() override;
-    unique_ptr<LogView> subview(LogLineI from, LogLineI n) const override;
+    shared_ptr<LogView> subview(LogLineI from, LogLineI n) const override;
 
 private:
     pair<size_t, BlockLineI> locateLine(LogLineI line) const;

@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <cstdint>
+#include <functional>
 
 using namespace std;
 
@@ -34,3 +35,14 @@ using LogBlockI = uint32_t;
 
 #define LastIndex(vec) ((vec).size() - 1)
 #define LastItem(vec) ((vec)[LastIndex(vec)])
+
+template<class T, class R>
+inline vector<R> mapVec(vector<T>& vec, function<R(T&)>&& converter) {
+    vector<R> ret;
+    ret.reserve(vec.size());
+    for (auto &&t : vec)
+    {
+        ret.push_back(converter(t));
+    }
+    return ret;
+}

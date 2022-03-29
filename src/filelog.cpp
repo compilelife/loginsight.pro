@@ -22,7 +22,7 @@ void FileLog::close() {
     mBlocks.clear();
 }
 
-Calculation& FileLog::scheduleBuildBlocks() {
+unique_ptr<Promise> FileLog::scheduleBuildBlocks() {
     //确定块大小
     auto& calculation = Calculation::instance();
 
@@ -55,21 +55,22 @@ Calculation& FileLog::scheduleBuildBlocks() {
     }
     
     //提交任务
-    return calculation.schedule(move(tasks), 
-                         bind(&FileLog::buildBlock, this, placeholders::_1))
-                .then(bind(&FileLog::collectBlocks, this, placeholders::_1))
-                .finally([this]{
+    auto ret = calculation.schedule(move(tasks), bind(&FileLog::buildBlock, this, placeholders::_1, placeholders::_2));
+    ret->then([this](Promise& p){
+                    if (!p.isCancelled()) {
+                        this->collectBlocks(p.calculationValue());
+                    }
                     this->mBuf.unlock(this->mBuf.range(), Memory::Access::READ);
                 });
+    return ret;
 }
 
-any FileLog::buildBlock(string_view buf) {
+any FileLog::buildBlock(bool* cancel, string_view buf) {
     auto begin = buf.begin();
     auto end = buf.end();
 
     auto veryBegin = (const char*)mMapInfo.addr;
     BlockChain blocks;
-    blocks.reserve(min(buf.size() / 100, 1uL));//预估的行数，避免频繁扩展blocks内存
 
     auto createBlock = [veryBegin, &blocks](const char* from) -> Block* {
         auto b = new Block;
@@ -82,7 +83,7 @@ any FileLog::buildBlock(string_view buf) {
     BlockLineI lineIndex = BLOCK_LINE_NUM;
     Block* curBlock = nullptr;
 
-    while (last < end && !Calculation::instance().isCancelled())
+    while (last < end && !*cancel)
     {
         if (lineIndex >= BLOCK_LINE_NUM) {
             lineIndex = 0;
@@ -103,7 +104,7 @@ any FileLog::buildBlock(string_view buf) {
     return blocks;
 }
 
-void FileLog::collectBlocks(vector<any>& rets) {
+void FileLog::collectBlocks(const vector<any>& rets) {
     LogLineI count = 0;
     for (auto && ret : rets) {
         count += any_cast<BlockChain>(ret).size();
@@ -127,9 +128,9 @@ void FileLog::collectBlocks(vector<any>& rets) {
     mCount = count;
 }
 
-unique_ptr<LogView> FileLog::view() const {
+shared_ptr<LogView> FileLog::view() const {
     auto view = new BlockLogView(mBlocks, &mBuf);
-    return unique_ptr<LogView>();
+    return shared_ptr<LogView>(view);
 }
 
 Range FileLog::range() const {

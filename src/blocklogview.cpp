@@ -49,7 +49,7 @@ void BlockLogView::next() {
     }
 }
 
-unique_ptr<LogView> BlockLogView::subview(LogLineI from, LogLineI n) const {
+shared_ptr<LogView> BlockLogView::subview(LogLineI from, LogLineI n) const {
     auto [fromBlock, fromBlockLine] = locateLine(from);
     auto [toBlock, toBlockLine] = locateLine(from + n - 1);
 
@@ -71,7 +71,7 @@ unique_ptr<LogView> BlockLogView::subview(LogLineI from, LogLineI n) const {
     ret->mLineIndexInBlock = fromBlockLine;
     ret->mBlockIndex = 0;
 
-    return unique_ptr<LogView>(ret);
+    return shared_ptr<LogView>(ret);
 }
 
 pair<size_t, BlockLineI> BlockLogView::locateLine(LogLineI line) const {
