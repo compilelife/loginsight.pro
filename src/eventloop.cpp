@@ -6,6 +6,11 @@ void cppLambdaWrap(evutil_socket_t, short, void *arg) {
     delete callback;
 }
 
+EventLoop& EventLoop::instance() {
+    static EventLoop impl;
+    return impl;
+}
+
 EventLoop::EventLoop() {
     mEventBase = event_base_new();
 }

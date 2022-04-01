@@ -9,10 +9,13 @@ using EventHandler = function<void()>;
 class EventLoop {
 private:
     event_base* mEventBase;
+    EventLoop();
 public:
     static EventLoop& instance();
-    EventLoop();
+    event_base* base() {return mEventBase;};
     void start();
     void stop();
+
+public:
     void post(EventHandler callback);
 };

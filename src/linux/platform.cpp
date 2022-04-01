@@ -5,6 +5,7 @@
 #include <fcntl.h>
 #include <filesystem>
 #include <unistd.h>
+#include <stdio.h>
 
 struct PrivMapInfo {
     int fd;  
@@ -32,4 +33,31 @@ void unmapFile(MMapInfo& info) {
     close(priv.fd);
 
     info.addr = nullptr;
+}
+
+struct PrivProcessInfo {
+    FILE* fp;
+};
+
+ProcessInfo openProcess(string_view cmdline) {
+    ProcessInfo ret;
+
+    PrivProcessInfo priv;
+    priv.fp = popen(cmdline.data(), "r");
+
+    if (priv.fp == nullptr) {
+        return {priv, -1};
+    }
+
+    ret.priv = priv;
+    ret.stdoutFd = fileno(priv.fp);
+    
+    fcntl(ret.stdoutFd, F_SETFL, O_NONBLOCK);
+
+    return ret;
+}
+
+void closeProcess(ProcessInfo& info) {
+    auto priv = any_cast<PrivProcessInfo>(info.priv);
+    pclose(priv.fp);
 }

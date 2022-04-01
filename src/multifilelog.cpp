@@ -58,7 +58,7 @@ shared_ptr<LogView> MultiFileLog::view(LogLineI from, LogLineI to) const {
         for (auto &&block : log->mBlocks)
             allRefs.push_back({block, &(log->mBuf)});
 
-    auto view = make_shared<LogView>(new BlockLogView(move(allRefs)));
+    shared_ptr<LogView> view(new BlockLogView(move(allRefs)));
 
     if (from == 0 && to == InvalidLogLine)
         return view;
