@@ -26,4 +26,5 @@ struct ProcessInfo
 
 ProcessInfo openProcess(string_view cmdline);
 void closeProcess(ProcessInfo& info);
-    //http://www.xilixili.net/2019/08/23/run-command-with-output-and-exit-code/
+
+int readFd(int fd, void* buf, int howmuch);

@@ -25,3 +25,10 @@ public:
     unique_ptr<Promise> schedule(vector<string_view> tasks, 
             function<any(bool*,string_view)>&& process);
 };
+
+/**
+ * @brief 对string_view从from到end（不含）查找换行位置
+ * @returns pair<换行位置(\r或\n或end)，下一次检索位置>
+ */
+using FindLineIter = string_view::const_iterator;
+pair<FindLineIter, FindLineIter> findLine(FindLineIter from, FindLineIter end);

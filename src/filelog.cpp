@@ -90,14 +90,14 @@ any FileLog::buildBlock(bool* cancel, string_view buf) {
             curBlock = createBlock(last);
         }
 
-        auto it = find(last, end, '\n');
+        auto [newline, next] = findLine(last, end);
 
         curBlock->lines.push_back({
             static_cast<BlockCharI>(last - (veryBegin + curBlock->offset)),
-            static_cast<LineCharI>(it-last)
+            static_cast<LineCharI>(newline - last)
         });
 
-        last = it + 1;
+        last = next;
         ++lineIndex;
     }
     

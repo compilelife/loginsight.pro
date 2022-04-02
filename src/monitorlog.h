@@ -7,6 +7,7 @@
 #include "platform.h"
 #include "event2/event.h"
 #include "event2/buffer.h"
+#include "pingtask.h"
 
 /**
  * @brief 每次达到最大缓存的时候，删除最旧的一个block
@@ -17,6 +18,16 @@ private:
         Memory mem;
         Block block;
         string backend;//固定5M，能放多少行就多少行，预计可以放 5 * 1024 * 1024 / 200 = 26k行
+        LogCharI writePos;
+        bool isBackendFull() {return writePos >= backend.capacity();}
+        LogCharI lastLineEndAt() {
+            LogCharI pos = 0;
+            if (!block.lines.empty()) {
+                auto& lastLine = LastItem(block.lines);
+                pos = lastLine.offset +  lastLine.length;
+            }
+            return pos;
+        }
     };
     
     size_t mMaxBlockCount{10};//约50M
@@ -24,6 +35,9 @@ private:
     ProcessInfo mProcess;
 
     event* mListenEvent;
+
+    shared_ptr<PingTask> mPendingReadTask;
+    string mLastBlockTail;//上一个block没有换行符的遗留文本
 
 public:
     shared_ptr<LogView> view(LogLineI from = 0, LogLineI to = InvalidLogLine) const override;
@@ -39,5 +53,9 @@ public:
 
 private:
     void startListenFd(event_base* evbase);
-    MemBlock& peekBlock();
+    MemBlock* peekBlock();
+    bool canRemoveOldestBlock();
+    bool handlePendingTask(bool restartPending);
+    bool readStdOutInto(MemBlock* curBlock);
+    void splitLinesForNewContent(MemBlock* curBlock);
 };

@@ -1,6 +1,9 @@
 #include "monitorlog.h"
 #include "blocklogview.h"
 #include "stdout.h"
+#include <algorithm>
+#include "calculation.h"
+#include <cstring>
 
 bool MonitorLog::open(string_view cmdline, event_base* evbase) {
     mProcess = openProcess(cmdline);
@@ -58,11 +61,109 @@ void MonitorLog::startListenFd(event_base* evbase) {
     event_add(mListenEvent, nullptr);
 }
 
+MonitorLog::MemBlock* MonitorLog::peekBlock() {
+    //检查最后一个block满了没
+    if (!mBlocks.empty()) {
+        auto last = mBlocks.rbegin();
+        if (!(*last)->isBackendFull())
+            return (*last).get();
+    }
+
+    //申请新的，要先看下第一块让不让移除
+    if (mBlocks.size() >= mMaxBlockCount) {
+        auto& first = *(mBlocks.begin());
+        if (!first->mem.requestAccess(first->mem.range(), Memory::Access::WRITE)) {
+            return;
+        }
+        mBlocks.pop_front();
+    }
+
+    //申请一个新的
+    unique_ptr<MemBlock> newBlock;
+    newBlock->backend.resize(5 * 1024 * 1024);
+    newBlock->mem.reset(newBlock->backend.data(), {0, newBlock->backend.size() - 1});
+    newBlock->block.lineBegin = range().end;
+    return newBlock;
+}
+
+bool MonitorLog::handlePendingTask(bool restartPending) {
+    if (!restartPending) {
+        if (!mPendingReadTask) {
+            mPendingReadTask = PingTask::create(
+                bind(&MonitorLog::canRemoveOldestBlock, this),
+                [this]{this->handleReadStdOut(); return false;}
+            );
+        }
+        return false;
+    }
+    
+    //如果之前有pending的读操作，既然现在已经进来，那就可以释放掉了
+    if (mPendingReadTask) {
+        mPendingReadTask->stop();
+        mPendingReadTask.reset();
+    }
+
+    return true;
+}
+
+void MonitorLog::splitLinesForNewContent(MemBlock* curBlock) {
+    auto pmem = curBlock->backend.data();
+    auto fromPos = curBlock->lastLineEndAt();
+    string_view buf(pmem + fromPos, curBlock->writePos - fromPos);
+    auto start = buf.begin();
+    auto last = buf.begin();
+    auto end = buf.end();
+    while (last < end)
+    {
+        auto [newline, next] = findLine(last, end);
+        if (newline == end) {
+            if (curBlock->isBackendFull()) {
+                //到end还未找到newline，且当前block的backend用完了，就需要放入下一个block
+                mLastBlockTail = buf.substr(last - start);
+            }
+            break;
+        } else {
+            curBlock->block.lines.push_back({
+                last - start,
+                newline - last
+            });
+            last = next;
+        }
+    }
+}
+
+bool MonitorLog::readStdOutInto(MemBlock* curBlock) {
+    //先消化上一个block的遗留
+    auto& curPos = curBlock->writePos;//下一次循环可写位置
+    auto endPos = curBlock->backend.capacity();//backend结束位置，不可写的地方
+    char* pmem = curBlock->backend.data();
+    if (!mLastBlockTail.empty()) {
+        memcpy(pmem + curPos, mLastBlockTail.data(), mLastBlockTail.length());
+        curPos += mLastBlockTail.length();
+        mLastBlockTail.clear();
+    }
+
+    //如果一直将curBlock填充完还有数据，那就等下次回调再读
+    while (curPos < endPos) {
+        auto howmuch = min(1024, (int)(endPos - curPos));
+        auto n = readFd(mProcess.stdoutFd, pmem + curPos, howmuch);
+        if (n <= 0)
+            break;
+        curPos += n;
+    }
+
+    return true;
+}
+
 void MonitorLog::handleReadStdOut() {
-    auto& curBlock = peekBlock();
-    //check access;
-    //if no access...make period check
-    //将周期性检查任务抽象出复用
-    //else write to curBlock, do split line and formatting
-    //将行分割算法和行格式化算法单独抽出来复用
+    auto* curBlock = peekBlock();
+
+    //curBlock == nullptr： 我们已经达到最大块数，且当前计算还未停止（memory被锁）
+    if (!handlePendingTask(curBlock == nullptr))
+        return;
+
+    if (!readStdOutInto(curBlock))
+        return;
+
+    splitLinesForNewContent(curBlock);
 }

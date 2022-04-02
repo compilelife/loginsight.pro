@@ -5,8 +5,9 @@ platform:
 - 监听文件变化（也可以timer轮询文件的status）
 - 执行程序并pipe监听其标准输出
 
-ProcessLog
+MonitorLog
 SubLog/view
+测试MultiFileLog\MonitorLog
 FileLog监听文件变化
 错误处理（process关闭，文件读取失败等）
 create log view should lock memory
