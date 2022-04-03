@@ -6,7 +6,8 @@
 
 using namespace std;
 
-BlockLogView prepareMockData() {
+//两个block，每个block有5行，每个line.offset = indexInBlock
+static BlockLogView prepareMockData() {
     vector<Block*> blocks;
     for (size_t i = 0; i < 2; i++)
     {

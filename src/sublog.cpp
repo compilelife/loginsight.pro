@@ -82,9 +82,8 @@ Range SubLog::range() const {
 
 shared_ptr<LogView> SubLog::view(LogLineI from, LogLineI to) const {
     shared_ptr<SubLogView> view(new SubLogView(this));
-    if (range() == Range{from, to}) {
+    if (from == 0 && to == InvalidLogLine)
         return view;
-    }
 
     return view->subview(from, to - from + 1);
 }

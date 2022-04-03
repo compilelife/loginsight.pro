@@ -34,8 +34,9 @@ void SubLogView::next() {
 }
 
 bool SubLogView::end() {
-    return mCur.blockIndex >= LastIndex(mLog->mBlocks) && 
-            mCur.lineIndex > LastIndex(mLog->mBlocks[mCur.blockIndex].lines);
+    return mCur.blockIndex > LastIndex(mLog->mBlocks) || 
+          (mCur.blockIndex == LastIndex(mLog->mBlocks) &&
+           mCur.lineIndex > mTo.lineIndex);
 }
 
 LogLineI SubLogView::size() const {
@@ -44,7 +45,7 @@ LogLineI SubLogView::size() const {
 
 shared_ptr<LogView> SubLogView::subview(LogLineI from, LogLineI n) const {
     auto fromPos = locateLine(from);
-    auto toPos = locateLine(from + n);
+    auto toPos = locateLine(from + n - 1);
     return make_shared<SubLogView>(mLog, fromPos, toPos, n);
 }
 
