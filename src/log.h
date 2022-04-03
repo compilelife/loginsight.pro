@@ -34,7 +34,6 @@ struct Line {
 struct Block {
     LogCharI lineBegin{0};
     LogCharI offset{0};
-    bool indexed{false};
     vector<Line> lines;
 };
 

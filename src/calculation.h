@@ -5,6 +5,7 @@
 #include <functional>
 #include <any>
 #include "promisex.h"
+#include <string_view>
 
 using CalculationRet = vector<any>;
 
@@ -26,9 +27,21 @@ public:
             function<any(bool*,string_view)>&& process);
 };
 
+template<class T>
+void consumeCalculation(CalculationRet&& ret, function<void(T&&)>&& consumer) {
+    for (auto &&a : ret)
+    {
+        consumer(any_cast<T>(a));
+    }
+}
+
+using FilterFunction = function<bool(string_view)> ;
+function<bool(string_view)> createFilter(string_view pattern, bool caseSensitive);
+
 /**
  * @brief 对string_view从from到end（不含）查找换行位置
  * @returns pair<换行位置(\r或\n或end)，下一次检索位置>
  */
 using FindLineIter = string_view::const_iterator;
 pair<FindLineIter, FindLineIter> findLine(FindLineIter from, FindLineIter end);
+

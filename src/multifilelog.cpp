@@ -18,29 +18,19 @@ bool MultiFileLog::open(const vector<string_view>& paths) {
 }
 
 unique_ptr<Promise> MultiFileLog::scheduleBuildBlocks() {
-    return unique_ptr<Promise>(new Promise([this](bool* cancel){
-        vector<unique_ptr<Promise>> logBuilds;
-        for (auto &&log : this->mLogs)
-            logBuilds.push_back(log->scheduleBuildBlocks());
-        
-        bool allDone = false;
-        do {
-            allDone = all_of(logBuilds.begin(), logBuilds.end(), 
-                [](unique_ptr<Promise>& build){
-                    return build->wait(10);
-                });
-        } while (!allDone && !*cancel);
-        
-        if (*cancel) {
-            for (auto &&build: logBuilds)
-                build->cancel();
-        } else {
-            for (auto &&log: this->mLogs)
-                this->mCount += log->range().len();
-        }
+    vector<shared_ptr<Promise>> logBuilds;
+    for (auto &&log : this->mLogs)
+        logBuilds.push_back(log->scheduleBuildBlocks());
+    
+    auto ret = Promise::all(logBuilds);
+    ret->then([this](Promise& p){
+        if (p.isCancelled())
+            return;
+        for (auto &&log: this->mLogs)
+            this->mCount += log->range().len();
+    });
 
-        return *cancel;
-    }));
+    return ret;
 }
 
 void MultiFileLog::close() {

@@ -31,6 +31,7 @@ public:
     LogLineI size() const override;
     LineRef current() const override;
     void next() override;
+    bool end() override;
     shared_ptr<LogView> subview(LogLineI from, LogLineI n) const override;
 
 private:

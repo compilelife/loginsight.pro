@@ -19,6 +19,7 @@ private:
     vector<function<void(Promise&)>> mThens;
 public:
     Promise(function<any(bool*)>&& task);
+    static unique_ptr<Promise> all(const vector<shared_ptr<Promise>>& others);
 public:
     void cancel();
     bool isCancelled() {return mIsCancelled;}
@@ -26,6 +27,7 @@ public:
     bool isBusy();
 public:
     void then(function<void(Promise&)>&& handler);
+    void setValue(any&& v) {mResult = v;}
 public:
     any& value() {return mResult;}
     vector<any> calculationValue() const {return any_cast<vector<any>>(mResult);};

@@ -7,7 +7,6 @@ PingTask::PingTask(function<bool()> predict, function<bool()> handler)
 }
 
 PingTask::~PingTask() {
-    LOGI("~PingTask");
     event_del_block(mEv);
     event_free(mEv);
 }

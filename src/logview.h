@@ -2,6 +2,7 @@
 
 #include <memory>
 #include "def.h"
+#include <string_view>
 
 struct Block;
 struct Line;
@@ -13,8 +14,10 @@ struct BlockRef {
 };
 
 struct LineRef {
-    BlockRef bRef;
+    BlockRef refBlock;
     Line* line;
+    BlockLineI indexInBlock;
+    string_view str();
 };
 
 class LogView {
@@ -22,10 +25,7 @@ public:
     virtual ~LogView() {}
     virtual LineRef current() const = 0;
     virtual void next() = 0;
-    /**
-     * @brief 划分到Block边界(所以实际>=n)
-     * @param from 这里的line参数指的是在该logview里的第I行
-     */
+    virtual bool end() = 0;
     virtual shared_ptr<LogView> subview(LogLineI from, LogLineI n) const = 0;
     virtual LogLineI size() const = 0;
 };

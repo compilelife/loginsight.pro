@@ -17,7 +17,7 @@ private:
     struct MemBlock {
         Memory mem;
         Block block;
-        string backend;//固定5M，能放多少行就多少行，预计可以放 5 * 1024 * 1024 / 200 = 26k行
+        string backend;//固定200k(不能太大，避免一次丢太多行），能放多少行就多少行，预计可以放 200 * 1024 / 200 = 1000行
         LogCharI writePos;
         bool isBackendFull() {return writePos >= backend.capacity();}
         LogCharI lastLineEndAt() {
@@ -30,7 +30,7 @@ private:
         }
     };
     
-    size_t mMaxBlockCount{10};//约50M
+    size_t mMaxBlockCount{100};//约20M
     list<unique_ptr<MemBlock>> mBlocks;
     ProcessInfo mProcess;
 

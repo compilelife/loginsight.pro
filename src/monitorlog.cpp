@@ -4,6 +4,7 @@
 #include <algorithm>
 #include "calculation.h"
 #include <cstring>
+#include "eventloop.h"
 
 bool MonitorLog::open(string_view cmdline, event_base* evbase) {
     mProcess = openProcess(cmdline);
@@ -80,10 +81,14 @@ MonitorLog::MemBlock* MonitorLog::peekBlock() {
 
     //申请一个新的
     unique_ptr<MemBlock> newBlock;
-    newBlock->backend.resize(5 * 1024 * 1024);
+    newBlock->backend.resize(200 * 1024);
     newBlock->mem.reset(newBlock->backend.data(), {0, newBlock->backend.size() - 1});
     newBlock->block.lineBegin = range().end;
-    return newBlock;
+
+    auto ret = newBlock.get();
+    mBlocks.push_back(move(newBlock));
+
+    return ret;
 }
 
 bool MonitorLog::handlePendingTask(bool restartPending) {
@@ -93,6 +98,7 @@ bool MonitorLog::handlePendingTask(bool restartPending) {
                 bind(&MonitorLog::canRemoveOldestBlock, this),
                 [this]{this->handleReadStdOut(); return false;}
             );
+            mPendingReadTask->start(EventLoop::instance().base(), 20);
         }
         return false;
     }
@@ -166,4 +172,22 @@ void MonitorLog::handleReadStdOut() {
         return;
 
     splitLinesForNewContent(curBlock);
+}
+
+shared_ptr<LogView> MonitorLog::view(LogLineI from, LogLineI to) const {
+    vector<BlockRef> refs;
+    for (auto &&b : mBlocks)
+    {
+        refs.push_back({
+            &b->block,
+            &b->mem
+        });
+    }
+    
+    shared_ptr<LogView> view(new BlockLogView(move(refs)));
+    if (range() == Range(from, to)) {
+        return view;
+    }
+
+    return view->subview(from, to - from + 1);
 }

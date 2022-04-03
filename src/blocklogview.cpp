@@ -48,7 +48,8 @@ LineRef BlockLogView::current() const {
     auto&& curBlockRef = mBlocks[mBlockIndex];
     return {
         curBlockRef,
-        &(curBlockRef.block->lines[mLineIndexInBlock])
+        &(curBlockRef.block->lines[mLineIndexInBlock]),
+        mLineIndexInBlock
     };
 }
 
@@ -62,24 +63,19 @@ void BlockLogView::next() {
     }
 }
 
+bool BlockLogView::end() {
+    return mBlockIndex >= LastIndex(mBlocks) && mLineIndexInBlock > mFinalLineInBlock;
+}
+
 shared_ptr<LogView> BlockLogView::subview(LogLineI from, LogLineI n) const {
     auto [fromBlock, fromBlockLine] = locateLine(from);
     auto [toBlock, toBlockLine] = locateLine(from + n - 1);
-
-    auto countFix = 0;
-    if (toBlock == LastIndex(mBlocks)) {
-        countFix = mFinalLineInBlock - toBlockLine;
-        toBlockLine += countFix;
-    } else {
-        countFix = LastIndex(mBlocks[toBlock].block->lines) - toBlockLine;
-        toBlockLine += countFix;
-    }
 
     auto ret = new BlockLogView;
 
     auto fromIt = mBlocks.begin() + fromBlock;
     std::copy_n(fromIt, toBlock - fromBlock + 1, back_inserter(ret->mBlocks));
-    ret->mCount = n + countFix;
+    ret->mCount = n;
     ret->mFinalLineInBlock = toBlockLine;
     ret->mLineIndexInBlock = fromBlockLine;
     ret->mBlockIndex = 0;
