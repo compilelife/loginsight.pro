@@ -19,7 +19,7 @@ private:
     vector<function<void(Promise&)>> mThens;
 public:
     Promise(function<any(bool*)>&& task);
-    static unique_ptr<Promise> all(const vector<shared_ptr<Promise>>& others);
+    static unique_ptr<Promise> all(vector<shared_ptr<Promise>> others);
 public:
     void cancel();
     bool isCancelled() {return mIsCancelled;}

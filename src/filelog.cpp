@@ -42,7 +42,7 @@ unique_ptr<Promise> FileLog::scheduleBuildBlocks() {
 
     while (memEnd - mem > 0) {
         auto taskMemEnd = mem + step;//预期结束位置
-        string_view right{taskMemEnd, static_cast<size_t>(memEnd - mem)};//预期位置后面的buf
+        string_view right{taskMemEnd, static_cast<size_t>(memEnd - taskMemEnd)};//预期位置后面的buf
         auto newLine = find(right.begin(), right.end(), '\n');//找到第一个换行
         //根据newLine切出合适的task
         if (newLine == right.end()) {

@@ -22,7 +22,7 @@ unique_ptr<Promise> MultiFileLog::scheduleBuildBlocks() {
     for (auto &&log : this->mLogs)
         logBuilds.push_back(log->scheduleBuildBlocks());
     
-    auto ret = Promise::all(logBuilds);
+    auto ret = Promise::all(move(logBuilds));
     ret->then([this](Promise& p){
         if (p.isCancelled())
             return;

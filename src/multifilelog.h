@@ -5,7 +5,7 @@
 class MultiFileLog : public ILog {
 private:
     vector<unique_ptr<FileLog>> mLogs;
-    LogLineI mCount;
+    LogLineI mCount{0};
 public:
     shared_ptr<LogView> view(LogLineI from = 0, LogLineI to = InvalidLogLine) const override;
     Range range() const override;

@@ -33,7 +33,7 @@ TEST(FileLog, open) {
 
     log.scheduleBuildBlocks()->wait();
 
-    ASSERT_EQ(Range(0, 534075), log.range());
+    ASSERT_EQ(534075, log.range().len());
 
     log.close();
 }

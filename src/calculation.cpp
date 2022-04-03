@@ -75,5 +75,5 @@ pair<FindLineIter, FindLineIter> findLine(FindLineIter from, FindLineIter end) {
         --newline;
     }
 
-    return {newline, end};
+    return {newline, next};
 }
