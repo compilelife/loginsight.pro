@@ -74,7 +74,7 @@ MonitorLog::MemBlock* MonitorLog::peekBlock() {
     if (mBlocks.size() >= mMaxBlockCount) {
         auto& first = *(mBlocks.begin());
         if (!first->mem.requestAccess(first->mem.range(), Memory::Access::WRITE)) {
-            return;
+            return nullptr;
         }
         mBlocks.pop_front();
     }
@@ -130,8 +130,8 @@ void MonitorLog::splitLinesForNewContent(MemBlock* curBlock) {
             break;
         } else {
             curBlock->block.lines.push_back({
-                last - start,
-                newline - last
+                static_cast<BlockCharI>(last - start),
+                static_cast<LineCharI>(newline - last)
             });
             last = next;
         }
@@ -172,22 +172,4 @@ void MonitorLog::handleReadStdOut() {
         return;
 
     splitLinesForNewContent(curBlock);
-}
-
-shared_ptr<LogView> MonitorLog::view(LogLineI from, LogLineI to) const {
-    vector<BlockRef> refs;
-    for (auto &&b : mBlocks)
-    {
-        refs.push_back({
-            &b->block,
-            &b->mem
-        });
-    }
-    
-    shared_ptr<LogView> view(new BlockLogView(move(refs)));
-    if (range() == Range(from, to)) {
-        return view;
-    }
-
-    return view->subview(from, to - from + 1);
 }

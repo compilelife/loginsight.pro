@@ -64,3 +64,16 @@ vector<shared_ptr<LogView>> Calculation::split(shared_ptr<LogView>& iter) {
     
     return ret;
 }
+
+pair<FindLineIter, FindLineIter> findLine(FindLineIter from, FindLineIter end) {
+    auto newline = find(from, end, '\n');
+    auto next = newline + 1;
+    if (next > end)
+        next = end;
+
+    if (newline != end && newline != from && *(newline - 1) == '\r') {
+        --newline;
+    }
+
+    return {newline, end};
+}

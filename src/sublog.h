@@ -16,7 +16,7 @@ private:
     friend class SubLogView;
     vector<FilterBlock> mBlocks;
     LogLineI mCount;
-private:
+public:
     SubLog(vector<FilterBlock>&& blocks, LogLineI count);
 public:
     shared_ptr<LogView> view(LogLineI from = 0, LogLineI to = InvalidLogLine) const override;

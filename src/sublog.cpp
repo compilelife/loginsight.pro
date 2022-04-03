@@ -24,7 +24,7 @@ static vector<FilterBlock> doFilter(
     return ret;
 }
 
-static vector<FilterBlock> assemble(CalculationRet&& filterRet) {
+static shared_ptr<SubLog> assemble(CalculationRet&& filterRet) {
     using RetType = vector<FilterBlock>;
 
     RetType ret;
@@ -37,7 +37,7 @@ static vector<FilterBlock> assemble(CalculationRet&& filterRet) {
         if (cur == end)
             return;
 
-        count += reduce(cur, end, 0, [](int v, RetType::iterator it){return v + it->lines.size();});
+        for_each(cur, end, [&count](FilterBlock& b){count+=b.lines.size();});
 
         if (last && last->blockRef.block == cur->blockRef.block) {
             //胶合被砍断的block
@@ -49,7 +49,7 @@ static vector<FilterBlock> assemble(CalculationRet&& filterRet) {
         last = &LastItem(ret);
     });
 
-    return ret;
+    return make_shared<SubLog>(move(ret), count);
 }
 
 unique_ptr<Promise> SubLog::createSubLog(shared_ptr<LogView> iter, FilterFunction predict) {
@@ -61,9 +61,8 @@ unique_ptr<Promise> SubLog::createSubLog(shared_ptr<LogView> iter, FilterFunctio
             return;
         
         auto blocksVec = p.calculationValue();
-        auto blocks = assemble(move(blocksVec));
 
-        p.setValue(make_shared<SubLog>(move(blocks)));
+        p.setValue(assemble(move(blocksVec)));
     });
 
     return filterTask;
