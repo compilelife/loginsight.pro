@@ -25,3 +25,24 @@ TEST(MultiFileLog, openMulti) {
 
     log.close();
 }
+
+TEST(MultiFileLog, content) {
+    MultiFileLog log;
+    log.open(paths);
+    log.scheduleBuildBlocks()->wait();
+    auto multiView = log.view();
+
+    FileLog fLog;
+    fLog.open("./sample.log");
+    fLog.scheduleBuildBlocks()->wait();
+    auto singleView = fLog.view();
+
+    ASSERT_EQ(multiView->size(), singleView->size());
+
+    while (!multiView->end() && !singleView->end())
+    {
+        ASSERT_TRUE(multiView->current().str() == singleView->current().str());
+        multiView->next();
+        singleView->next();
+    }
+}
