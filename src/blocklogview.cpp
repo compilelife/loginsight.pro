@@ -64,7 +64,8 @@ void BlockLogView::next() {
 }
 
 bool BlockLogView::end() {
-    return mBlockIndex >= LastIndex(mBlocks) && mLineIndexInBlock > mFinalLineInBlock;
+    auto lastBlockIndex = LastIndex(mBlocks);
+    return mBlockIndex > lastBlockIndex || (mBlockIndex == lastBlockIndex && mLineIndexInBlock > mFinalLineInBlock);
 }
 
 shared_ptr<LogView> BlockLogView::subview(LogLineI from, LogLineI n) const {

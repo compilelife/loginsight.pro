@@ -7,3 +7,7 @@ string_view LineRef::str() {
     auto pstart = pmem + refBlock.block->offset + line->offset;
     return {pstart, line->length};
 }
+
+LogLineI LineRef::index() {
+    return indexInBlock + refBlock.block->lineBegin;
+}

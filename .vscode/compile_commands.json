@@ -71,11 +71,6 @@
 },
 {
   "directory": "/home/chenyong/my/loginsight/playground",
-  "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-o", "build/.objs/core/linux/x86_64/debug/src/main.cpp.o", "src/main.cpp"],
-  "file": "src/main.cpp"
-},
-{
-  "directory": "/home/chenyong/my/loginsight/playground",
   "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-o", "build/.objs/utest/linux/x86_64/debug/test/benchmark.cpp.o", "test/benchmark.cpp"],
   "file": "test/benchmark.cpp"
 },
@@ -96,11 +91,36 @@
 },
 {
   "directory": "/home/chenyong/my/loginsight/playground",
+  "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-o", "build/.objs/utest/linux/x86_64/debug/test/multifilelog.cpp.o", "test/multifilelog.cpp"],
+  "file": "test/multifilelog.cpp"
+},
+{
+  "directory": "/home/chenyong/my/loginsight/playground",
   "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-o", "build/.objs/utest/linux/x86_64/debug/test/calculation.cpp.o", "test/calculation.cpp"],
   "file": "test/calculation.cpp"
 },
 {
   "directory": "/home/chenyong/my/loginsight/playground",
+  "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-o", "build/.objs/utest/linux/x86_64/debug/test/sublogview.cpp.o", "test/sublogview.cpp"],
+  "file": "test/sublogview.cpp"
+},
+{
+  "directory": "/home/chenyong/my/loginsight/playground",
+  "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-o", "build/.objs/utest/linux/x86_64/debug/test/sublog.cpp.o", "test/sublog.cpp"],
+  "file": "test/sublog.cpp"
+},
+{
+  "directory": "/home/chenyong/my/loginsight/playground",
   "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-o", "build/.objs/utest/linux/x86_64/debug/test/main.cpp.o", "test/main.cpp"],
   "file": "test/main.cpp"
+},
+{
+  "directory": "/home/chenyong/my/loginsight/playground",
+  "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-o", "build/.objs/utest/linux/x86_64/debug/test/blocklogview.cpp.o", "test/blocklogview.cpp"],
+  "file": "test/blocklogview.cpp"
+},
+{
+  "directory": "/home/chenyong/my/loginsight/playground",
+  "arguments": ["/usr/bin/ccache", "/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-o", "build/.objs/core/linux/x86_64/debug/src/main.cpp.o", "src/main.cpp"],
+  "file": "src/main.cpp"
 }]

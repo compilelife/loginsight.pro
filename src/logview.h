@@ -18,6 +18,7 @@ struct LineRef {
     Line* line;
     BlockLineI indexInBlock;
     string_view str();
+    LogLineI index();
 };
 
 class LogView {
