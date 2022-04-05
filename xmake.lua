@@ -1,5 +1,6 @@
 add_rules("mode.debug", "mode.release")
 
+--这样引入的libevent编译出来是非多线程的，也就是所有的调用libevent调用最好都在同一个线程里
 add_requires("libevent", {system=false})
 add_requires("gtest 1.11.0")
 set_languages("c++17")

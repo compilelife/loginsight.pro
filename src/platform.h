@@ -21,7 +21,7 @@ void unmapFile(MMapInfo& info);
 struct ProcessInfo
 {
     any priv;
-    int stdoutFd;
+    int stdoutFd{-1};
 };
 
 ProcessInfo openProcess(string_view cmdline);

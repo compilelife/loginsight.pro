@@ -11,6 +11,7 @@ bool MonitorLog::open(string_view cmdline, event_base* evbase) {
     if (mProcess.stdoutFd < 0)
         return false;
     
+    mProcessExited = false;
     startListenFd(evbase);
     return true;
 }
@@ -20,7 +21,12 @@ void MonitorLog::close() {
     event_free(mListenEvent);
 
     closeProcess(mProcess);
+    for (auto &&block : mBlocks)
+        delete block;
+    
     mBlocks.clear();
+
+    mProcessExited = true;
 }
 
 void MonitorLog::setMaxBlockCount(size_t n) {
@@ -31,8 +37,8 @@ Range MonitorLog::range() const {
     if (mBlocks.empty())
         return Range();
     
-    auto& firstBlock = (*mBlocks.begin())->block;
-    auto& lastBlock = (*mBlocks.rbegin())->block;
+    auto& firstBlock = mBlocks.front()->block;
+    auto& lastBlock = mBlocks.back()->block;
 
     return {firstBlock.lineBegin, lastBlock.lineBegin + LastIndex(lastBlock.lines)};
 }
@@ -52,6 +58,10 @@ shared_ptr<LogView> MonitorLog::view(LogLineI from, LogLineI to) const{
     return view->subview(from, to - from + 1);
 }
 
+void onPipeClosed(evutil_socket_t,short,void*) {
+    LOGI("pipe closed");
+}
+
 void MonitorLog::startListenFd(event_base* evbase) {
     mListenEvent = event_new(evbase, mProcess.stdoutFd, EV_PERSIST|EV_READ,
     [](evutil_socket_t fd, short flags, void *arg){
@@ -62,36 +72,38 @@ void MonitorLog::startListenFd(event_base* evbase) {
 }
 
 MonitorLog::MemBlock* MonitorLog::peekBlock() {
+    LogLineI lineBegin = 0;
     //检查最后一个block满了没
     if (!mBlocks.empty()) {
-        auto last = mBlocks.rbegin();
-        if (!(*last)->isBackendFull())
-            return (*last).get();
+        auto& last = mBlocks.back();
+        if (!last->isBackendFull())
+            return last;
+        lineBegin = last->block.lineBegin + last->block.lines.size();
     }
 
     //申请新的，要先看下第一块让不让移除
     if (mBlocks.size() >= mMaxBlockCount) {
-        auto& first = *(mBlocks.begin());
+        auto& first = mBlocks.front();
         if (!first->mem.requestAccess(first->mem.range(), Memory::Access::WRITE)) {
             return nullptr;
         }
+        delete first;
         mBlocks.pop_front();
     }
 
     //申请一个新的
-    unique_ptr<MemBlock> newBlock;
-    newBlock->backend.resize(200 * 1024);
-    newBlock->mem.reset(newBlock->backend.data(), {0, newBlock->backend.size() - 1});
-    newBlock->block.lineBegin = range().end;
+    auto ret = new MemBlock;
+    ret->backend.resize(200 * 1024);
+    ret->mem.reset(ret->backend.data(), {0, ret->backend.size() - 1});
+    ret->block.lineBegin = lineBegin;
 
-    auto ret = newBlock.get();
-    mBlocks.push_back(move(newBlock));
+    mBlocks.push_back(ret);
 
     return ret;
 }
 
 bool MonitorLog::handlePendingTask(bool restartPending) {
-    if (!restartPending) {
+    if (restartPending) {
         if (!mPendingReadTask) {
             mPendingReadTask = PingTask::create(
                 bind(&MonitorLog::canRemoveOldestBlock, this),
@@ -113,8 +125,11 @@ bool MonitorLog::handlePendingTask(bool restartPending) {
 
 void MonitorLog::splitLinesForNewContent(MemBlock* curBlock) {
     auto pmem = curBlock->backend.data();
-    auto fromPos = curBlock->lastLineEndAt();
-    string_view buf(pmem + fromPos, curBlock->writePos - fromPos);
+
+    auto from = curBlock->lastFind;
+    if (!from) from = pmem;
+
+    string_view buf(from, curBlock->writePos - (from - pmem));
     auto start = buf.begin();
     auto last = buf.begin();
     auto end = buf.end();
@@ -135,6 +150,7 @@ void MonitorLog::splitLinesForNewContent(MemBlock* curBlock) {
             last = next;
         }
     }
+    curBlock->lastFind = last;
 }
 
 bool MonitorLog::readStdOutInto(MemBlock* curBlock) {
@@ -149,15 +165,25 @@ bool MonitorLog::readStdOutInto(MemBlock* curBlock) {
     }
 
     //如果一直将curBlock填充完还有数据，那就等下次回调再读
+    int totalRead = 0;
     while (curPos < endPos) {
         auto howmuch = min(1024, (int)(endPos - curPos));
         auto n = readFd(mProcess.stdoutFd, pmem + curPos, howmuch);
         if (n <= 0)
             break;
+        totalRead += n;
         curPos += n;
+        if (n < howmuch)
+            break;
     }
 
-    return true;
+    //libevent告诉我们有数据可以读，但是read到0，说明进程已经退出了
+    if (totalRead == 0) {
+        event_del(mListenEvent);
+        mProcessExited = true;
+    }
+
+    return totalRead > 0;
 }
 
 void MonitorLog::handleReadStdOut() {
@@ -171,4 +197,16 @@ void MonitorLog::handleReadStdOut() {
         return;
 
     splitLinesForNewContent(curBlock);
+}
+
+bool MonitorLog::canRemoveOldestBlock() {
+    auto& first = *mBlocks.begin();
+
+    auto fullRange = first->mem.range();
+    auto access = Memory::Access::WRITE;
+    auto canAccess = first->mem.requestAccess(fullRange, access);
+    if (canAccess) {
+        first->mem.unlock(fullRange, access);
+    }
+    return canAccess;
 }

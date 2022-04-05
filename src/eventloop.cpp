@@ -20,7 +20,7 @@ void EventLoop::start() {
 }
 
 void EventLoop::stop() {
-    event_base_loopbreak(mEventBase);
+    event_base_loopexit(mEventBase, nullptr);
 }
 
 void EventLoop::post(EventHandler callback) {

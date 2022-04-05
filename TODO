@@ -2,10 +2,10 @@ platform:
 
 - 监听文件变化（也可以timer轮询文件的status）
 
-测试MultiFileLog\MonitorLog\subview
-FileLog监听文件变化
-错误处理（process关闭，文件读取失败等）
+测试MonitorLog
 create log view should lock memory
 业务接口
-range变化通过一个定时10ms detect range来通知上层
-日志高亮格式的中途变更（indexed无效掉、重新获取行）
+    range变化通过一个定时10ms detect range来通知上层
+    FileLog监听文件变化
+错误处理（process关闭，文件读取失败等）
+日志高亮格式的中途变更（对根log的每一行清除日志格式，）

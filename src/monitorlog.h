@@ -18,20 +18,13 @@ private:
         Memory mem;
         Block block;
         string backend;//固定200k(不能太大，避免一次丢太多行），能放多少行就多少行，预计可以放 200 * 1024 / 200 = 1000行
-        LogCharI writePos;
+        LogCharI writePos{0};
         bool isBackendFull() {return writePos >= backend.capacity();}
-        LogCharI lastLineEndAt() {
-            LogCharI pos = 0;
-            if (!block.lines.empty()) {
-                auto& lastLine = LastItem(block.lines);
-                pos = lastLine.offset +  lastLine.length;
-            }
-            return pos;
-        }
+        string_view::iterator lastFind{nullptr};
     };
     
     size_t mMaxBlockCount{100};//约20M
-    list<unique_ptr<MemBlock>> mBlocks;
+    list<MemBlock*> mBlocks;
     ProcessInfo mProcess;
 
     event* mListenEvent;
@@ -39,6 +32,7 @@ private:
     shared_ptr<PingTask> mPendingReadTask;
     string mLastBlockTail;//上一个block没有换行符的遗留文本
 
+    bool mProcessExited{false};
 public:
     shared_ptr<LogView> view(LogLineI from = 0, LogLineI to = InvalidLogLine) const override;
     Range range() const override;
@@ -47,6 +41,7 @@ public:
     bool open(string_view cmdline, event_base* evbase);
     void close();
     void setMaxBlockCount(size_t n);
+    bool isProcessExited() { return mProcessExited; }
 
 public:
     void handleReadStdOut();
