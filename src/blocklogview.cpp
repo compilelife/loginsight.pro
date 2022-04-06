@@ -25,6 +25,18 @@ BlockLogView::BlockLogView(const vector<Block*>& blocks, const Memory* memory, B
             mem
         });
     }
+
+    auto begin = blocks[0]->offset + blocks[0]->lines[mFirstLineInBlock].offset;
+    auto end = LastItem(blocks)->offset + LastItem(blocks)->lines[mFinalLineInBlock].offset + LastItem(blocks)->lines[mFinalLineInBlock].length - 1;
+    if (mem) {
+        if (!mem->requestAccess({begin, end}, Memory::Access::READ)) {
+            throw "should creat view when accessable";
+        }
+
+        mUnlockMemoroy = [mem, begin, end]{
+            mem->unlock({begin, end}, Memory::Access::READ);
+        };
+    }
 }
 
 BlockLogView::BlockLogView(vector<BlockRef>&& blocks)
@@ -38,6 +50,26 @@ BlockLogView::BlockLogView(vector<BlockRef>&& blocks)
     mCount = count;
 
     mFinalLineInBlock = LastIndex(LastItem(mBlocks).block->lines);
+
+    for (auto &&ref : blocks)
+    {
+        if (ref.mem && !ref.mem->requestAccess(ref.block->bytesRange(), Memory::Access::READ)) {
+            throw "should creat view when accessable";
+        }
+    }
+
+    mUnlockMemoroy = [this]{
+        for (auto &&ref : mBlocks)
+        {
+            if (ref.mem)
+                ref.mem->unlock(ref.block->bytesRange(), Memory::Access::READ);
+        }
+    };
+}
+
+BlockLogView::~BlockLogView() {
+    if (mUnlockMemoroy)
+        mUnlockMemoroy();
 }
 
 LogLineI BlockLogView::size() const {

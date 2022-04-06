@@ -17,9 +17,12 @@ private:
     BlockLineI mFinalLineInBlock;
     BlockLineI mLineIndexInBlock;
     size_t mBlockIndex;
+
+    function<void()> mUnlockMemoroy;
 private:
     BlockLogView(){}
 public:
+    ~BlockLogView();
     BlockLogView(const vector<Block*>& blocks, 
             const Memory* memory, 
             BlockLineI firstLineInBlock = 0,

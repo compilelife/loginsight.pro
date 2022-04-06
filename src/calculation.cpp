@@ -5,6 +5,7 @@
 #include <algorithm>
 #include "eventloop.h"
 #include "stdout.h"
+#include <regex>
 
 Calculation::Calculation() {
     mCoreNum = thread::hardware_concurrency();
@@ -76,4 +77,25 @@ pair<FindLineIter, FindLineIter> findLine(FindLineIter from, FindLineIter end) {
     }
 
     return {newline, next};
+}
+
+struct StringIncase {
+    string pattern;
+    bool operator() (string_view text) {
+        return text.find(pattern) != string_view::npos;
+    }
+};
+
+struct StringCase {
+    regex p;
+    bool operator() (string_view text) {
+        return regex_search(text.begin(), text.end(), p);
+    }
+};
+
+FilterFunction createFilter(string_view pattern, bool caseSensitive) {
+    if (caseSensitive) {
+        return StringCase{regex(pattern.data(), regex::icase)};
+    }
+    return StringIncase {pattern.data()};
 }

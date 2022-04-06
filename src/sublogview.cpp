@@ -1,5 +1,6 @@
 #include "sublogview.h"
 #include "sublog.h"
+#include "mem.h"
 
 SubLogView::SubLogView(const SubLog* log)
     :mLog(const_cast<SubLog*>(log)) {
@@ -12,6 +13,64 @@ SubLogView::SubLogView(const SubLog* log)
 SubLogView::SubLogView(SubLog* log, SubLogPos from, SubLogPos to, LogLineI n) 
     :mLog(log), mFrom(from), mTo(to), mCur(mFrom), mCount(n) {
 
+}
+
+static Range bytesRange(FilterBlock& b, size_t from, size_t to) {
+    auto block = b.blockRef.block;
+    auto& fl =  block->lines[b.lines[from]];
+    if (to >= b.lines.size()) {
+        to = LastIndex(b.lines);
+    }
+    auto &tl = block->lines[b.lines[to]];
+
+    return {
+        block->offset + fl.offset,
+        block->offset + tl.offset + tl.length - 1
+    };
+}
+
+void SubLogView::lockMemory() {
+    auto lock = [](FilterBlock& b, Range& range){
+        if (b.blockRef.mem && !!b.blockRef.mem->requestAccess(range, Memory::Access::READ)) {
+            throw "should creat view when accessable";
+        }
+    };
+
+    auto& b = mLog->mBlocks[mFrom.blockIndex];
+    auto range = bytesRange(b, mFrom.lineIndex, BLOCK_LINE_NUM);
+    lock(b, range);
+
+    for (size_t i = mFrom.blockIndex+1; i < mTo.blockIndex; i++)
+    {
+        b = mLog->mBlocks[i];
+        range = bytesRange(b, 0, BLOCK_LINE_NUM);
+        lock(b, range);
+    }
+
+    b = mLog->mBlocks[mTo.blockIndex];
+    range = bytesRange(b, 0, mTo.lineIndex);
+    lock(b, range);
+}
+
+SubLogView::~SubLogView() {
+    auto unlock = [](FilterBlock& b, Range& range){
+        if (b.blockRef.mem) {b.blockRef.mem->unlock(range, Memory::Access::READ);}
+    };
+    
+    auto& b = mLog->mBlocks[mFrom.blockIndex];
+    auto range = bytesRange(b, mFrom.lineIndex, BLOCK_LINE_NUM);
+    unlock(b, range);
+
+    for (size_t i = mFrom.blockIndex+1; i < mTo.blockIndex; i++)
+    {
+        b = mLog->mBlocks[i];
+        range = bytesRange(b, 0, BLOCK_LINE_NUM);
+        unlock(b, range);
+    }
+
+    b = mLog->mBlocks[mTo.blockIndex];
+    range = bytesRange(b, 0, mTo.lineIndex);
+    unlock(b, range);
 }
 
 LineRef SubLogView::current() const {

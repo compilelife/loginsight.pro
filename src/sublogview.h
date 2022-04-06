@@ -21,6 +21,10 @@ private:
 public:
     SubLogView(const SubLog* log);
     SubLogView(SubLog* log, SubLogPos from, SubLogPos to, LogLineI n);
+    ~SubLogView();
+
+private:
+    void lockMemory();
 
 public:
     LineRef current() const override;

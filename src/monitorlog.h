@@ -17,6 +17,7 @@ private:
     struct MemBlock {
         Memory mem;
         Block block;
+        //FIXME:极端情况下一个block里的行数会超过BLOCK_LINE_NUM
         string backend;//固定200k(不能太大，避免一次丢太多行），能放多少行就多少行，预计可以放 200 * 1024 / 200 = 1000行
         LogCharI writePos{0};
         bool isBackendFull() {return writePos >= backend.capacity();}

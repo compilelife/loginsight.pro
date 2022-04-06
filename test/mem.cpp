@@ -1,5 +1,6 @@
 #include "mem.h"
 #include "gtest/gtest.h"
+#include "filelog.h"
 
 TEST(Memory, ReadNotExcludeRead) {
     Memory mem;
@@ -36,4 +37,12 @@ TEST(Memory, Unlock) {
     ASSERT_NE(nullptr, mem.requestAccess({0,20}, Memory::Access::WRITE));
     mem.unlock({0, 20}, Memory::Access::WRITE);
     ASSERT_NE(nullptr, mem.requestAccess({10,30}, Memory::Access::WRITE));
+}
+
+TEST(Memory, LockWhenView) {
+    FileLog log;
+    log.open("./204800.log");
+    log.scheduleBuildBlocks()->wait();
+
+    
 }

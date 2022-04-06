@@ -36,7 +36,7 @@ void consumeCalculation(CalculationRet&& ret, function<void(T&&)>&& consumer) {
 }
 
 using FilterFunction = function<bool(string_view)> ;
-function<bool(string_view)> createFilter(string_view pattern, bool caseSensitive);
+FilterFunction createFilter(string_view pattern, bool caseSensitive);
 
 /**
  * @brief 对string_view从from到end（不含）查找换行位置

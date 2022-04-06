@@ -32,9 +32,19 @@ struct Line {
 };
 
 struct Block {
-    LogCharI lineBegin{0};
+    LogLineI lineBegin{0};
     LogCharI offset{0};
     vector<Line> lines;
+    Range bytesRange() {
+        if (lines.empty())
+            return Range();
+
+        auto& lastLine = lines.back();
+        return {
+            offset,
+            offset + lastLine.offset + lastLine.length - 1
+        };
+    }
 };
 
 class ILog {
