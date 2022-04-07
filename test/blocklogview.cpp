@@ -21,7 +21,7 @@ static BlockLogView prepareMockData() {
         }
         blocks.push_back(block);
     }
-    return {blocks, new Memory};
+    return {blocks, nullptr};
 }
 
 TEST(BlockLogView, iter){

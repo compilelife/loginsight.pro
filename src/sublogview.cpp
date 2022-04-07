@@ -1,6 +1,7 @@
 #include "sublogview.h"
 #include "sublog.h"
 #include "mem.h"
+#include "stdout.h"
 
 SubLogView::SubLogView(const SubLog* log)
     :mLog(const_cast<SubLog*>(log)) {
@@ -8,11 +9,12 @@ SubLogView::SubLogView(const SubLog* log)
     mTo = {LastIndex(log->mBlocks), LastIndex(LastItem(log->mBlocks).lines)};
     mCur = mFrom;
     mCount = log->mCount;
+    lockMemory();
 }
 
 SubLogView::SubLogView(SubLog* log, SubLogPos from, SubLogPos to, LogLineI n) 
     :mLog(log), mFrom(from), mTo(to), mCur(mFrom), mCount(n) {
-
+    lockMemory();
 }
 
 static Range bytesRange(FilterBlock& b, size_t from, size_t to) {
@@ -31,25 +33,25 @@ static Range bytesRange(FilterBlock& b, size_t from, size_t to) {
 
 void SubLogView::lockMemory() {
     auto lock = [](FilterBlock& b, Range& range){
-        if (b.blockRef.mem && !!b.blockRef.mem->requestAccess(range, Memory::Access::READ)) {
+        if (b.blockRef.mem && !b.blockRef.mem->requestAccess(range, Memory::Access::READ)) {
             throw "should creat view when accessable";
         }
     };
 
-    auto& b = mLog->mBlocks[mFrom.blockIndex];
-    auto range = bytesRange(b, mFrom.lineIndex, BLOCK_LINE_NUM);
-    lock(b, range);
+    auto* b = &(mLog->mBlocks[mFrom.blockIndex]);
+    auto range = bytesRange(*b, mFrom.lineIndex, BLOCK_LINE_NUM);
+    lock(*b, range);
 
     for (size_t i = mFrom.blockIndex+1; i < mTo.blockIndex; i++)
     {
-        b = mLog->mBlocks[i];
-        range = bytesRange(b, 0, BLOCK_LINE_NUM);
-        lock(b, range);
+        b = &(mLog->mBlocks[i]);
+        range = bytesRange(*b, 0, BLOCK_LINE_NUM);
+        lock(*b, range);
     }
 
-    b = mLog->mBlocks[mTo.blockIndex];
-    range = bytesRange(b, 0, mTo.lineIndex);
-    lock(b, range);
+    b = &(mLog->mBlocks[mTo.blockIndex]);
+    range = bytesRange(*b, 0, mTo.lineIndex);
+    lock(*b, range);
 }
 
 SubLogView::~SubLogView() {
@@ -57,24 +59,25 @@ SubLogView::~SubLogView() {
         if (b.blockRef.mem) {b.blockRef.mem->unlock(range, Memory::Access::READ);}
     };
     
-    auto& b = mLog->mBlocks[mFrom.blockIndex];
-    auto range = bytesRange(b, mFrom.lineIndex, BLOCK_LINE_NUM);
-    unlock(b, range);
+    auto* b = &(mLog->mBlocks[mFrom.blockIndex]);
+    auto range = bytesRange(*b, mFrom.lineIndex, BLOCK_LINE_NUM);
+    unlock(*b, range);
 
     for (size_t i = mFrom.blockIndex+1; i < mTo.blockIndex; i++)
     {
-        b = mLog->mBlocks[i];
-        range = bytesRange(b, 0, BLOCK_LINE_NUM);
-        unlock(b, range);
+        b = &(mLog->mBlocks[i]);
+        range = bytesRange(*b, 0, BLOCK_LINE_NUM);
+        unlock(*b, range);
     }
 
-    b = mLog->mBlocks[mTo.blockIndex];
-    range = bytesRange(b, 0, mTo.lineIndex);
-    unlock(b, range);
+    b = &(mLog->mBlocks[mTo.blockIndex]);
+    range = bytesRange(*b, 0, mTo.lineIndex);
+    unlock(*b, range);
 }
 
 LineRef SubLogView::current() const {
     auto& filterBlock = mLog->mBlocks[mCur.blockIndex];
+    // LOGI("access %p %u", filterBlock.blockRef.block, mCur.blockIndex);
     auto lineIndexInBlock = filterBlock.lines[mCur.lineIndex];
 
     return {
@@ -93,9 +96,8 @@ void SubLogView::next() {
 }
 
 bool SubLogView::end() {
-    return mCur.blockIndex > LastIndex(mLog->mBlocks) || 
-          (mCur.blockIndex == LastIndex(mLog->mBlocks) &&
-           mCur.lineIndex > mTo.lineIndex);
+    return mCur.blockIndex > mTo.blockIndex || 
+        (mCur.blockIndex == mTo.blockIndex && mCur.lineIndex > mTo.lineIndex);
 }
 
 LogLineI SubLogView::size() const {
@@ -105,6 +107,7 @@ LogLineI SubLogView::size() const {
 shared_ptr<LogView> SubLogView::subview(LogLineI from, LogLineI n) const {
     auto fromPos = locateLine(from);
     auto toPos = locateLine(from + n - 1);
+    
     return make_shared<SubLogView>(mLog, fromPos, toPos, n);
 }
 

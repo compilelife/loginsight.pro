@@ -1,6 +1,7 @@
 #include "sublog.h"
 #include <algorithm>
 #include <numeric>
+#include "stdout.h"
 
 static vector<FilterBlock> doFilter(
                                     bool* cancel, 
