@@ -26,6 +26,7 @@ public:
 
 private:
     friend class FileLog_buildBlock_Test;
+    friend class Memory_LockWhenView_Test;
     any buildBlock(bool* cancel, string_view buf);
     void collectBlocks(const vector<any>& rets);
 };

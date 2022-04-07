@@ -1,6 +1,7 @@
 #include "mem.h"
 #include "gtest/gtest.h"
 #include "filelog.h"
+#include "sublog.h"
 
 TEST(Memory, ReadNotExcludeRead) {
     Memory mem;
@@ -44,5 +45,34 @@ TEST(Memory, LockWhenView) {
     log.open("./204800.log");
     log.scheduleBuildBlocks()->wait();
 
-    
+    auto assertCanAccess = [&log] (string_view desc) {
+        ASSERT_NE(nullptr, log.mBuf.requestAccess(log.range(), Memory::Access::WRITE))<<desc;
+        log.mBuf.unlock(log.range(), Memory::Access::WRITE);
+    };
+    auto assertNoAccess = [&log] (string_view desc)  {
+        ASSERT_EQ(nullptr, log.mBuf.requestAccess(log.range(), Memory::Access::WRITE))<<desc;
+    };
+
+    assertCanAccess("no view: can access");
+
+    {
+        auto logview = log.view();
+        assertNoAccess("with view: no access");
+    }
+
+    assertCanAccess("release view: can access");
+
+    {
+        auto p = SubLog::createSubLog(log.view(), createFilter("chromium", true));
+        p->wait();
+        auto sub = any_cast<shared_ptr<SubLog>>(p->value());
+
+        assertCanAccess("sub created: can access");
+
+        auto subview = sub->view();
+
+        assertNoAccess("sub view: no access");//sub view的时候，根log也不允许访问
+    }
+
+    assertCanAccess("release sub view: can access");
 }

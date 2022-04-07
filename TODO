@@ -1,9 +1,3 @@
-platform:
-
-- 监听文件变化（也可以timer轮询文件的status）
-
-测试: sublog
-测试: create log view should lock memory
 业务接口
     range变化通过一个定时10ms detect range来通知上层
     FileLog监听文件变化
