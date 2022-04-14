@@ -3,6 +3,7 @@
 #include "eventloop.h"
 #include "platform.h"
 #include "stdout.h"
+#include "filelog.h"
 
 Controller::Controller() {
     auto& evloop = EventLoop::instance();
@@ -51,5 +52,28 @@ void Controller::readStdin(int fd) {
 }
 
 void Controller::handleCmd(Json::Value& msg) {
+    auto cmd = msg["cmd"].asString();
+    if (cmd == "openFile") {
+        handleCmd(msg);
+    }
+}
+
+void Controller::handleOpenFile(Json::Value& msg) {
+    auto path = msg["path"].asString();
     
+    auto log = make_shared<FileLog>();
+
+    if (!log->open(path)) {
+        replyFailMsg(msg, "文件打开失败");
+        return;
+    }
+
+    mLogTree.setRoot(log);
+
+    log->scheduleBuildBlocks();
+    /**
+     * 1. 将Promise设为barrierPromise
+     * 2. 界面接着定时请求barrierPromise的进度
+     * 
+     */
 }
