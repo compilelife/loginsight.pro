@@ -2,6 +2,7 @@ add_rules("mode.debug", "mode.release")
 
 --这样引入的libevent编译出来是非多线程的，也就是所有的调用libevent调用最好都在同一个线程里
 add_requires("libevent", {system=false})
+add_requires("jsoncpp", {system=false})
 add_requires("gtest 1.11.0")
 set_languages("c++17")
 
@@ -10,13 +11,13 @@ target("corelib")
     set_kind("static")
     add_files("src/*.cpp|main.cpp")
     if is_os("linux") then 
-        add_files("src/linux/*.cpp")
+        add_files("src/unix/*.cpp")
     elseif is_os("windows") then
         add_files("src/windows/*.cpp")
     elseif is_os("macosx") then
-        add_files("src/macosx/*.cpp")
+        add_files("src/unix/*.cpp")
     end
-    add_packages("libevent")
+    add_packages("libevent", "jsoncpp")
 
 --最终输出
 target("core")

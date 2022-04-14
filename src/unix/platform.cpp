@@ -137,3 +137,8 @@ void closeProcess(ProcessInfo& info) {
 int readFd(int fd, void* buf, int howmuch) {
     return read(fd, buf, howmuch);
 }
+
+
+int getFileNo(FILE* fp) {
+    return fileno(fp);
+}

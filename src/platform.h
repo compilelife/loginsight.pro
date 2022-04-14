@@ -28,3 +28,5 @@ ProcessInfo openProcess(string_view cmdline);
 void closeProcess(ProcessInfo& info);
 
 int readFd(int fd, void* buf, int howmuch);
+
+int getFileNo(FILE* fp);
