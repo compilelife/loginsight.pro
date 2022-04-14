@@ -7,8 +7,19 @@
 #include <future>
 #include <vector>
 #include <mutex>
+#include <memory>
 
-class Promise {
+class Promise;
+using PromiseThen=function<void(shared_ptr<Promise>)>;
+
+struct PromiseThenWrap {
+    bool runOnMainThread;
+    PromiseThen handler;
+
+    void operator()(shared_ptr<Promise> p);
+};
+
+class Promise : public enable_shared_from_this<Promise>{
 private:
     future<void> mEndFuture;
     bool mIsCancelled{false};
@@ -16,17 +27,17 @@ private:
     mutex mThenLock;
     any mResult;
     bool mEnd{false};
-    vector<function<void(Promise&)>> mThens;
+    vector<PromiseThen> mThens;
 public:
     Promise(function<any(bool*)>&& task);
-    static unique_ptr<Promise> all(vector<shared_ptr<Promise>> others);
+    static shared_ptr<Promise> all(vector<shared_ptr<Promise>> others);
 public:
     void cancel();
     bool isCancelled() {return mIsCancelled;}
     bool wait(long ms = 0);
     bool isBusy();
 public:
-    void then(function<void(Promise&)>&& handler);
+    void then(PromiseThen&& handler, bool runOnMainThread = false);
     void setValue(any&& v) {mResult = v;}
 public:
     any& value() {return mResult;}

@@ -17,8 +17,8 @@ Calculation& Calculation::instance() {
 }
 
 template<class Tasks, class ProcessFunc>
-unique_ptr<Promise> scheduleImpl(Tasks&& tasks, ProcessFunc&& process) {
-    return unique_ptr<Promise>(new Promise([tasks, process](bool* cancel)mutable{
+shared_ptr<Promise> scheduleImpl(Tasks&& tasks, ProcessFunc&& process) {
+    return shared_ptr<Promise>(new Promise([tasks, process](bool* cancel)mutable{
         vector<future<any>> futures;
         for (auto &&task : tasks) {
             auto futureRet = async(launch::async, process, cancel, move(task));
@@ -32,13 +32,13 @@ unique_ptr<Promise> scheduleImpl(Tasks&& tasks, ProcessFunc&& process) {
     }));
 }
 
-unique_ptr<Promise> Calculation::schedule(shared_ptr<LogView> iter, 
+shared_ptr<Promise> Calculation::schedule(shared_ptr<LogView> iter, 
             function<any(bool*,shared_ptr<LogView>)>&& process) {
     auto tasks = split(iter);
     return scheduleImpl(tasks, process);
 }
 
-unique_ptr<Promise> Calculation::schedule(vector<string_view> tasks, 
+shared_ptr<Promise> Calculation::schedule(vector<string_view> tasks, 
             function<any(bool*,string_view)>&& process) {
     return scheduleImpl(tasks, process);
 }

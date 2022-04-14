@@ -70,6 +70,8 @@
         "valarray": "cpp",
         "variant": "cpp",
         "any": "cpp",
-        "bitset": "cpp"
+        "bitset": "cpp",
+        "regex": "cpp",
+        "*.inc": "cpp"
     }
 }

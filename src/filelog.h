@@ -21,7 +21,7 @@ public:
 
 public:
     bool open(string_view path);
-    unique_ptr<Promise> scheduleBuildBlocks();
+    shared_ptr<Promise> scheduleBuildBlocks();
     void close();
 
 private:

@@ -12,6 +12,6 @@ public:
 
 public:
     bool open(const vector<string_view>& paths);
-    unique_ptr<Promise> scheduleBuildBlocks();
+    shared_ptr<Promise> scheduleBuildBlocks();
     void close();
 };

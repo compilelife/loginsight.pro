@@ -20,10 +20,10 @@ public:
     unsigned coreNum() {return mCoreNum;}
 
 public:
-    unique_ptr<Promise> schedule(shared_ptr<LogView> iter, 
+    shared_ptr<Promise> schedule(shared_ptr<LogView> iter, 
             function<any(bool*,shared_ptr<LogView>)>&& process);
 
-    unique_ptr<Promise> schedule(vector<string_view> tasks, 
+    shared_ptr<Promise> schedule(vector<string_view> tasks, 
             function<any(bool*,string_view)>&& process);
 };
 

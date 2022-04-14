@@ -22,7 +22,7 @@ void FileLog::close() {
     mBlocks.clear();
 }
 
-unique_ptr<Promise> FileLog::scheduleBuildBlocks() {
+shared_ptr<Promise> FileLog::scheduleBuildBlocks() {
     //确定块大小
     auto& calculation = Calculation::instance();
 
@@ -56,9 +56,9 @@ unique_ptr<Promise> FileLog::scheduleBuildBlocks() {
     
     //提交任务
     auto ret = calculation.schedule(move(tasks), bind(&FileLog::buildBlock, this, placeholders::_1, placeholders::_2));
-    ret->then([this](Promise& p){
-                    if (!p.isCancelled()) {
-                        this->collectBlocks(p.calculationValue());
+    ret->then([this](shared_ptr<Promise> p){
+                    if (!p->isCancelled()) {
+                        this->collectBlocks(p->calculationValue());
                     }
                     this->mBuf.unlock(this->mBuf.range(), Memory::Access::READ);
                 });

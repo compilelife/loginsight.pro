@@ -24,5 +24,5 @@ public:
 
 public:
     //value as shared_ptr<SubLog>
-    static unique_ptr<Promise> createSubLog(shared_ptr<LogView> iter, FilterFunction predict);
+    static shared_ptr<Promise> createSubLog(shared_ptr<LogView> iter, FilterFunction predict);
 };

@@ -17,15 +17,16 @@ bool MultiFileLog::open(const vector<string_view>& paths) {
     return true;    
 }
 
-unique_ptr<Promise> MultiFileLog::scheduleBuildBlocks() {
+shared_ptr<Promise> MultiFileLog::scheduleBuildBlocks() {
     vector<shared_ptr<Promise>> logBuilds;
     for (auto &&log : this->mLogs)
         logBuilds.push_back(log->scheduleBuildBlocks());
     
     auto ret = Promise::all(move(logBuilds));
-    ret->then([this](Promise& p){
-        if (p.isCancelled())
+    ret->then([this](shared_ptr<Promise> p){
+        if (p->isCancelled())
             return;
+            
         for (auto &&log: this->mLogs)
             this->mCount += log->range().len();
     });

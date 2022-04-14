@@ -1,14 +1,26 @@
 #include "promisex.h"
 #include <algorithm>
+#include "eventloop.h"
+
+void PromiseThenWrap::operator()(shared_ptr<Promise> p) {
+    if (runOnMainThread) {
+        auto handlerCopy = handler;
+        EventLoop::instance().post([=]{
+            handlerCopy(p);
+        });
+    } else {
+        handler(p);
+    }
+}
 
 Promise::Promise(function<any(bool*)>&& task) {
-    mEndFuture = async(launch::async, [this, task]{
-        this->mResult = task(&this->mIsCancelled);
+    mEndFuture = async(launch::async, [thiz=shared_from_this(), task]{
+        thiz->mResult = task(&thiz->mIsCancelled);
 
-        lock_guard<mutex> l(this->mThenLock);
-        mEnd = true;
-        for (auto &&f : this->mThens)
-            f(*this);
+        lock_guard<mutex> l(thiz->mThenLock);
+        thiz->mEnd = true;
+        for (auto &&f : thiz->mThens)
+            f(thiz);
     });
 }
 
@@ -30,17 +42,21 @@ bool Promise::isBusy() {
     return !mEnd;
 }
 
-void Promise::then(function<void(Promise&)>&& handler) {
+void Promise::then(PromiseThen&& handler, bool runOnMainThread) {
+    PromiseThenWrap wrap;
+    wrap.handler = handler;
+    wrap.runOnMainThread = runOnMainThread;
+
     lock_guard<mutex> l(mThenLock);
     if (mEnd) {
-        handler(*this);
+        wrap(shared_from_this());
     } else {
-        mThens.push_back(handler);
+        mThens.push_back(wrap);
     }
 }
 
-unique_ptr<Promise> Promise::all(vector<shared_ptr<Promise>> others) {
-    return unique_ptr<Promise>(new Promise([others](bool* cancel) mutable {
+shared_ptr<Promise> Promise::all(vector<shared_ptr<Promise>> others) {
+    return shared_ptr<Promise>(new Promise([others](bool* cancel) mutable {
         auto begin = others.begin();
         auto end = others.end();
         bool allReady = false;

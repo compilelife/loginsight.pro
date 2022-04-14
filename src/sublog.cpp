@@ -53,17 +53,17 @@ static shared_ptr<SubLog> assemble(CalculationRet&& filterRet) {
     return make_shared<SubLog>(move(ret), count);
 }
 
-unique_ptr<Promise> SubLog::createSubLog(shared_ptr<LogView> iter, FilterFunction predict) {
+shared_ptr<Promise> SubLog::createSubLog(shared_ptr<LogView> iter, FilterFunction predict) {
     auto filterTask = Calculation::instance().schedule(iter, 
                             bind(doFilter, placeholders::_1, placeholders::_2, predict));
 
-    filterTask->then([](Promise& p) {
-        if (p.isCancelled())
+    filterTask->then([](shared_ptr<Promise> p) {
+        if (p->isCancelled())
             return;
         
-        auto blocksVec = p.calculationValue();
+        auto blocksVec = p->calculationValue();
 
-        p.setValue(assemble(move(blocksVec)));
+        p->setValue(assemble(move(blocksVec)));
     });
 
     return filterTask;

@@ -19,7 +19,7 @@ TEST(Calculation, cancel) {
             this_thread::sleep_for(300ms);//稍作等待，让cancel有机会在任务完成前被执行到
             return s;
         });
-    p->then([&thenExecuted](Promise&){thenExecuted=true;});
+    p->then([&thenExecuted](auto){thenExecuted=true;});
 
     ASSERT_TRUE(p->isBusy());
 
