@@ -30,6 +30,7 @@ private:
     vector<PromiseThen> mThens;
 public:
     Promise(function<any(bool*)>&& task);
+    ~Promise();
     static shared_ptr<Promise> all(vector<shared_ptr<Promise>> others);
 public:
     void cancel();

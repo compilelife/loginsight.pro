@@ -3,7 +3,7 @@
 LogId LogTree::setRoot(shared_ptr<ILog>&& root) {
     auto id = ++mIdGen;
     mRootNode.reset(new Node{
-        ++mIdGen,
+        id,
         root,
         {}
     });
@@ -11,14 +11,11 @@ LogId LogTree::setRoot(shared_ptr<ILog>&& root) {
 }
 
 bool travelTree(Node* root, const function<bool(Node* node)>& visit) {
-    auto last = root;
-    while (last) {
-        if (visit(last))
+    if (visit(root))
+        return true;
+    for (auto &&it : root->children) {
+        if (travelTree(it.second.get(), visit)) 
             return true;
-        for (auto &&it : last->children) {
-            if (travelTree(it.second.get(), visit)) 
-                return true;
-        }
     }
     return false;    
 }

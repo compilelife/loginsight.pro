@@ -14,14 +14,18 @@ void PromiseThenWrap::operator()(shared_ptr<Promise> p) {
 }
 
 Promise::Promise(function<any(bool*)>&& task) {
-    mEndFuture = async(launch::async, [thiz=shared_from_this(), task]{
-        thiz->mResult = task(&thiz->mIsCancelled);
+    mEndFuture = async(launch::async, [this, task]{
+        this->mResult = task(&this->mIsCancelled);
 
-        lock_guard<mutex> l(thiz->mThenLock);
-        thiz->mEnd = true;
-        for (auto &&f : thiz->mThens)
-            f(thiz);
+        lock_guard<mutex> l(this->mThenLock);
+        this->mEnd = true;
+        for (auto &&f : this->mThens)
+            f(this->shared_from_this());
     });
+}
+
+Promise::~Promise() {
+    mEndFuture.wait();
 }
 
 void Promise::cancel() {
