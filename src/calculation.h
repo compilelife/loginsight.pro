@@ -25,6 +25,10 @@ public:
 
     shared_ptr<Promise> schedule(vector<string_view> tasks, 
             function<any(bool*,string_view)>&& process);
+
+public:
+    template<class T>
+    static vector<T> flat(CalculationRet&& ret);
 };
 
 template<class T>
@@ -33,6 +37,16 @@ void consumeCalculation(CalculationRet&& ret, function<void(T&&)>&& consumer) {
     {
         consumer(any_cast<T>(a));
     }
+}
+
+template<class T>
+vector<T> Calculation::flat(CalculationRet&& ret) {
+    vector<T> flatten;
+    for (auto &&i : ret) {
+        auto vi = any_cast<vector<T>>(i);
+        copy(vi.begin(), vi.end(), back_inserter(flatten));
+    }
+    return flatten;
 }
 
 using FilterFunction = function<bool(string_view)> ;

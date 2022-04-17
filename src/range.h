@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <cmath>
+#include "json/json.h"
 
 using namespace std;
 
@@ -18,6 +19,16 @@ struct Range {
     }
 
     Range(){}
+
+    Range(const Json::Value& v) {
+        begin = v["begin"].asUInt64();
+        end = v["end"].asUInt64();
+    }
+
+    void writeTo(Json::Value& v) {
+        v["begin"] = begin;
+        v["end"] = end;
+    }
 
     bool operator==(const Range& other) const {
         return begin == other.begin && end == other.end;

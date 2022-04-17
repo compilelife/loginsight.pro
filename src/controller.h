@@ -7,8 +7,10 @@
 #include "logtree.h"
 #include "promisex.h"
 
+using JsonMsg = const Json::Value&;
+
 class Controller;
-typedef Json::Value(Controller::*CmdHandler)(Json::Value&);
+typedef Json::Value(Controller::*CmdHandler)(JsonMsg);
 extern unordered_map<string,CmdHandler> gCmdHandlers;
 
 struct RegisterHandler {
@@ -18,11 +20,18 @@ struct RegisterHandler {
 };
 
 #define DeclarCmdHandler(name)\
-Json::Value name##Handler(Json::Value& msg);\
+Json::Value name##Handler(JsonMsg msg);\
 RegisterHandler name##Register{#name, &Controller::name##Handler};
 
 #define ImplCmdHandler(name)\
-Json::Value Controller::name##Handler(Json::Value& msg)
+Json::Value Controller::name##Handler(JsonMsg msg)
+
+enum ReplyState {
+    Ok = 0,
+    Fail,
+    Future,
+    Cancel
+};
 
 class Controller {
 private:
@@ -47,14 +56,16 @@ private:
     bool handleLine();
 
 private:
-    void handleCmd(Json::Value& msg);
+    void handleCmd(JsonMsg msg);
     DeclarCmdHandler(openFile);
     DeclarCmdHandler(queryPromise);
     DeclarCmdHandler(getRange);
+    DeclarCmdHandler(getLines);
 
 private:
-    Json::Value ack(Json::Value& msg, bool success);
-    Json::Value promiseAck(Json::Value& msg);
-    Json::Value failedAck(Json::Value& msg, string why);
-    void send(Json::Value& msg);
+    Json::Value ack(JsonMsg msg, ReplyState state);
+    Json::Value failedAck(JsonMsg msg, string why);
+    void send(JsonMsg msg);
+    shared_ptr<ILog> getLog(JsonMsg msg);
+    bool handleCancelledPromise(shared_ptr<Promise>& p, JsonMsg msg);
 };
