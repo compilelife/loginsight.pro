@@ -6,7 +6,7 @@
 #include "filelog.h"
 #include <unordered_map>
 
-unordered_map<string,CmdHandler> gCmdHandlers;
+unordered_map<string,CmdHandlerWrap> gCmdHandlers;
 
 Controller::Controller() {
     auto& evloop = EventLoop::instance();
@@ -35,6 +35,7 @@ void Controller::stop() {
 }
 
 void Controller::readStdin(int fd) {
+    LOGI("in");
     evbuffer_read(mLineBuf, fd, -1);
     handleLine();
 }
@@ -48,8 +49,6 @@ bool Controller::handleLine() {
     size_t len = 0;
     auto cstr = evbuffer_readln(mLineBuf, &len, EVBUFFER_EOL_LF);
 
-    //TODO: check barrier and queue cmds
-
     if (cstr && len > 0) {
         Json::Value root;
         Json::String errs;
@@ -57,7 +56,11 @@ bool Controller::handleLine() {
         auto parseRet = Json::parseFromStream(mRPCReaderBuilder, ss, &root, &errs);
 
         if (parseRet) {
-            handleCmd(root);
+            try {
+                handleCmd(root);
+            } catch (Json::LogicError e) {
+                LOGE("failed to handle %s: %s", cstr, e.what());
+            }
         } else {
             LOGE("invalid cmd: %s", cstr);
             LOGE("reason: %s", errs.c_str());
@@ -78,11 +81,17 @@ void Controller::handleCmd(JsonMsg msg) {
     if (cmd.empty()) {
         ret = failedAck(msg, "cmd field not found in json");
     } else {
-        auto &handler = gCmdHandlers[cmd];
-        if (handler)
-            ret = (this->*handler)(msg);
-        else
+        auto &h = gCmdHandlers[cmd];
+        if (h.handler) {
+            if (mBarrierPromise && mBarrierPromise->isBusy() && h.waitBarrier) {
+                ret = failedAck(msg, "程序在忙,稍后再试");
+            } else {
+                ret = (this->*(h.handler))(msg);
+            }
+        }
+        else {
             ret = failedAck(msg, "cmd not support");
+        }
     }
 
     send(ret);

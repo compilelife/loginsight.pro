@@ -6,22 +6,30 @@
 #include "json/json.h"
 #include "logtree.h"
 #include "promisex.h"
+#include "pingtask.h"
+#include <optional>
 
 using JsonMsg = const Json::Value&;
 
 class Controller;
 typedef Json::Value(Controller::*CmdHandler)(JsonMsg);
-extern unordered_map<string,CmdHandler> gCmdHandlers;
+struct CmdHandlerWrap {
+    bool waitBarrier;
+    CmdHandler handler;
+};
+extern unordered_map<string,CmdHandlerWrap> gCmdHandlers;
 
 struct RegisterHandler {
-    RegisterHandler(const char* name, CmdHandler handler) {
-        gCmdHandlers[name] = handler;
+    RegisterHandler(const char* name, CmdHandler handler, bool waitBarrier=true) {
+        gCmdHandlers[name] = {waitBarrier, handler};
     }
 };
 
-#define DeclarCmdHandler(name)\
+#define DeclarCmdHandler(name) DeclarCmdHandler2(name, true)
+
+#define DeclarCmdHandler2(name, waitBarrier)\
 Json::Value name##Handler(JsonMsg msg);\
-RegisterHandler name##Register{#name, &Controller::name##Handler};
+RegisterHandler name##Register{#name, &Controller::name##Handler, waitBarrier};
 
 #define ImplCmdHandler(name)\
 Json::Value Controller::name##Handler(JsonMsg msg)
@@ -58,7 +66,7 @@ private:
 private:
     void handleCmd(JsonMsg msg);
     DeclarCmdHandler(openFile);
-    DeclarCmdHandler(queryPromise);
+    DeclarCmdHandler2(queryPromise, false);
     DeclarCmdHandler(getRange);
     DeclarCmdHandler(getLines);
 
