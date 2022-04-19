@@ -69,6 +69,8 @@ private:
     DeclarCmdHandler2(queryPromise, false);
     DeclarCmdHandler(getRange);
     DeclarCmdHandler(getLines);
+    //需在无如何对log的访问情况下关闭之
+    DeclarCmdHandler(closeLog);
 
 private:
     Json::Value ack(JsonMsg msg, ReplyState state);

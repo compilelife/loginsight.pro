@@ -53,3 +53,13 @@ public:
     virtual shared_ptr<LogView> view(LogLineI from = 0, LogLineI to = InvalidLogLine) const = 0;
     virtual Range range() const = 0;
 };
+
+class IClosable {
+public:
+    virtual ~IClosable(){}
+    virtual void close() = 0;
+};
+
+class IClosableLog: public ILog, public IClosable {
+
+};

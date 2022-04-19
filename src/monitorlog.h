@@ -12,7 +12,7 @@
 /**
  * @brief 每次达到最大缓存的时候，删除最旧的一个block
  */
-class MonitorLog : public ILog {
+class MonitorLog : public IClosableLog{
 private:
     struct MemBlock {
         Memory mem;
@@ -40,7 +40,7 @@ public:
 
 public:
     bool open(string_view cmdline, event_base* evbase);
-    void close();
+    void close() override;
     void setMaxBlockCount(size_t n);
     bool isProcessExited() { return mProcessExited; }
 

@@ -231,4 +231,9 @@ ImplCmdHandler(getLines) {
     return ack(msg, ReplyState::Future);
 }
 
+ImplCmdHandler(closeLog) {
+    mLogTree.delLog(msg["logId"].as<LogId>());
+    return ack(msg, ReplyState::Ok);
+}
+
 //cmd: cancelPromise

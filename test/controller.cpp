@@ -94,4 +94,7 @@ TEST_F(ControllerTest, boot) {
         ASSERT_REPLY(reply, ReplyState::Ok);
         ASSERT_EQ(2, reply["lines"].size());
     }
+
+    controller->mockInput(R"({"cmd": "closeLog", "id": "ui-5", "logId": 1})");
+    ASSERT_REPLY(lastReply(), ReplyState::Ok);
 }

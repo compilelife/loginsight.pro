@@ -6,7 +6,7 @@
 #include "platform.h"
 #include "calculation.h"
 
-class FileLog: public ILog {
+class FileLog: public IClosableLog {
 private:
     friend class MultiFileLog;
     using BlockChain = vector<Block*>;
@@ -22,7 +22,7 @@ public:
 public:
     bool open(string_view path);
     shared_ptr<Promise> scheduleBuildBlocks();
-    void close();
+    void close() override;
 
 private:
     friend class FileLog_buildBlock_Test;

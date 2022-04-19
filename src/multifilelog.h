@@ -2,7 +2,7 @@
 
 #include "filelog.h"
 
-class MultiFileLog : public ILog {
+class MultiFileLog : public IClosableLog {
 private:
     vector<unique_ptr<FileLog>> mLogs;
     LogLineI mCount{0};
@@ -13,5 +13,5 @@ public:
 public:
     bool open(const vector<string_view>& paths);
     shared_ptr<Promise> scheduleBuildBlocks();
-    void close();
+    void close() override;
 };
