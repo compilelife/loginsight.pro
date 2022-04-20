@@ -52,6 +52,7 @@ public:
     virtual ~ILog() {}
     virtual shared_ptr<LogView> view(LogLineI from = 0, LogLineI to = InvalidLogLine) const = 0;
     virtual Range range() const = 0;
+    void find(function<LineCharI(string_view)> f, LogLineI fromLine, LogCharI fromChar, bool reverse);
 };
 
 class IClosable {

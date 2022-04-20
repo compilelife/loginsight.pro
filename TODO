@@ -1,5 +1,8 @@
-搜索、过滤、获取日志内容（格式化）
+blocklogview lock memory
+测试reverse,测试filter
+搜索（反向）、格式化
 打开进程、打开多文件
+行映射
 定时器监听文件变化
 定时器监听进程退出
 定时器监听range变化

@@ -17,6 +17,7 @@ private:
     SubLogPos mTo;
     SubLogPos mCur;
     LogLineI mCount;
+    bool mReverse{false};
 
 public:
     SubLogView(const SubLog* log);
@@ -32,6 +33,7 @@ public:
     bool end() override;
     shared_ptr<LogView> subview(LogLineI from, LogLineI n) const override;
     LogLineI size() const override;
+    void reverse() override;
 
 private:
     SubLogPos locateLine(LogLineI line) const;

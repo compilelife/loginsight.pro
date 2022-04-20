@@ -69,6 +69,8 @@ private:
     DeclarCmdHandler2(queryPromise, false);
     DeclarCmdHandler(getRange);
     DeclarCmdHandler(getLines);
+    DeclarCmdHandler(filter);
+    DeclarCmdHandler(search);
     //需在无如何对log的访问情况下关闭之
     DeclarCmdHandler(closeLog);
 

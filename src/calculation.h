@@ -6,6 +6,7 @@
 #include <any>
 #include "promisex.h"
 #include <string_view>
+#include <regex>
 
 using CalculationRet = vector<any>;
 
@@ -25,6 +26,9 @@ public:
 
     shared_ptr<Promise> schedule(vector<string_view> tasks, 
             function<any(bool*,string_view)>&& process);
+
+    shared_ptr<Promise> peekFirst(shared_ptr<LogView> iter, 
+            function<any(bool*,shared_ptr<LogView>)>&& process);
 
 public:
     template<class T>
@@ -51,6 +55,11 @@ vector<T> Calculation::flat(CalculationRet&& ret) {
 
 using FilterFunction = function<bool(string_view)> ;
 FilterFunction createFilter(string_view pattern, bool caseSensitive);
+FilterFunction createFilter(regex pattern);
+
+using FindFunction = function<LineCharI(string_view)>;
+FindFunction createFind(string_view pattern, bool caseSensitive);
+FindFunction createFind(regex pattern);
 
 /**
  * @brief 对string_view从from到end（不含）查找换行位置

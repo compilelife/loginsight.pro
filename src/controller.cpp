@@ -5,6 +5,7 @@
 #include "stdout.h"
 #include "filelog.h"
 #include <unordered_map>
+#include "sublog.h"
 
 unordered_map<string,CmdHandlerWrap> gCmdHandlers;
 
@@ -139,21 +140,20 @@ ImplCmdHandler(openFile) {
         return failedAck(msg, "文件打开失败");
     }
 
-    auto logId = mLogTree.setRoot(log);
-
     mBarrierPromise = log->scheduleBuildBlocks();
     mBarrierPromise->then([msg, log, this](shared_ptr<Promise> p){
         if (!handleCancelledPromise(p, msg)) {
             auto ret = ack(msg, ReplyState::Ok);
+
+            auto logId = mLogTree.setRoot(log);
+            ret["logId"] = logId;
+
             log->range().writeTo(ret["range"]);
             send(ret);
         }
     }, true);
     
-    auto ret = ack(msg, ReplyState::Future);
-    ret["logId"] = logId;
-
-    return ret;
+    return ack(msg, ReplyState::Future);
 }
 
 //{"cmd":"queryPromise", "id":"ui-2"}
@@ -234,6 +234,41 @@ ImplCmdHandler(getLines) {
 ImplCmdHandler(closeLog) {
     mLogTree.delLog(msg["logId"].as<LogId>());
     return ack(msg, ReplyState::Ok);
+}
+
+ImplCmdHandler(filter) {
+    auto log = getLog(msg);
+    if (!log) {
+        return failedAck(msg, "logId not set");
+    }
+
+    auto isRegex = msg["regex"].asBool();
+    auto pattern = msg["pattern"].asString();
+    auto caseSense = msg["caseSense"].asBool();
+    FilterFunction filter;
+    if (isRegex) {
+        filter = caseSense ? createFilter(regex(pattern))
+                    : createFilter(regex(pattern, regex_constants::ECMAScript | regex_constants::icase));
+    } else {
+        filter = createFilter(pattern, caseSense);
+    }
+
+    mBarrierPromise = SubLog::createSubLog(log->view(), filter);
+    mBarrierPromise->then([log, msg, this](shared_ptr<Promise> p){
+        if (!handleCancelledPromise(p, msg)) {
+            auto subLog = any_cast<shared_ptr<SubLog>>(p->value());
+            auto ret = ack(msg, ReplyState::Ok);
+            ret["logId"] = mLogTree.addLog(log, subLog);
+            log->range().writeTo(ret["range"]);
+            send(ret);
+        }
+    }, true);
+
+    return ack(msg, ReplyState::Future);
+}
+
+ImplCmdHandler(search) {
+    
 }
 
 //cmd: cancelPromise

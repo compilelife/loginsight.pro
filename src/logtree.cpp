@@ -20,7 +20,7 @@ bool travelTree(Node* root, const function<bool(Node* node)>& visit) {
     return false;    
 }
 
-LogId LogTree::addLog(shared_ptr<ILog>& parent, shared_ptr<ILog>&& child) {
+LogId LogTree::addLog(const shared_ptr<ILog>& parent, shared_ptr<ILog>&& child) {
     LogId id = ++mIdGen;
     auto ret = travelTree(mRootNode.get(), [&, this](Node* node){
         if (node->log == parent) {

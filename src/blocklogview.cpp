@@ -87,17 +87,38 @@ LineRef BlockLogView::current() const {
 
 void BlockLogView::next() {
     auto& curBlockRef = mBlocks[mBlockIndex];
-    ++mLineIndexInBlock;
+    if (reverse) {
+        --mLineIndexInBlock;
+        if (mLineIndexInBlock < 0) {
+            mBlockIndex--;
+            if (mBlockIndex >= 0)
+                mLineIndexInBlock = LastIndex(mBlocks[mBlockIndex].block->lines);
+        }
+    } else {
+        ++mLineIndexInBlock;
     
-    if (mLineIndexInBlock >= curBlockRef.block->lines.size()) {
-        mBlockIndex++;
-        mLineIndexInBlock = 0;
+        if (mLineIndexInBlock >= curBlockRef.block->lines.size()) {
+            mBlockIndex++;
+            mLineIndexInBlock = 0;
+        }
     }
 }
 
 bool BlockLogView::end() {
-    auto lastBlockIndex = LastIndex(mBlocks);
-    return mBlockIndex > lastBlockIndex || (mBlockIndex == lastBlockIndex && mLineIndexInBlock > mFinalLineInBlock);
+    if (reverse) {
+        return mBlockIndex < 0 || (mBlockIndex == 0 && mLineIndexInBlock < mFirstLineInBlock);
+    } else {
+        auto lastBlockIndex = LastIndex(mBlocks);
+        return mBlockIndex > lastBlockIndex || (mBlockIndex == lastBlockIndex && mLineIndexInBlock > mFinalLineInBlock);
+    }
+
+    return false;    
+}
+
+void BlockLogView::reverse() {
+    mReverse = true;
+    mBlockIndex = LastIndex(mBlocks);
+    mLineIndexInBlock = mFinalLineInBlock;
 }
 
 shared_ptr<LogView> BlockLogView::subview(LogLineI from, LogLineI n) const {
@@ -105,13 +126,24 @@ shared_ptr<LogView> BlockLogView::subview(LogLineI from, LogLineI n) const {
     auto [toBlock, toBlockLine] = locateLine(from + n - 1);
 
     auto ret = new BlockLogView;
-
-    auto fromIt = mBlocks.begin() + fromBlock;
-    std::copy_n(fromIt, toBlock - fromBlock + 1, back_inserter(ret->mBlocks));
     ret->mCount = n;
-    ret->mFinalLineInBlock = toBlockLine;
-    ret->mLineIndexInBlock = fromBlockLine;
-    ret->mBlockIndex = 0;
+    ret->mReverse = mReverse;
+
+    if (reverse) {
+        //此时from>to，所以下面的计算需要反过来，以保证ret中的blocks是正序的
+        auto fromIt = mBlocks.begin() + toBlock;
+        std::copy_n(fromIt, fromBlock - toBlock + 1, back_inserter(ret->mBlocks));
+        ret->mFinalLineInBlock = fromBlockLine;
+        ret->mFirstLineInBlock = toBlockLine;
+        ret->reverse();
+    } else {
+        auto fromIt = mBlocks.begin() + fromBlock;
+        std::copy_n(fromIt, toBlock - fromBlock + 1, back_inserter(ret->mBlocks));
+        ret->mFinalLineInBlock = toBlockLine;
+        ret->mLineIndexInBlock = fromBlockLine;
+        ret->mBlockIndex = 0;
+        ret->mLineIndexInBlock = fromBlockLine;
+    }
 
     return shared_ptr<LogView>(ret);
 }
@@ -120,22 +152,44 @@ pair<size_t, BlockLineI> BlockLogView::locateLine(LogLineI line) const {
     LogLineI cur = 0;
     auto target = line + 1;
 
-    size_t blockIndex = 0;
-    cur += mBlocks[0].block->lines.size() - mFirstLineInBlock;
-    auto lastBlock =  LastIndex(mBlocks);
+    if (reverse) {
+        size_t blockIndex = LastIndex(mBlocks);
+        cur += (mFinalLineInBlock+1);
 
-    while (cur < target && blockIndex < lastBlock)
-    {
-        cur += mBlocks[++blockIndex].block->lines.size();
-    }
-    
-    // 看看超出了多少，需要回吐
-    auto lineIndex = LastIndex(mBlocks[blockIndex].block->lines) - (cur - target);
-    
-    //修正最后一个块索引可能超出的情况
-    if (blockIndex == LastIndex(mBlocks) && lineIndex > mFinalLineInBlock) {
-        lineIndex = mFinalLineInBlock;
+        while (cur < target && blockIndex > 0)
+        {
+            cur += mBlocks[--blockIndex].block->lines.size();
+        }
+        
+        // 看看超出了多少，需要回吐
+        auto lineIndex = cur - target;
+
+        //修正最后一个块索引可能超出的情况
+        if (blockIndex == 0 && lineIndex < mFirstLineInBlock) {
+            lineIndex = mFirstLineInBlock;
+        }
+
+        return {blockIndex, lineIndex};
+    } else {
+        size_t blockIndex = 0;
+        cur += mBlocks[0].block->lines.size() - mFirstLineInBlock;
+        auto lastBlock =  LastIndex(mBlocks);
+
+        while (cur < target && blockIndex < lastBlock)
+        {
+            cur += mBlocks[++blockIndex].block->lines.size();
+        }
+        
+        // 看看超出了多少，需要回吐
+        auto lineIndex = LastIndex(mBlocks[blockIndex].block->lines) - (cur - target);
+        
+        //修正最后一个块索引可能超出的情况
+        if (blockIndex == LastIndex(mBlocks) && lineIndex > mFinalLineInBlock) {
+            lineIndex = mFinalLineInBlock;
+        }
+
+        return {blockIndex, lineIndex};
     }
 
-    return {blockIndex, lineIndex};
+    return {0,0};
 }
