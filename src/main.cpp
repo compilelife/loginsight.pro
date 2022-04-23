@@ -1,12 +1,8 @@
 #include <iostream>
-#include "event.h"
 #include "stdout.h"
-#include "monitorlog.h"
-#include "eventloop.h"
-#include "pingtask.h"
-#include <event2/thread.h>
 #include "controller.h"
 #include "def.h"
+#include "eventloop.h"
 
 int main(int argc, char** argv)
 {    

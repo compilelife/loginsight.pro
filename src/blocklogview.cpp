@@ -87,7 +87,7 @@ LineRef BlockLogView::current() const {
 
 void BlockLogView::next() {
     auto& curBlockRef = mBlocks[mBlockIndex];
-    if (reverse) {
+    if (mReverse) {
         --mLineIndexInBlock;
         if (mLineIndexInBlock < 0) {
             mBlockIndex--;
@@ -105,7 +105,7 @@ void BlockLogView::next() {
 }
 
 bool BlockLogView::end() {
-    if (reverse) {
+    if (mReverse) {
         return mBlockIndex < 0 || (mBlockIndex == 0 && mLineIndexInBlock < mFirstLineInBlock);
     } else {
         auto lastBlockIndex = LastIndex(mBlocks);
@@ -129,7 +129,7 @@ shared_ptr<LogView> BlockLogView::subview(LogLineI from, LogLineI n) const {
     ret->mCount = n;
     ret->mReverse = mReverse;
 
-    if (reverse) {
+    if (mReverse) {
         //此时from>to，所以下面的计算需要反过来，以保证ret中的blocks是正序的
         auto fromIt = mBlocks.begin() + toBlock;
         std::copy_n(fromIt, fromBlock - toBlock + 1, back_inserter(ret->mBlocks));
@@ -152,7 +152,7 @@ pair<size_t, BlockLineI> BlockLogView::locateLine(LogLineI line) const {
     LogLineI cur = 0;
     auto target = line + 1;
 
-    if (reverse) {
+    if (mReverse) {
         size_t blockIndex = LastIndex(mBlocks);
         cur += (mFinalLineInBlock+1);
 

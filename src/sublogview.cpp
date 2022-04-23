@@ -172,3 +172,8 @@ SubLogPos SubLogView::locateLine(LogLineI line) const {
 
     return {0, 0};
 }
+
+void SubLogView::reverse() {
+    mReverse = true;
+    mCur = mTo;
+}
