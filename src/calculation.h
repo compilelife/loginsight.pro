@@ -57,9 +57,21 @@ using FilterFunction = function<bool(string_view)> ;
 FilterFunction createFilter(string_view pattern, bool caseSensitive);
 FilterFunction createFilter(regex pattern);
 
-using FindFunction = function<LineCharI(string_view)>;
-FindFunction createFind(string_view pattern, bool caseSensitive);
-FindFunction createFind(regex pattern);
+struct FindRet
+{
+    LineCharI offset{0};//匹配词在行的位置
+    LineCharI len{0};//匹配词的长度
+    operator bool() {
+        return len > 0;
+    }
+    static FindRet failed() {
+        return FindRet();
+    }
+};
+
+using FindFunction = function<FindRet(string_view)>;
+FindFunction createFind(string_view pattern, bool caseSensitive, bool reverse);
+FindFunction createFind(regex pattern, bool reverse);
 
 /**
  * @brief 对string_view从from到end（不含）查找换行位置

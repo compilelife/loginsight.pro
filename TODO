@@ -1,6 +1,7 @@
-blocklogview lock memory
-测试reverse,测试filter
-搜索（反向）、格式化
+monitor log更新时 与 controller:find的多线程问题
+
+测试reverse,测试find/rfind
+格式化
 打开进程、打开多文件
 行映射
 定时器监听文件变化
@@ -9,3 +10,4 @@ blocklogview lock memory
 错误处理（文件读取失败等）
 日志高亮格式的中途变更（对根log的每一行清除日志格式）
 支持粘贴文本（剪贴板功能）
+更快的regex库

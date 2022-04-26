@@ -74,9 +74,40 @@ bool Controller::handleLine() {
 
     return false;
 }
+shared_ptr<Promise> Controller::find(shared_ptr<ILog> log, 
+                            FindFunction f, 
+                            LogLineI fromLine, 
+                            LogCharI fromChar, 
+                            bool reverse) {
+    auto range = log->range();
+    auto view = reverse ? log->view(range.begin, fromLine) : log->view(fromLine, range.end);
+    if (reverse)
+        view->reverse();
+    
+    //第一行比较特殊，可能在句子的一半位置开始，我们需要特殊处理下
+    auto lineRef = view->current();
+    auto firstLine = reverse ? (lineRef.str().substr(0, fromChar+1)) : (lineRef.str().substr(fromChar));
+    auto fristLineRet = f(firstLine);
+    if (fristLineRet) {
+        return Promise::resolved(move(fristLineRet));
+    }
+
+    //如果在第一行没有找到匹配，那么我们用多线程查找
+    auto unprocessed = view->subview(1, view->size() - 1);
+    auto doIterateFind = [f](bool* cancelled, shared_ptr<LogView> view) {
+        while (!view->end() && !*cancelled) {
+            auto ret = f(view->current().str());
+            if (ret)
+                return ret;
+            view->next();
+        }
+        return FindRet::failed();
+    };
+    return Calculation::instance().peekFirst(unprocessed, doIterateFind);
+}
 
 void Controller::handleCmd(JsonMsg msg) {
-    auto cmd = msg["cmd"].asString();//堆栈看循环调了这个
+    auto cmd = msg["cmd"].asString();
     Json::Value ret;
 
     if (cmd.empty()) {
@@ -268,7 +299,43 @@ ImplCmdHandler(filter) {
 }
 
 ImplCmdHandler(search) {
-    
+    auto log = getLog(msg);
+    if (!log) {
+        return failedAck(msg, "logId not set");
+    }
+
+    auto fromLine = msg["fromLine"].asUInt64();
+    auto fromChar = msg["fromChar"].asUInt64();
+    auto reverse = msg["reverse"].asBool();
+    auto isRegex = msg["regex"].asBool();
+    auto pattern = msg["pattern"].asString();
+    auto caseSense = msg["caseSense"].asBool();
+
+    FindFunction f;
+    if (isRegex) {
+        f = caseSense ? createFind(regex(pattern), reverse)
+                    : createFind(regex(pattern, regex_constants::ECMAScript | regex_constants::icase), reverse);
+    } else {
+        f = createFind(pattern, caseSense, reverse);
+    }
+
+    mBarrierPromise = find(log, f, fromLine, fromChar, reverse);
+    mBarrierPromise->then([log, msg, this](shared_ptr<Promise> p) {
+        if (!handleCancelledPromise(p, msg)) {
+            auto findRet = any_cast<FindLogRet>(p->value());
+            auto ret = ack(msg, ReplyState::Ok);
+            if (findRet.extra.len > 0) {
+                ret["line"] = findRet.line.index();
+                ret["offset"] = findRet.extra.offset;
+                ret["len"] = findRet.extra.len;
+                ret["found"] = true;
+            } else {
+                ret["found"] = false;
+            }
+        }
+    });
+
+    return ack(msg, ReplyState::Future);
 }
 
 //cmd: cancelPromise

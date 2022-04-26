@@ -29,5 +29,5 @@ public:
     virtual bool end() = 0;
     virtual shared_ptr<LogView> subview(LogLineI from, LogLineI n) const = 0;
     virtual LogLineI size() const = 0;
-    virtual void reverse() = 0;//reverse后Calculation切分段怎么切？即subview怎么实现
+    virtual void reverse() = 0;
 };

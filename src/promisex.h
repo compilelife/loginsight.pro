@@ -32,6 +32,7 @@ public:
     Promise(function<any(bool*)>&& task);
     ~Promise();
     static shared_ptr<Promise> all(vector<shared_ptr<Promise>> others);
+    static shared_ptr<Promise> resolved(any&& v);
 public:
     void cancel();
     bool isCancelled() {return mIsCancelled;}

@@ -51,20 +51,23 @@ BlockLogView::BlockLogView(vector<BlockRef>&& blocks)
 
     mFinalLineInBlock = LastIndex(LastItem(mBlocks).block->lines);
 
-    for (auto &&ref : blocks)
+    mUnlockMemoroy = bind(&BlockLogView::unlockMemory, this);
+}
+
+void BlockLogView::lockMemory() {
+    for (auto &&ref : mBlocks)
     {
         if (ref.mem && !ref.mem->requestAccess(ref.block->bytesRange(), Memory::Access::READ)) {
             throw "should creat view when accessable";
         }
     }
+}
 
-    mUnlockMemoroy = [this]{
-        for (auto &&ref : mBlocks)
-        {
-            if (ref.mem)
-                ref.mem->unlock(ref.block->bytesRange(), Memory::Access::READ);
-        }
-    };
+void BlockLogView::unlockMemory() {
+    for (auto &&ref : mBlocks) {
+        if (ref.mem)
+            ref.mem->unlock(ref.block->bytesRange(), Memory::Access::READ);
+    }
 }
 
 BlockLogView::~BlockLogView() {

@@ -136,3 +136,74 @@ FilterFunction createFilter(string_view pattern, bool caseSensitive) {
 FilterFunction createFilter(regex r) {
     return RegexMatch{r};
 }
+
+struct StringIncaseFind {
+    string pattern;
+    FindRet operator () (string_view text) {
+        auto pos = text.find(pattern);
+        return {
+            pos,
+            pos == string::npos ? 0 : pattern.length()
+        };
+    }
+};
+
+struct StringIncaseReverseFind {
+    string pattern;
+    FindRet operator () (string_view text) {
+        auto pos = text.rfind(pattern);
+        return {
+            pos,
+            pos == string::npos ? 0 : pattern.length()
+        };
+    }
+};
+
+struct RegexMatchFind {
+    regex p;
+    FindRet operator () (string_view text) {
+        smatch results;
+        string s(text);
+        auto ok = regex_search(s, results, p);
+        FindRet ret {0,0};
+        if (ok) {
+            ret.offset = results.position(0),
+            ret.len = results.length(0);
+        }
+        return ret;
+    }
+};
+
+struct RegexMatchReverseFind {
+    regex p;
+    FindRet operator () (string_view text) {
+        smatch results;
+        string s(text);
+        auto ok = regex_search(s, results, p);
+        FindRet ret {0,0};
+        if (ok) {
+            auto last = results.size() - 1;
+            ret.offset = results.position(last),
+            ret.len = results.length(last);
+        }
+        return ret;
+    }
+};
+
+FindFunction createFind(string_view pattern, bool caseSensitive, bool reverse) {
+    if (caseSensitive) {
+        regex r{pattern.data(), regex::icase};
+        return createFind(r, reverse);
+    }
+    if (reverse)
+        return StringIncaseReverseFind{pattern.data()};
+    else
+        return StringIncaseFind{pattern.data()};
+}
+
+FindFunction createFind(regex pattern, bool reverse) {
+    if (reverse)
+        return RegexMatchReverseFind{pattern};
+    else
+        return RegexMatchFind{pattern};
+}

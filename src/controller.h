@@ -62,6 +62,15 @@ public:
 
 private:
     bool handleLine();
+    struct FindLogRet {
+        LineRef line;
+        FindRet extra;
+    };
+    shared_ptr<Promise> find(shared_ptr<ILog> log, 
+                            FindFunction f, 
+                            LogLineI fromLine, 
+                            LogCharI fromChar, 
+                            bool reverse);
 
 private:
     void handleCmd(JsonMsg msg);

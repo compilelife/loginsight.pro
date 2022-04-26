@@ -32,6 +32,8 @@ private:
     function<void()> mUnlockMemoroy;
 private:
     BlockLogView(){}
+    void lockMemory();
+    void unlockMemory();
 public:
     ~BlockLogView();
     BlockLogView(const vector<Block*>& blocks, 
