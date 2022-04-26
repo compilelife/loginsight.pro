@@ -128,9 +128,9 @@ struct RegexMatch {
 
 FilterFunction createFilter(string_view pattern, bool caseSensitive) {
     if (caseSensitive) {
-        return RegexMatch{regex(pattern.data(), regex::icase)};
+        return StringIncase {pattern.data()};
     }
-    return StringIncase {pattern.data()};
+    return RegexMatch{regex(pattern.data(), regex::icase)};
 }
 
 FilterFunction createFilter(regex r) {
@@ -192,13 +192,14 @@ struct RegexMatchReverseFind {
 
 FindFunction createFind(string_view pattern, bool caseSensitive, bool reverse) {
     if (caseSensitive) {
-        regex r{pattern.data(), regex::icase};
-        return createFind(r, reverse);
+        if (reverse)
+            return StringIncaseReverseFind{pattern.data()};
+        else
+            return StringIncaseFind{pattern.data()};
     }
-    if (reverse)
-        return StringIncaseReverseFind{pattern.data()};
-    else
-        return StringIncaseFind{pattern.data()};
+    
+    regex r{pattern.data(), regex::icase};
+    return createFind(r, reverse);
 }
 
 FindFunction createFind(regex pattern, bool reverse) {

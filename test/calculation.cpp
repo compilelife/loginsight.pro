@@ -29,3 +29,41 @@ TEST(Calculation, cancel) {
     ASSERT_FALSE(p->isBusy());
     ASSERT_TRUE(thenExecuted);
 }
+
+static const string_view foo = "Loginsight a great tool to analyze LOG";
+
+TEST(Calculation, filterByString) {
+    auto f = createFilter("loginsight", false);
+    ASSERT_TRUE(f(foo));
+
+    f = createFilter("loginsight", true);
+    ASSERT_FALSE(f(foo));
+}
+
+TEST(Calculation, filterByRegex) {
+    regex caseSense(R"(l.g)");
+    auto f = createFilter(caseSense);
+    ASSERT_FALSE(f(foo));
+
+    regex caseUnsense(R"(l.g)", regex_constants::icase);
+    f = createFilter(caseUnsense);
+    ASSERT_TRUE(f(foo));
+}
+
+TEST(Calculation, findByString) {
+    auto r1 = createFind("log", false, false)(foo);
+    ASSERT_EQ((FindRet{0,3}), r1);
+    auto r2 = createFind("log", true, false)(foo);
+    ASSERT_FALSE(r2);
+    auto r3 = createFind("log", false, true)(foo);
+    ASSERT_EQ((FindRet{35,3}), r3);
+}
+
+TEST(Calculation, findByRegex) {
+    auto r1 = createFind(regex{"l.g", regex_constants::icase}, false)(foo);
+    ASSERT_EQ((FindRet{0,3}), r1);
+    auto r2 = createFind(regex{"l.g"}, false)(foo);
+    ASSERT_FALSE(r2);
+    auto r3 = createFind(regex{"l.g", regex_constants::icase}, true)(foo);
+    ASSERT_EQ((FindRet{35,3}), r1);
+}

@@ -61,8 +61,11 @@ struct FindRet
 {
     LineCharI offset{0};//匹配词在行的位置
     LineCharI len{0};//匹配词的长度
-    operator bool() {
+    operator bool() const{
         return len > 0;
+    }
+    bool operator == (const FindRet& o) {
+        return o.offset == offset && o.len == len;
     }
     static FindRet failed() {
         return FindRet();
