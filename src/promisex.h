@@ -28,6 +28,8 @@ private:
     any mResult;
     bool mEnd{false};
     vector<PromiseThen> mThens;
+private:
+    Promise();
 public:
     Promise(function<any(bool*)>&& task);
     ~Promise();

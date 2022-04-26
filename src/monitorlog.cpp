@@ -109,7 +109,7 @@ bool MonitorLog::handlePendingTask(bool restartPending) {
                 bind(&MonitorLog::canRemoveOldestBlock, this),
                 [this]{this->handleReadStdOut(); return false;}
             );
-            mPendingReadTask->start(EventLoop::instance().base(), 20);
+            mPendingReadTask->start(20);
         }
         return false;
     }
@@ -176,7 +176,7 @@ bool MonitorLog::readStdOutInto(MemBlock* curBlock) {
         if (n < howmuch)
             break;
     }
-
+    
     //libevent告诉我们有数据可以读，但是read到0，说明进程已经退出了
     if (totalRead == 0) {
         event_del(mListenEvent);

@@ -1,5 +1,6 @@
 #include "stdout.h"
 #include "pingtask.h"
+#include "eventloop.h"
 
 PingTask::PingTask(function<bool()> predict, function<bool()> handler) 
     :mPredict(predict), mHandler(handler) {
@@ -18,9 +19,9 @@ timeval PingTask::interval() {
     return tv;
 }
 
-void PingTask::start(event_base* evbase, long ms) {
+void PingTask::start(long ms) {
     mInterval = ms;
-    mEv = evtimer_new(evbase, 
+    mEv = evtimer_new(EventLoop::instance().base(), 
                         &PingTask::eventCallback, 
                         new shared_ptr<PingTask>(shared_from_this()));
 

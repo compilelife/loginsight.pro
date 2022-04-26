@@ -1,5 +1,3 @@
-monitor log更新时 与 controller:find的多线程问题
-
 测试reverse,测试find/rfind
 格式化
 打开进程、打开多文件

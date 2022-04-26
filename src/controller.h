@@ -8,6 +8,7 @@
 #include "promisex.h"
 #include "pingtask.h"
 #include <optional>
+#include "calculation.h"
 
 using JsonMsg = const Json::Value&;
 

@@ -83,3 +83,14 @@ shared_ptr<Promise> Promise::all(vector<shared_ptr<Promise>> others) {
         return vector<any>();
     }));
 }
+
+Promise::Promise() {
+    
+}
+
+shared_ptr<Promise> Promise::resolved(any&& v) {
+    shared_ptr<Promise> p(new Promise);
+    p->mEnd = true;
+    p->mResult = v;
+    return p;
+}

@@ -54,7 +54,7 @@ public:
 };
 
 TEST_F(MonitorLogTest, open) {
-    string_view cmdline = "for i in {1..4};do echo $i; sleep 0.5s;done;";
+    string_view cmdline = "echo 1; sleep 0.5s;echo 2; sleep 0.5s;echo 3; sleep 0.5s;echo 4; sleep 0.5s;";
 
     ASSERT_TRUE(log.open(cmdline, evBase));
 

@@ -11,7 +11,7 @@ private:
     static void eventCallback(evutil_socket_t fd, short flags, void* arg);
 public:
     ~PingTask();
-    void start(event_base* evbase, long ms);
+    void start(long ms);
     void stop();
 public:
     static shared_ptr<PingTask> create(function<bool()>&& predict, function<bool()>&& handler);
