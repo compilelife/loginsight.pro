@@ -55,3 +55,19 @@ TEST(BlockLogView, subCrossBlock) {
     }
     ASSERT_TRUE(sub->end());
 }
+
+TEST(BlockLogView, reverse) {
+    auto view = prepareMockData();
+    
+    view.reverse();
+    auto cur = view.current();
+    ASSERT_EQ(5, cur.refBlock.block->lineBegin);
+    ASSERT_EQ(4, cur.indexInBlock);
+
+    auto sub = view.subview(5, 2);
+    cur = sub->current();
+
+    ASSERT_EQ(0, cur.refBlock.block->lineBegin);
+    ASSERT_EQ(4, cur.indexInBlock);
+    ASSERT_EQ(2, sub->size());
+}

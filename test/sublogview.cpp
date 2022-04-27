@@ -6,7 +6,7 @@
 
 using namespace std;
 
-//两个block, 每个block 10行，过滤其index为奇数的行
+//模拟一个根log：两个block, 每个block 10行；以及sublog：过滤其index为奇数的行
 static shared_ptr<LogView> prepareMockData() {
     vector<FilterBlock> blocks;
     for (size_t i = 0; i < 2; i++)
@@ -60,4 +60,20 @@ TEST(SubLogView, subCrossBlock) {
         sub->next();
     }
     ASSERT_TRUE(sub->end());
+}
+
+TEST(SubLogView, reverse) {
+    auto view = prepareMockData();
+    
+    view->reverse();
+    auto cur = view->current();
+    ASSERT_EQ(10, cur.refBlock.block->lineBegin);
+    ASSERT_EQ(9, cur.indexInBlock);
+
+    auto sub = view->subview(5, 2);
+    cur = sub->current();
+
+    ASSERT_EQ(0, cur.refBlock.block->lineBegin);
+    ASSERT_EQ(9, cur.indexInBlock);
+    ASSERT_EQ(2, sub->size());
 }
