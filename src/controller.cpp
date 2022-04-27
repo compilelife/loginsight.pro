@@ -36,7 +36,6 @@ void Controller::stop() {
 }
 
 void Controller::readStdin(int fd) {
-    LOGI("in");
     evbuffer_read(mLineBuf, fd, -1);
     handleLine();
 }
@@ -87,21 +86,26 @@ shared_ptr<Promise> Controller::find(shared_ptr<ILog> log,
     //第一行比较特殊，可能在句子的一半位置开始，我们需要特殊处理下
     auto lineRef = view->current();
     auto firstLine = reverse ? (lineRef.str().substr(0, fromChar+1)) : (lineRef.str().substr(fromChar));
-    auto fristLineRet = f(firstLine);
-    if (fristLineRet) {
-        return Promise::resolved(move(fristLineRet));
+    auto firstLineRet = f(firstLine);
+    if (firstLineRet) {
+        FindRet r{firstLineRet.offset + fromChar, firstLineRet.len};
+        return Promise::resolved(FindLogRet{
+            lineRef,
+            r
+        });
     }
 
     //如果在第一行没有找到匹配，那么我们用多线程查找
     auto unprocessed = view->subview(1, view->size() - 1);
     auto doIterateFind = [f](bool* cancelled, shared_ptr<LogView> view) {
         while (!view->end() && !*cancelled) {
-            auto ret = f(view->current().str());
+            auto lineRef = view->current();
+            auto ret = f(lineRef.str());
             if (ret)
-                return ret;
+                return FindLogRet{lineRef, ret};
             view->next();
         }
-        return FindRet::failed();
+        return FindLogRet{LineRef{}, FindRet::failed()};
     };
     return Calculation::instance().peekFirst(unprocessed, doIterateFind);
 }
@@ -305,7 +309,7 @@ ImplCmdHandler(search) {
     }
 
     auto fromLine = msg["fromLine"].asUInt64();
-    auto fromChar = msg["fromChar"].asUInt64();
+    auto fromChar = msg["fromChar"].asUInt();
     auto reverse = msg["reverse"].asBool();
     auto isRegex = msg["regex"].asBool();
     auto pattern = msg["pattern"].asString();
@@ -324,7 +328,7 @@ ImplCmdHandler(search) {
         if (!handleCancelledPromise(p, msg)) {
             auto findRet = any_cast<FindLogRet>(p->value());
             auto ret = ack(msg, ReplyState::Ok);
-            if (findRet.extra.len > 0) {
+            if (findRet.extra) {
                 ret["line"] = findRet.line.index();
                 ret["offset"] = findRet.extra.offset;
                 ret["len"] = findRet.extra.len;
@@ -332,8 +336,9 @@ ImplCmdHandler(search) {
             } else {
                 ret["found"] = false;
             }
+            send(ret);
         }
-    });
+    }, true);
 
     return ack(msg, ReplyState::Future);
 }

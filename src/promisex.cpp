@@ -92,5 +92,7 @@ shared_ptr<Promise> Promise::resolved(any&& v) {
     shared_ptr<Promise> p(new Promise);
     p->mEnd = true;
     p->mResult = v;
+    //设置一个在函数结束时立即有效的end future，确保其他有用到end future的地方正常执行
+    p->mEndFuture = async(launch::deferred, []{});
     return p;
 }

@@ -98,3 +98,17 @@ TEST_F(ControllerTest, boot) {
     controller->mockInput(R"({"cmd": "closeLog", "id": "ui-5", "logId": 1})");
     ASSERT_REPLY(lastReply(), ReplyState::Ok);
 }
+
+TEST_F(ControllerTest, find) {
+    controller->mockInput(R"({"cmd":"openFile","id":"ui-1","path":"./sample.log"})");
+    this_thread::sleep_for(5s);
+
+    controller->mockInput(R"({"cmd":"search", "id":"ui-2", "logId":1, "fromLine": 178051, "fromChar":32, "reverse": false, "regex": true, "pattern": "\\w+_\\w+", "caseSense": false})");
+    this_thread::sleep_for(500ms);
+
+    auto reply = lastReply();
+    ASSERT_TRUE(reply["found"].asBool());
+    ASSERT_EQ(38, reply["offset"].asUInt());
+    ASSERT_EQ(178051, reply["line"].asUInt64());
+    ASSERT_EQ(11, reply["len"].asUInt());
+}
