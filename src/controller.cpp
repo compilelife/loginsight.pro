@@ -6,6 +6,8 @@
 #include "filelog.h"
 #include <unordered_map>
 #include "sublog.h"
+#include "monitorlog.h"
+#include "multifilelog.h"
 
 unordered_map<string,CmdHandlerWrap> gCmdHandlers;
 
@@ -165,6 +167,17 @@ bool Controller::handleCancelledPromise(shared_ptr<Promise>& p, JsonMsg msg) {
     return false;
 }
 
+Json::Value Controller::onRootLogReady(JsonMsg msg, shared_ptr<IClosableLog> log) {
+    auto ret = ack(msg, ReplyState::Ok);
+
+    auto logId = mLogTree.setRoot(log);
+    ret["logId"] = logId;
+
+    log->range().writeTo(ret["range"]);
+
+    return ret;
+}
+
 //{"cmd":"openFile","id":"ui-1","path":"/tmp/1.log"}
 ImplCmdHandler(openFile) {
     auto path = msg["path"].asString();
@@ -178,13 +191,42 @@ ImplCmdHandler(openFile) {
     mBarrierPromise = log->scheduleBuildBlocks();
     mBarrierPromise->then([msg, log, this](shared_ptr<Promise> p){
         if (!handleCancelledPromise(p, msg)) {
-            auto ret = ack(msg, ReplyState::Ok);
+            send(onRootLogReady(msg, log));
+        }
+    }, true);
+    
+    return ack(msg, ReplyState::Future);
+}
 
-            auto logId = mLogTree.setRoot(log);
-            ret["logId"] = logId;
+ImplCmdHandler(openProcess) {
+    auto cmd = msg["cmd"].asString();
 
-            log->range().writeTo(ret["range"]);
-            send(ret);
+    auto log = make_shared<MonitorLog>();
+    auto ret = log->open(cmd, EventLoop::instance().base());
+
+    if (ret) {
+        return onRootLogReady(msg, log);
+    }
+
+    return failedAck(msg, "命令运行失败");
+}
+
+ImplCmdHandler(openMultiFile) {
+    auto files = msg["files"];
+    vector<string_view> paths;
+    for (auto i = 0; i < files.size(); i++) {
+        paths.push_back(files[i].asString());
+    }
+    
+    auto log = make_shared<MultiFileLog>();
+    if (!log->open(paths)) {
+        return failedAck(msg, "文件打开失败");
+    }
+
+    mBarrierPromise = log->scheduleBuildBlocks();
+    mBarrierPromise->then([msg, log, this](shared_ptr<Promise> p){
+        if (!handleCancelledPromise(p, msg)) {
+            send(onRootLogReady(msg, log));
         }
     }, true);
     
@@ -204,6 +246,15 @@ ImplCmdHandler(queryPromise) {
 
     reply["progress"] = progress;
     return reply;
+}
+
+
+ImplCmdHandler(cancelPromise) {
+    if (mBarrierPromise) {
+        mBarrierPromise->cancel();
+    }
+
+    return ack(msg, ReplyState::Ok);
 }
 
 //{"cmd":"getRange", "id": "ui-3", "logId": 1}
@@ -342,5 +393,3 @@ ImplCmdHandler(search) {
 
     return ack(msg, ReplyState::Future);
 }
-
-//cmd: cancelPromise

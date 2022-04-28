@@ -62,6 +62,26 @@ public:
     void mockInput(string_view s);
 
 private:
+    void handleCmd(JsonMsg msg);
+    DeclarCmdHandler(openFile);
+    DeclarCmdHandler(openProcess);
+    DeclarCmdHandler(openMultiFile);
+    DeclarCmdHandler2(queryPromise, false);
+    DeclarCmdHandler2(cancelPromise, false);
+    DeclarCmdHandler(getRange);
+    DeclarCmdHandler(getLines);
+    DeclarCmdHandler(filter);
+    DeclarCmdHandler(search);
+    //需在无如何对log的访问情况下关闭之
+    DeclarCmdHandler(closeLog);
+    DeclarCmdHandler2(listFiles, false);
+
+private:
+    Json::Value ack(JsonMsg msg, ReplyState state);
+    Json::Value failedAck(JsonMsg msg, string why);
+    void send(JsonMsg msg);
+    shared_ptr<ILog> getLog(JsonMsg msg);
+    bool handleCancelledPromise(shared_ptr<Promise>& p, JsonMsg msg);
     bool handleLine();
     struct FindLogRet {
         LineRef line;
@@ -72,22 +92,5 @@ private:
                             LogLineI fromLine, 
                             LogCharI fromChar, 
                             bool reverse);
-
-private:
-    void handleCmd(JsonMsg msg);
-    DeclarCmdHandler(openFile);
-    DeclarCmdHandler2(queryPromise, false);
-    DeclarCmdHandler(getRange);
-    DeclarCmdHandler(getLines);
-    DeclarCmdHandler(filter);
-    DeclarCmdHandler(search);
-    //需在无如何对log的访问情况下关闭之
-    DeclarCmdHandler(closeLog);
-
-private:
-    Json::Value ack(JsonMsg msg, ReplyState state);
-    Json::Value failedAck(JsonMsg msg, string why);
-    void send(JsonMsg msg);
-    shared_ptr<ILog> getLog(JsonMsg msg);
-    bool handleCancelledPromise(shared_ptr<Promise>& p, JsonMsg msg);
+    Json::Value onRootLogReady(JsonMsg msg, shared_ptr<IClosableLog> log);
 };

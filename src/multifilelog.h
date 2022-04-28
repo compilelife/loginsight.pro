@@ -1,6 +1,7 @@
 #pragma once
 
 #include "filelog.h"
+#include <vector>
 
 class MultiFileLog : public IClosableLog {
 private:
@@ -15,3 +16,5 @@ public:
     shared_ptr<Promise> scheduleBuildBlocks();
     void close() override;
 };
+
+vector<string> listFiles(string_view path, regex comparablePatten);

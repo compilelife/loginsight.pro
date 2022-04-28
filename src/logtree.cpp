@@ -1,6 +1,6 @@
 #include "logtree.h"
 
-LogId LogTree::setRoot(shared_ptr<IClosableLog>&& root) {
+LogId LogTree::setRoot(shared_ptr<IClosableLog> root) {
     auto id = ++mIdGen;
     mRootNode.reset(new Node{
         id,

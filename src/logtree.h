@@ -17,7 +17,7 @@ struct Node
 
 class LogTree {
 public:
-    LogId setRoot(shared_ptr<IClosableLog>&& root);
+    LogId setRoot(shared_ptr<IClosableLog> root);
     LogId addLog(const shared_ptr<ILog>& parent, shared_ptr<ILog>&& child);
     shared_ptr<ILog> getLog(LogId id);
     bool isRoot(shared_ptr<ILog>& log);
