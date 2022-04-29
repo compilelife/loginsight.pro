@@ -1,6 +1,8 @@
 #include "multifilelog.h"
 #include <algorithm>
 #include "blocklogview.h"
+#include <filesystem>
+#include <queue>
 
 bool MultiFileLog::open(const vector<string_view>& paths) {
     mLogs.clear();
@@ -56,3 +58,64 @@ shared_ptr<LogView> MultiFileLog::view(LogLineI from, LogLineI to) const {
 
     return view->subview(from, to - from + 1);
 }
+
+template<class ComparePartType>
+struct ListFileQueue {
+    struct Item
+    {
+        ComparePartType comparePart;
+        string path;
+        bool operator < (const Item& i) const{
+            return comparePart > i.comparePart;
+        }
+    };
+    
+    priority_queue<Item> q;
+};
+
+template<bool IsCompareNum>
+struct ListFileHelper{};
+
+template<>
+struct ListFileHelper<true> {
+    using PriorityQueueType = ListFileQueue<int>;
+    static PriorityQueueType::Item createItem(string comparePart, string path) {
+        return {stoi(comparePart), path};
+    }
+};
+
+template<>
+struct ListFileHelper<false> {
+    using PriorityQueueType = ListFileQueue<string>;
+    static PriorityQueueType::Item createItem(string comparePart, string path) {
+        return {comparePart, path};
+    }
+};
+
+template<bool IsCompareNum>
+vector<string> listFiles(string_view path, regex comparablePatten) {
+    typename ListFileHelper<IsCompareNum>::PriorityQueueType pq;
+
+    for (auto&& entry : filesystem::recursive_directory_iterator{path}) {
+        if (entry.is_regular_file()) {
+            auto filename = entry.path().filename().string();
+            smatch result;
+            auto matched = regex_match(filename, result, comparablePatten);
+            if (matched) {
+                auto item = ListFileHelper<IsCompareNum>::createItem(result[1].str(), entry.path());
+                pq.q.push(item);
+            }
+        }
+    }
+
+    vector<string> result;
+    while (!pq.q.empty()) {
+        result.push_back(pq.q.top().path);
+        pq.q.pop();
+    }
+
+    return result;
+}
+
+template vector<string> listFiles<true>(string_view, regex);
+template vector<string> listFiles<false>(string_view, regex);

@@ -17,4 +17,12 @@ public:
     void close() override;
 };
 
-vector<string> listFiles(string_view path, regex comparablePatten);
+/**
+ * @brief 对path递归遍历，使用comparablePattern进行检索和排序
+ * 
+ * @param path 多份日志存放的位置
+ * @param comparablePattern 匹配文件名，并至少有一个group，返回可比较的内容
+ * @return vector<string> 排序好的所有日志文件
+ */
+template<bool IsCompareNum>
+vector<string> listFiles(string_view path, regex comparablePattern);

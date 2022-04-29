@@ -393,3 +393,20 @@ ImplCmdHandler(search) {
 
     return ack(msg, ReplyState::Future);
 }
+
+ImplCmdHandler(listFiles) {
+    auto pattern = msg["pattern"].asString();
+    auto caseSense = msg["caseSense"].asBool();
+    auto compareNum = msg["compareNum"].asBool();
+    auto path = msg["path"].asString();
+
+    regex r{pattern, caseSense ? regex_constants::ECMAScript : regex_constants::icase};
+
+    auto files = compareNum ? listFiles<true>(path, r) : listFiles<false>(path, r);
+
+    auto ret = ack(msg, ReplyState::Ok);
+    for (auto &&file : files)
+        ret["paths"].append(file);
+    
+    return ret;
+}

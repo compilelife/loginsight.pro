@@ -46,3 +46,30 @@ TEST(MultiFileLog, content) {
         singleView->next();
     }
 }
+
+TEST(MultiFileLog, listFilesByAlpha) {
+    auto files = listFiles<false>("./multi", regex("(.*)"));
+
+    ASSERT_EQ(paths.size(), files.size());
+    for (size_t i = 0; i < paths.size(); i++)
+    {
+        ASSERT_EQ(paths[i], files[i])<<i;
+    }
+}
+
+TEST(MultiFileLog, listFilesByNum) {
+    auto files = listFiles<true>("./multi2", regex("(\\d+).log"));
+
+    vector<string> expected{
+        "./multi2/1.log",
+        "./multi2/2.log",
+        "./multi2/3.log",
+        "./multi2/10.log",
+        "./multi2/11.log",
+    };
+    ASSERT_EQ(expected.size(), files.size());
+    for (size_t i = 0; i < expected.size(); i++)
+    {
+        ASSERT_EQ(expected[i], files[i])<<i;
+    }
+}
