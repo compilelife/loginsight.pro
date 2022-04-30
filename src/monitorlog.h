@@ -12,7 +12,7 @@
 /**
  * @brief 每次达到最大缓存的时候，删除最旧的一个block
  */
-class MonitorLog : public IClosableLog{
+class MonitorLog : public SourceLog{
 private:
     struct MemBlock {
         Memory mem;

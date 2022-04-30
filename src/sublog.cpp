@@ -88,3 +88,62 @@ shared_ptr<LogView> SubLog::view(LogLineI from, LogLineI to) const {
 
     return view->subview(from, to - from + 1);
 }
+
+LogLineI SubLog::mapToSource(LogLineI index) const {
+    //先逐个累加block的line个数，逼近index+1
+    auto target = index + 1;
+    LogLineI cur = 0;
+    auto lastBlock = LastIndex(mBlocks);
+    size_t blockIndex = 0;
+    cur += mBlocks[blockIndex].lines.size();
+    while (cur < target && blockIndex < lastBlock) {
+        cur += mBlocks[++blockIndex].lines.size();
+    }
+    if (cur < target)
+        return 0;
+    
+    //然后返回源的index
+    auto lineIndex = LastIndex(mBlocks[blockIndex].lines) - (cur - target);
+    return mBlocks[blockIndex].lines[lineIndex];
+}
+
+LogLineI SubLog::fromSource(LogLineI target) const {
+    //第一次二分查找用来定位所在block
+    size_t low = 0;
+    size_t high = LastIndex(mBlocks);
+    size_t mid;
+    while (low <= high) {
+        mid = (low + high) / 2;
+        auto b = mBlocks[mid];
+        if (b.lines[0] <= target && target >= LastItem(b.lines)) {
+            break;
+        } else if (target > LastItem(b.lines)) {
+            low = mid + 1;
+        } else if (target < b.lines[0]) {
+            high = mid - 1;
+        }
+    }
+
+    if (high > low) {
+        return 0;//如果没有在任意block的范围内，则直接返回失败的默认值0
+    }
+
+    //第二次二分查找用来定位最接近的行
+    auto block = mBlocks[mid];
+    low = 0;
+    high = LastIndex(block.lines);
+
+    while (low <= high) {
+        mid = (low + high) / 2;
+        auto line = block.lines[mid];
+        if (line == target) {
+            return mid;
+        } else if (target > line) {
+            low = mid + 1;
+        } else if (target < line) {
+            high = mid - 1;
+        }
+    }
+    
+    return high;//如果没有找到，返回high，也就是刚好低于target的那行
+}

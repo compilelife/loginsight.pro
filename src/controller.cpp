@@ -410,3 +410,26 @@ ImplCmdHandler(listFiles) {
     
     return ret;
 }
+
+//{lines:[{logid:1,line:2}]}
+ImplCmdHandler(mapLine) {
+    auto log = getLog(msg);
+    if (!log) {
+        return failedAck(msg, "logId not set");
+    }
+
+    auto line = msg["line"].as<LogLineI>();
+
+    auto srcLine = log->mapToSource(line);
+    auto allLines = mLogTree.mapLine(srcLine);
+
+    auto ret = ack(msg, ReplyState::Ok);
+    for (auto &&e : allLines) {
+        Json::Value item;
+        item["logId"] = e.first;
+        item["line"] = e.second;
+        ret["lines"].append(item);
+    }
+    
+    return ret;
+}

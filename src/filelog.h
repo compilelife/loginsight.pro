@@ -6,7 +6,7 @@
 #include "platform.h"
 #include "calculation.h"
 
-class FileLog: public IClosableLog {
+class FileLog: public SourceLog {
 private:
     friend class MultiFileLog;
     using BlockChain = vector<Block*>;

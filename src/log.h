@@ -52,6 +52,8 @@ public:
     virtual ~ILog() {}
     virtual shared_ptr<LogView> view(LogLineI from = 0, LogLineI to = InvalidLogLine) const = 0;
     virtual Range range() const = 0;
+    virtual LogLineI mapToSource(LogLineI index) const = 0;
+    virtual LogLineI fromSource(LogLineI index) const = 0;
 };
 
 class IClosable {
@@ -62,4 +64,10 @@ public:
 
 class IClosableLog: public ILog, public IClosable {
 
+};
+
+class SourceLog: public IClosableLog {
+public:
+    LogLineI mapToSource(LogLineI index) const override {return index;}
+    LogLineI fromSource(LogLineI index) const override {return index;}
 };

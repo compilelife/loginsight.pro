@@ -75,6 +75,7 @@ private:
     //需在无如何对log的访问情况下关闭之
     DeclarCmdHandler(closeLog);
     DeclarCmdHandler2(listFiles, false);
+    DeclarCmdHandler(mapLine);
 
 private:
     Json::Value ack(JsonMsg msg, ReplyState state);

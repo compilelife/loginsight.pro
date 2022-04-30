@@ -3,7 +3,7 @@
 #include "filelog.h"
 #include <vector>
 
-class MultiFileLog : public IClosableLog {
+class MultiFileLog : public SourceLog {
 private:
     vector<unique_ptr<FileLog>> mLogs;
     LogLineI mCount{0};

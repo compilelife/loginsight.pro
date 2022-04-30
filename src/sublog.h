@@ -21,6 +21,8 @@ public:
 public:
     shared_ptr<LogView> view(LogLineI from = 0, LogLineI to = InvalidLogLine) const override;
     Range range() const override;
+    LogLineI mapToSource(LogLineI index) const override ;
+    LogLineI fromSource(LogLineI index) const override ;
 
 public:
     //value as shared_ptr<SubLog>

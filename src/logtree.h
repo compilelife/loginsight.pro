@@ -23,6 +23,9 @@ public:
     bool isRoot(shared_ptr<ILog>& log);
     void delLog(LogId id);
 
+public:
+    map<LogId, LogLineI> mapLine(LogLineI srcLine);
+
 private:
     unique_ptr<Node> mRootNode;
     LogId mIdGen{0};

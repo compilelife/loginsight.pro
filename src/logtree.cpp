@@ -10,6 +10,7 @@ LogId LogTree::setRoot(shared_ptr<IClosableLog> root) {
     return id;
 }
 
+//visit返回true立即停止继续遍历树
 bool travelTree(Node* root, const function<bool(Node* node)>& visit) {
     if (visit(root))
         return true;
@@ -63,4 +64,18 @@ void LogTree::delLog(LogId id) {
         child->children.clear();
         node->children.erase(it);
     });
+}
+
+map<LogId, LogLineI> LogTree::mapLine(LogLineI srcLine) {
+    map<LogId, LogLineI> ret;
+    auto rootNodeId = mRootNode->id;
+
+    ret[mRootNode->id] = srcLine;
+
+    travelTree(mRootNode.get(), [&ret, srcLine](Node* node){
+        ret[node->id] = node->log->fromSource(srcLine);
+        return false;
+    });
+
+    return ret;
 }
