@@ -9,6 +9,7 @@
 #include "pingtask.h"
 #include <optional>
 #include "calculation.h"
+#include "linesegment.h"
 
 using JsonMsg = const Json::Value&;
 
@@ -50,6 +51,7 @@ private:
     shared_ptr<Promise> mBarrierPromise;
     Json::FastWriter mRPCWriter;
     Json::CharReaderBuilder mRPCReaderBuilder;
+    LineSegment mLineSegment;
 
 public:
     Controller();
@@ -76,6 +78,7 @@ private:
     DeclarCmdHandler(closeLog);
     DeclarCmdHandler2(listFiles, false);
     DeclarCmdHandler(mapLine);
+    DeclarCmdHandler(setLineSegment);
 
 private:
     Json::Value ack(JsonMsg msg, ReplyState state);

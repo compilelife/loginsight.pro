@@ -282,18 +282,22 @@ ImplCmdHandler(getLines) {
 
     auto lineViews = log->view(from, to);
     mBarrierPromise = Calculation::instance().schedule(lineViews, 
-        [](bool* cancel, shared_ptr<LogView> view){
+        [this](bool* cancel, shared_ptr<LogView> view){
         vector<Json::Value> lineArray;
         while(!view->end() && !*cancel) {
             auto cur = view->current();
-            if (!(cur.line->segs)) {
-                //TODO: 格式化这行
+            string str(cur.str());
+            if (!cur.line->segs.has_value()) {
+                cur.line->segs = mLineSegment.formatLine(str);
             }
             Json::Value retLine;
-            retLine["content"] = string(cur.str());//TODO: iconv to utf-8
-            //FIXME: segs解析仍为空怎么办？
+            retLine["content"] = str;//TODO: iconv to utf-8
+            retLine["segs"].resize(0);//如果没有segs，则返回空数组
             for (auto&& seg : cur.line->segs.value_or(vector<Seg>())) {
-                //TODO: 补充fields
+                Json::Value v;
+                v["offset"] = seg.offset;
+                v["length"] = seg.length;
+                retLine["segs"].append(v);
             }
             lineArray.push_back(retLine);
             view->next();
@@ -432,4 +436,26 @@ ImplCmdHandler(mapLine) {
     }
     
     return ret;
+}
+
+ImplCmdHandler(setLineSegment) {
+    auto pattern = msg["pattern"].asString();
+    auto caseSense = msg["caseSense"].asBool();
+    
+    auto flag = regex_constants::ECMAScript;
+    if (caseSense)
+        flag |= regex_constants::icase;
+    regex r(pattern, flag);
+
+    if (mLineSegment.hasPatternSet()) {
+        auto view = mLogTree.root()->view();
+        while (!view->end()) {
+            view->current().line->segs.reset();
+            view->next();
+        }
+    }
+
+    mLineSegment.setPattern(r);
+
+    return ack(msg, ReplyState::Ok);
 }

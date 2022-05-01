@@ -79,3 +79,7 @@ map<LogId, LogLineI> LogTree::mapLine(LogLineI srcLine) {
 
     return ret;
 }
+
+shared_ptr<ILog> LogTree::root() {
+    return mRootNode->log;
+}
