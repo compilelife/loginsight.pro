@@ -16,6 +16,7 @@ bool MultiFileLog::open(const vector<string_view>& paths) {
         mLogs.push_back(move(log));
     }
 
+    mClosed = false;
     return true;    
 }
 
@@ -39,6 +40,7 @@ shared_ptr<Promise> MultiFileLog::scheduleBuildBlocks() {
 void MultiFileLog::close() {
     for (auto &&log : mLogs)
         log->close();
+    mClosed = true;
 }
 
 Range MultiFileLog::range() const {

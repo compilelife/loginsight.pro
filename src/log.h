@@ -47,7 +47,18 @@ struct Block {
     }
 };
 
+#define LOG_ATTR_SELF_CLOSE 0x01
+#define LOG_ATTR_DYNAMIC_RANGE 0x02
+
 class ILog {
+protected:
+    size_t mAttrs{0};
+    bool testAttr(size_t attr) {
+        return (mAttrs & attr) == attr;
+    }
+public:
+    bool isDynamicRange() {return testAttr(LOG_ATTR_DYNAMIC_RANGE);}
+    bool maySelfClose() {return testAttr(LOG_ATTR_SELF_CLOSE);}
 public:
     virtual ~ILog() {}
     virtual shared_ptr<LogView> view(LogLineI from = 0, LogLineI to = InvalidLogLine) const = 0;
@@ -57,9 +68,12 @@ public:
 };
 
 class IClosable {
+protected:
+    bool mClosed{true};
 public:
     virtual ~IClosable(){}
     virtual void close() = 0;
+    bool isClosed() const {return mClosed;}
 };
 
 class IClosableLog: public ILog, public IClosable {

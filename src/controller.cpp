@@ -119,6 +119,10 @@ void Controller::handleCmd(JsonMsg msg) {
     if (cmd.empty()) {
         ret = failedAck(msg, "cmd field not found in json");
     } else {
+        if (cmd == "reply") {
+            return;//目前还不需要更新客户端的回包，直接丢弃之
+        }
+
         auto &h = gCmdHandlers[cmd];
         if (h.handler) {
             if (mBarrierPromise && mBarrierPromise->isBusy() && h.waitBarrier) {
@@ -167,15 +171,62 @@ bool Controller::handleCancelledPromise(shared_ptr<Promise>& p, JsonMsg msg) {
     return false;
 }
 
+struct RangeDetector {
+    Range old;
+    shared_ptr<ILog> log;
+    bool operator()(){
+        auto last = old;
+        old = log->range();
+        return last != old;
+    }
+};
+
 Json::Value Controller::onRootLogReady(JsonMsg msg, shared_ptr<IClosableLog> log) {
-    auto ret = ack(msg, ReplyState::Ok);
-
+    auto range = log->range();
     auto logId = mLogTree.setRoot(log);
-    ret["logId"] = logId;
 
-    log->range().writeTo(ret["range"]);
+    //添加到log tree
+    auto ret = ack(msg, ReplyState::Ok);
+    ret["logId"] = logId;
+    range.writeTo(ret["range"]);
+
+    //构建检测任务
+    if (log->isDynamicRange()) {
+        mWatchRangeTask = PingTask::create(
+            RangeDetector{range, log},
+            [this, log, logId]{
+                auto msg = prepareMsg("rangeChanged");
+                msg["logId"] = logId;
+                send(msg);
+                return true;
+            }
+        );
+    }
+
+    if (log->maySelfClose()) {
+        mWatchCloseTask = PingTask::create(
+            [log]{return log->isClosed();},
+            [this, log, logId]{
+                auto msg = prepareMsg("logClosed");
+                msg["logId"] = logId;
+                send(msg);
+                return true;
+            }
+        );
+    }
 
     return ret;
+}
+
+void Controller::onRootLogFinalize() {
+    if (mWatchRangeTask) {
+        mWatchRangeTask->stop();
+        mWatchRangeTask.reset();
+    }
+    if (mWatchCloseTask) {
+        mWatchCloseTask->stop();
+        mWatchCloseTask.reset();
+    }
 }
 
 //{"cmd":"openFile","id":"ui-1","path":"/tmp/1.log"}
@@ -322,6 +373,7 @@ ImplCmdHandler(getLines) {
 }
 
 ImplCmdHandler(closeLog) {
+    onRootLogFinalize();
     mLogTree.delLog(msg["logId"].as<LogId>());
     return ack(msg, ReplyState::Ok);
 }

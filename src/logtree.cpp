@@ -1,6 +1,11 @@
 #include "logtree.h"
 
 LogId LogTree::setRoot(shared_ptr<IClosableLog> root) {
+    if (mRootNode) {
+        auto rootLog = dynamic_cast<IClosableLog*>(mRootNode->log.get());
+        rootLog->close();
+    }
+    
     auto id = ++mIdGen;
     mRootNode.reset(new Node{
         id,
@@ -61,7 +66,6 @@ void LogTree::delLog(LogId id) {
             return false;
         
         auto& child = (*it).second;
-        child->children.clear();
         node->children.erase(it);
     });
 }

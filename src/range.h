@@ -47,6 +47,10 @@ struct Range {
         return begin == other.begin && end == other.end;
     }
 
+    bool operator != (const Range& other) {
+        return !operator==(other);
+    }
+
     uint64_t len() {
         return end-begin+1;
     }

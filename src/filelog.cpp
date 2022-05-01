@@ -10,6 +10,7 @@ bool FileLog::open(string_view path) {
 
     mBuf.reset((char*)mMapInfo.addr, {0, mMapInfo.len - 1});
 
+    mClosed = false;
     return true;
 }
 
@@ -20,6 +21,8 @@ void FileLog::close() {
         delete b;
     }
     mBlocks.clear();
+
+    mClosed = true;
 }
 
 shared_ptr<Promise> FileLog::scheduleBuildBlocks() {

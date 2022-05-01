@@ -52,6 +52,9 @@ private:
     Json::FastWriter mRPCWriter;
     Json::CharReaderBuilder mRPCReaderBuilder;
     LineSegment mLineSegment;
+    size_t mIdGen{0};
+    shared_ptr<PingTask> mWatchRangeTask;
+    shared_ptr<PingTask> mWatchCloseTask;
 
 public:
     Controller();
@@ -97,4 +100,7 @@ private:
                             LogCharI fromChar, 
                             bool reverse);
     Json::Value onRootLogReady(JsonMsg msg, shared_ptr<IClosableLog> log);
+    void onRootLogFinalize();
+    string nextId();
+    Json::Value prepareMsg(string_view cmd);
 };

@@ -33,16 +33,15 @@ private:
     shared_ptr<PingTask> mPendingReadTask;
     string mLastBlockTail;//上一个block没有换行符的遗留文本
 
-    bool mProcessExited{false};
 public:
+    MonitorLog() {mAttrs = LOG_ATTR_DYNAMIC_RANGE | LOG_ATTR_SELF_CLOSE;}
     shared_ptr<LogView> view(LogLineI from = 0, LogLineI to = InvalidLogLine) const override;
     Range range() const override;
 
 public:
-    bool open(string_view cmdline, event_base* evbase);
-    void close() override;
+    virtual bool open(string_view cmdline, event_base* evbase);
+    virtual void close() override;
     void setMaxBlockCount(size_t n);
-    bool isProcessExited() { return mProcessExited; }
 
 public:
     void handleReadStdOut();

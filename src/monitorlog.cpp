@@ -11,12 +11,15 @@ bool MonitorLog::open(string_view cmdline, event_base* evbase) {
     if (mProcess.stdoutFd < 0)
         return false;
     
-    mProcessExited = false;
+    mClosed = false;
     startListenFd(evbase);
     return true;
 }
 
 void MonitorLog::close() {
+    if (mClosed)
+        return;
+        
     event_del_block(mListenEvent);
     event_free(mListenEvent);
 
@@ -26,7 +29,7 @@ void MonitorLog::close() {
     
     mBlocks.clear();
 
-    mProcessExited = true;
+    mClosed = true;
 }
 
 void MonitorLog::setMaxBlockCount(size_t n) {
@@ -179,8 +182,7 @@ bool MonitorLog::readStdOutInto(MemBlock* curBlock) {
     
     //libevent告诉我们有数据可以读，但是read到0，说明进程已经退出了
     if (totalRead == 0) {
-        event_del(mListenEvent);
-        mProcessExited = true;
+        close();
     }
 
     return totalRead > 0;
