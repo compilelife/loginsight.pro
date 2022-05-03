@@ -150,6 +150,7 @@ void MonitorLog::splitLinesForNewContent(MemBlock* curBlock) {
                 static_cast<BlockCharI>(last - start),
                 static_cast<LineCharI>(newline - last)
             });
+            activateAttr(LOG_ATTR_DYNAMIC_RANGE, true);
             last = next;
         }
     }
@@ -182,7 +183,8 @@ bool MonitorLog::readStdOutInto(MemBlock* curBlock) {
     
     //libevent告诉我们有数据可以读，但是read到0，说明进程已经退出了
     if (totalRead == 0) {
-        close();
+        event_del(mListenEvent);
+        activateAttr(LOG_ATTR_MAY_DISCONNECT, true);
     }
 
     return totalRead > 0;

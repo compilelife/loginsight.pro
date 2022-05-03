@@ -12,7 +12,7 @@
 /**
  * @brief 表示一行里的一个片段，用于行格式化结果的保存
  */
-struct Seg {
+struct LineSeg {
     LineCharI offset;
     LineCharI length;
 };
@@ -25,7 +25,7 @@ struct Line {
      */
     BlockCharI offset;
     LineCharI length;
-    optional<vector<Seg>> segs;
+    optional<vector<LineSeg>> segs;
 
     Line(BlockCharI o, LineCharI l) 
         :offset(o), length(l) {}
@@ -47,18 +47,24 @@ struct Block {
     }
 };
 
-#define LOG_ATTR_SELF_CLOSE 0x01
-#define LOG_ATTR_DYNAMIC_RANGE 0x02
+#define LOG_ATTR_DYNAMIC_RANGE 0x01
+#define LOG_ATTR_MAY_DISCONNECT 0x02
 
 class ILog {
 protected:
     size_t mAttrs{0};
-    bool testAttr(size_t attr) {
+    size_t mAttrAtivated{0};
+public:
+    bool hasAttr(size_t attr) {
         return (mAttrs & attr) == attr;
     }
-public:
-    bool isDynamicRange() {return testAttr(LOG_ATTR_DYNAMIC_RANGE);}
-    bool maySelfClose() {return testAttr(LOG_ATTR_SELF_CLOSE);}
+    bool isAttrAtivated(size_t attr)  {
+        return (mAttrAtivated & attr) > 0;
+    }
+    void activateAttr(size_t attr, bool v) {
+        if (v) mAttrAtivated |= attr;
+        else mAttrAtivated &= ~attr;
+    }
 public:
     virtual ~ILog() {}
     virtual shared_ptr<LogView> view(LogLineI from = 0, LogLineI to = InvalidLogLine) const = 0;

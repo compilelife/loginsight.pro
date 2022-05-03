@@ -171,15 +171,16 @@ bool Controller::handleCancelledPromise(shared_ptr<Promise>& p, JsonMsg msg) {
     return false;
 }
 
-struct RangeDetector {
-    Range old;
-    shared_ptr<ILog> log;
-    bool operator()(){
-        auto last = old;
-        old = log->range();
-        return last != old;
-    }
-};
+shared_ptr<PingTask> createLogAttrWatcher(shared_ptr<ILog> log, size_t attr, function<bool()>&& handler) {
+    return PingTask::create(
+        [=]{return log->isAttrAtivated(attr);},
+        [=]{
+            auto ret = handler();
+            log->activateAttr(attr, false);
+            return ret;
+        }
+    );
+}
 
 Json::Value Controller::onRootLogReady(JsonMsg msg, shared_ptr<IClosableLog> log) {
     auto range = log->range();
@@ -191,37 +192,35 @@ Json::Value Controller::onRootLogReady(JsonMsg msg, shared_ptr<IClosableLog> log
     range.writeTo(ret["range"]);
 
     //构建检测任务
-    if (log->isDynamicRange()) {
-        mWatchRangeTask = PingTask::create(
-            RangeDetector{range, log},
-            [this, log, logId]{
+    if (log->hasAttr(LOG_ATTR_DYNAMIC_RANGE)) {
+        mWatchDisconnectTask = createLogAttrWatcher(log, LOG_ATTR_DYNAMIC_RANGE, 
+            [this, logId]{
                 auto msg = prepareMsg("rangeChanged");
                 msg["logId"] = logId;
                 send(msg);
                 return true;
-            }
-        );
+            });
+        mWatchDisconnectTask->start(50);
     }
 
-    if (log->maySelfClose()) {
-        mWatchCloseTask = PingTask::create(
-            [log]{return log->isClosed();},
-            [this, log, logId]{
-                auto msg = prepareMsg("logClosed");
+    if (log->hasAttr(LOG_ATTR_MAY_DISCONNECT)) {
+        mWatchDisconnectTask = createLogAttrWatcher(log, LOG_ATTR_MAY_DISCONNECT, 
+            [this, logId]{
+                auto msg = prepareMsg("disconnected");
                 msg["logId"] = logId;
                 send(msg);
                 return true;
-            }
-        );
+            });
+        mWatchDisconnectTask->start(50);
     }
 
     return ret;
 }
 
 void Controller::onRootLogFinalize() {
-    if (mWatchRangeTask) {
-        mWatchRangeTask->stop();
-        mWatchRangeTask.reset();
+    if (mWatchDisconnectTask) {
+        mWatchDisconnectTask->stop();
+        mWatchDisconnectTask.reset();
     }
     if (mWatchCloseTask) {
         mWatchCloseTask->stop();
@@ -344,7 +343,7 @@ ImplCmdHandler(getLines) {
             Json::Value retLine;
             retLine["content"] = str;//TODO: iconv to utf-8
             retLine["segs"].resize(0);//如果没有segs，则返回空数组
-            for (auto&& seg : cur.line->segs.value_or(vector<Seg>())) {
+            for (auto&& seg : cur.line->segs.value_or(vector<LineSeg>())) {
                 Json::Value v;
                 v["offset"] = seg.offset;
                 v["length"] = seg.length;
@@ -499,6 +498,19 @@ ImplCmdHandler(setLineSegment) {
         flag |= regex_constants::icase;
     regex r(pattern, flag);
 
+    vector<Segment> segs;
+    for (Json::ArrayIndex i = 0; i < msg["segs"].size(); i++) {
+        auto& seg = msg["segs"][i];
+        Segment item = {
+            SegType(seg["type"].asUInt()),
+            seg["name"].asString()
+        };
+        if (item.type == SegType::Date) {
+            item.extra = seg["extra"].asString();
+        }
+        segs.push_back(item);
+    }
+
     if (mLineSegment.hasPatternSet()) {
         auto view = mLogTree.root()->view();
         while (!view->end()) {
@@ -508,6 +520,18 @@ ImplCmdHandler(setLineSegment) {
     }
 
     mLineSegment.setPattern(r);
+    mLineSegment.setSegments(move(segs));
 
     return ack(msg, ReplyState::Ok);
+}
+
+string Controller::nextId() {
+    return "core-"+to_string(++mIdGen);
+}
+
+Json::Value Controller::prepareMsg(string_view cmd) {
+    Json::Value v;
+    v["cmd"] = string(cmd);
+    v["id"] = nextId();
+    return v;
 }

@@ -31,7 +31,7 @@ public:
 
     static void checkExitCb(evutil_socket_t,short,void* arg) {
         auto thiz = (MonitorLogTest*)arg;
-        if (thiz->log.isProcessExited()) {
+        if (thiz->log.isAttrAtivated(LOG_ATTR_MAY_DISCONNECT)) {
             evtimer_del(thiz->timer);
             event_free(thiz->timer);
             event_base_loopbreak(thiz->evBase);

@@ -53,7 +53,7 @@ private:
     Json::CharReaderBuilder mRPCReaderBuilder;
     LineSegment mLineSegment;
     size_t mIdGen{0};
-    shared_ptr<PingTask> mWatchRangeTask;
+    shared_ptr<PingTask> mWatchDisconnectTask;
     shared_ptr<PingTask> mWatchCloseTask;
 
 public:

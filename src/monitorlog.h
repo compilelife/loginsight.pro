@@ -34,7 +34,7 @@ private:
     string mLastBlockTail;//上一个block没有换行符的遗留文本
 
 public:
-    MonitorLog() {mAttrs = LOG_ATTR_DYNAMIC_RANGE | LOG_ATTR_SELF_CLOSE;}
+    MonitorLog() {mAttrs = LOG_ATTR_DYNAMIC_RANGE | LOG_ATTR_MAY_DISCONNECT;}
     shared_ptr<LogView> view(LogLineI from = 0, LogLineI to = InvalidLogLine) const override;
     Range range() const override;
 

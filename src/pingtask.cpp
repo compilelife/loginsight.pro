@@ -8,8 +8,10 @@ PingTask::PingTask(function<bool()> predict, function<bool()> handler)
 }
 
 PingTask::~PingTask() {
-    event_del_block(mEv);
-    event_free(mEv);
+    if (mEv) {
+        event_del_block(mEv);
+        event_free(mEv);
+    }
 }
 
 timeval PingTask::interval() {
