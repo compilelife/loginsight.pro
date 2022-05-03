@@ -14,7 +14,7 @@ struct MMapInfo
 };
 
 
-MMapInfo createMapOfFile(string_view path);
+MMapInfo createMapOfFile(string_view path, uint64_t offset = 0, uint64_t len = 0);
 void unmapFile(MMapInfo& info);
 
 

@@ -14,7 +14,7 @@ struct PrivMapInfo {
     int fd;  
 };
 
-MMapInfo createMapOfFile(string_view path) {
+MMapInfo createMapOfFile(string_view path, uint64_t offset, uint64_t size) {
     MMapInfo ret;
 
     PrivMapInfo priv;
@@ -24,8 +24,8 @@ MMapInfo createMapOfFile(string_view path) {
     }
 
     ret.priv = priv;
-    ret.len = std::filesystem::file_size(path);
-    ret.addr = mmap(nullptr, ret.len, PROT_READ, MAP_SHARED, priv.fd, 0);
+    ret.len = size > 0 ? size : (std::filesystem::file_size(path) - offset);
+    ret.addr = mmap(nullptr, ret.len, PROT_READ, MAP_SHARED, priv.fd, offset);
 
     return ret;
 }

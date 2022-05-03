@@ -2,8 +2,11 @@
 #include <cstring>
 #include <algorithm>
 #include "blocklogview.h"
+#include <filesystem>
 
 bool FileLog::open(string_view path) {
+    mPath = path;
+
     mMapInfo = createMapOfFile(path);
     if (!mMapInfo.valid())
         return false;
@@ -15,6 +18,11 @@ bool FileLog::open(string_view path) {
 }
 
 void FileLog::close() {
+    if (mFileSizeWatcher) {
+        mFileSizeWatcher->stop();
+        mFileSizeWatcher.reset();
+    }
+
     unmapFile(mMapInfo);
     for (auto &&b : mBlocks)
     {
@@ -23,6 +31,7 @@ void FileLog::close() {
     mBlocks.clear();
 
     mClosed = true;
+    
 }
 
 shared_ptr<Promise> FileLog::scheduleBuildBlocks() {
@@ -129,6 +138,9 @@ void FileLog::collectBlocks(const vector<any>& rets) {
     }
     
     mCount = count;
+
+    if (!mFileSizeWatcher)
+        createFileSizeWatcher();
 }
 
 shared_ptr<LogView> FileLog::view(LogLineI from, LogLineI to) const {
@@ -141,4 +153,56 @@ shared_ptr<LogView> FileLog::view(LogLineI from, LogLineI to) const {
 
 Range FileLog::range() const {
     return mCount > 0 ? Range(0, mCount-1) : Range();
+}
+
+void FileLog::createFileSizeWatcher() {
+    auto path = mPath;
+    auto size = mMapInfo.len;
+
+    mFileSizeWatcher = PingTask::create(
+        [=]{return filesystem::file_size(path) > size;},
+        [=] {
+            //预期500ms一个文件的大小变化不会非常巨大，所以我们用单线程处理
+            async(launch::async, &FileLog::onFileNewContent, this);
+            //先停止watcher，避免反复触发
+            return false;
+        }
+    );
+
+    mFileSizeWatcher->start(500);
+}
+
+//在一个独立线程中执行
+void FileLog::onFileNewContent() {
+    auto oldSize = mMapInfo.len;
+    auto mapInfo = createMapOfFile(mPath, oldSize);
+    string_view viewOfNewContent((const char*)mapInfo.addr, mapInfo.len);
+    
+    bool cancel =false;
+    auto blocks = any_cast<BlockChain>(buildBlock(&cancel, viewOfNewContent));
+
+    //当内存可写时将block提交到filelog内
+    PingTask::create(
+        [this]{
+            return this->mBuf.requestAccess(
+                this->mBuf.range(),
+                Memory::Access::WRITE
+            );
+        },
+        [this, blocks] {
+            //模拟关闭后重新打开（只是不清除之前的blocks信息）
+            unmapFile(mMapInfo);
+            if (!open(mPath)) {
+                //FIXME:这里抛出的错误，并不会立即被检测到，在被检测到之前，如果有访问到内存的行为，将是不可预期的！！
+                activateAttr(LOG_ATTR_MAY_DISCONNECT, true);
+                return false;
+            }
+            //追加新的行信息
+            copy(blocks.begin(), blocks.end(), back_inserter(mBlocks));
+            mCount += blocks.size();
+            //重新开始监听文件变化
+            createFileSizeWatcher();
+            return false;
+        }
+    )->start(20);
 }

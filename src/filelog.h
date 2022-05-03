@@ -5,6 +5,7 @@
 #include "mem.h"
 #include "platform.h"
 #include "calculation.h"
+#include "pingtask.h"
 
 class FileLog: public SourceLog {
 private:
@@ -14,9 +15,14 @@ private:
     MMapInfo mMapInfo;
     vector<Block*> mBlocks;
     LogLineI mCount;
+    //检查文件变化；
+    //然后在其他线程计算行信息（只map新增部分），计算完成后，
+    //创建另一个临时Pingtask，在无memory lock时，在主线程修改mBlocks/mmap信息
+    shared_ptr<PingTask> mFileSizeWatcher;
+    string mPath;
 
 public:
-    FileLog() {mAttrs = LOG_ATTR_DYNAMIC_RANGE;}
+    FileLog() {mAttrs = LOG_ATTR_DYNAMIC_RANGE | LOG_ATTR_MAY_DISCONNECT;}
     shared_ptr<LogView> view(LogLineI from = 0, LogLineI to = InvalidLogLine) const override;
     Range range() const override;
 
@@ -30,4 +36,7 @@ private:
     friend class Memory_LockWhenView_Test;
     any buildBlock(bool* cancel, string_view buf);
     void collectBlocks(const vector<any>& rets);
+
+    void createFileSizeWatcher();
+    void onFileNewContent();
 };
