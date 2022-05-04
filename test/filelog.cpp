@@ -60,3 +60,13 @@ TEST(FileLog, openNewLine) {
 
     log.close();
 }
+
+TEST(FileLog, mapLine) {
+    FileLog log;
+    ASSERT_TRUE(log.open("./sample.log"));
+
+    log.scheduleBuildBlocks()->wait();
+
+    ASSERT_EQ(3000, log.mapToSource(3000));
+    ASSERT_EQ(3000, log.fromSource(3000));
+}

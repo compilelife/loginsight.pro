@@ -3,6 +3,17 @@
 #include <numeric>
 #include "stdout.h"
 
+LogLineI FilterBlock::mapLineIndexToSource(BlockLineI i) const {
+    return blockRef.block->lineBegin + lines[i];
+}
+
+Range FilterBlock::sourceLineRange() const {
+    return Range{
+        blockRef.block->lineBegin,
+        blockRef.block->lineBegin + LastItem(lines)
+    };
+}
+
 static vector<FilterBlock> doFilter(
                                     bool* cancel, 
                                     shared_ptr<LogView> view, 
@@ -104,7 +115,7 @@ LogLineI SubLog::mapToSource(LogLineI index) const {
     
     //然后返回源的index
     auto lineIndex = LastIndex(mBlocks[blockIndex].lines) - (cur - target);
-    return mBlocks[blockIndex].lines[lineIndex];
+    return mBlocks[blockIndex].mapLineIndexToSource(lineIndex);
 }
 
 LogLineI SubLog::fromSource(LogLineI target) const {
@@ -115,18 +126,23 @@ LogLineI SubLog::fromSource(LogLineI target) const {
     while (low <= high) {
         mid = (low + high) / 2;
         auto b = mBlocks[mid];
-        if (b.lines[0] <= target && target >= LastItem(b.lines)) {
+        auto range = b.sourceLineRange();
+        if (range.contains(target)) {
             break;
-        } else if (target > LastItem(b.lines)) {
+        } else if (target > range.end) {
             low = mid + 1;
-        } else if (target < b.lines[0]) {
+        } else if (target < range.begin) {
             high = mid - 1;
         }
     }
 
-    if (high > low) {
+    if (low > high) {
         return 0;//如果没有在任意block的范围内，则直接返回失败的默认值0
     }
+
+    LogLineI sum = 0;
+    for (size_t i = 0; i < mid; i++)
+        sum += mBlocks[i].lines.size();
 
     //第二次二分查找用来定位最接近的行
     auto block = mBlocks[mid];
@@ -135,9 +151,9 @@ LogLineI SubLog::fromSource(LogLineI target) const {
 
     while (low <= high) {
         mid = (low + high) / 2;
-        auto line = block.lines[mid];
+        auto line = block.mapLineIndexToSource(mid);
         if (line == target) {
-            return mid;
+            return mid + sum;
         } else if (target > line) {
             low = mid + 1;
         } else if (target < line) {
@@ -145,5 +161,5 @@ LogLineI SubLog::fromSource(LogLineI target) const {
         }
     }
     
-    return high;//如果没有找到，返回high，也就是刚好低于target的那行
+    return high + sum;//如果没有找到，返回high，也就是刚好低于target的那行
 }

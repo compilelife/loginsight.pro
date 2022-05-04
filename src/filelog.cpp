@@ -18,6 +18,9 @@ bool FileLog::open(string_view path) {
 }
 
 void FileLog::close() {
+    if (mClosed)
+        return;
+
     if (mFileSizeWatcher) {
         mFileSizeWatcher->stop();
         mFileSizeWatcher.reset();
@@ -32,6 +35,10 @@ void FileLog::close() {
 
     mClosed = true;
     
+}
+
+FileLog::~FileLog() {
+    close();
 }
 
 shared_ptr<Promise> FileLog::scheduleBuildBlocks() {

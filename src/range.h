@@ -25,6 +25,10 @@ struct Range {
         end = v["end"].asUInt64();
     }
 
+    bool contains(uint64_t v) {
+        return begin <= v && v <= end;
+    }
+
     void writeTo(Json::Value& v) {
         v["begin"] = begin;
         v["end"] = end;

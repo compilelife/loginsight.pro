@@ -8,7 +8,9 @@
 
 struct FilterBlock {
     BlockRef blockRef;
-    vector<BlockLineI> lines;
+    vector<BlockLineI> lines;//每个元素的值表示其在源Block里的索引
+    LogLineI mapLineIndexToSource(BlockLineI i) const;
+    Range sourceLineRange() const;
 };
 
 class SubLog: public ILog {
