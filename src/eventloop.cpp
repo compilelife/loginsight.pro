@@ -1,4 +1,5 @@
 #include "eventloop.h"
+#include "event2/thread.h"
 
 void cppLambdaWrap(evutil_socket_t, short, void *arg) {
     auto callback = (EventHandler*)arg;
@@ -12,6 +13,12 @@ EventLoop& EventLoop::instance() {
 }
 
 EventLoop::EventLoop() {
+#ifdef EVTHREAD_USE_PTHREADS_IMPLEMENTED
+    evthread_use_pthreads();
+#elif EVTHREAD_USE_WINDOWS_THREADS_IMPLEMENTED
+    evthread_use_windows_threads();
+#endif
+
     mEventBase = event_base_new();
 }
 

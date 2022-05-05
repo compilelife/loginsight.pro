@@ -9,12 +9,14 @@
 #include <unistd.h>
 #include "../stdout.h"
 #include <sys/wait.h>
+#include <cstring>
+#include "errno.h"
 
 struct PrivMapInfo {
     int fd;  
 };
 
-MMapInfo createMapOfFile(string_view path, uint64_t offset, uint64_t size) {
+MMapInfo createMapOfFile(string_view path) {
     MMapInfo ret;
 
     PrivMapInfo priv;
@@ -24,8 +26,12 @@ MMapInfo createMapOfFile(string_view path, uint64_t offset, uint64_t size) {
     }
 
     ret.priv = priv;
-    ret.len = size > 0 ? size : (std::filesystem::file_size(path) - offset);
-    ret.addr = mmap(nullptr, ret.len, PROT_READ, MAP_SHARED, priv.fd, offset);
+    ret.len = std::filesystem::file_size(path);
+    ret.addr = mmap(nullptr, ret.len, PROT_READ, MAP_SHARED, priv.fd, 0);
+    if (ret.addr == MAP_FAILED) {
+        LOGE("map failed because: %s", strerror(errno));
+        return {priv, nullptr};
+    }
 
     return ret;
 }

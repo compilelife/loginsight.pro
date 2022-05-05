@@ -162,6 +162,8 @@ Range FileLog::range() const {
     return mCount > 0 ? Range(0, mCount-1) : Range();
 }
 
+#include "stdout.h"
+
 void FileLog::createFileSizeWatcher() {
     auto path = mPath;
     auto size = mMapInfo.len;
@@ -182,8 +184,13 @@ void FileLog::createFileSizeWatcher() {
 //在一个独立线程中执行
 void FileLog::onFileNewContent() {
     auto oldSize = mMapInfo.len;
-    auto mapInfo = createMapOfFile(mPath, oldSize);
-    string_view viewOfNewContent((const char*)mapInfo.addr, mapInfo.len);
+    auto newSize = filesystem::file_size(mPath);
+    auto mapInfo = createMapOfFile(mPath);
+    if (!mapInfo.valid()) {
+        LOGW("file size changed detected, but map failed");
+        return;
+    }
+    string_view viewOfNewContent((const char*)mapInfo.addr + oldSize, newSize - oldSize);
     
     bool cancel =false;
     auto blocks = any_cast<BlockChain>(buildBlock(&cancel, viewOfNewContent));
@@ -194,7 +201,7 @@ void FileLog::onFileNewContent() {
             return this->mBuf.requestAccess(
                 this->mBuf.range(),
                 Memory::Access::WRITE
-            );
+            )!=nullptr;
         },
         [this, blocks] {
             //模拟关闭后重新打开（只是不清除之前的blocks信息）
@@ -209,6 +216,7 @@ void FileLog::onFileNewContent() {
             mCount += blocks.size();
             //重新开始监听文件变化
             createFileSizeWatcher();
+            activateAttr(LOG_ATTR_DYNAMIC_RANGE, true);
             return false;
         }
     )->start(20);

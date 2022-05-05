@@ -15,11 +15,6 @@ protected:
     unique_ptr<Controller> controller;
 public:
     static void SetUpTestSuite() {
-#ifdef EVTHREAD_USE_PTHREADS_IMPLEMENTED
-    evthread_use_pthreads();
-#elif EVTHREAD_USE_WINDOWS_THREADS_IMPLEMENTED
-    evthread_use_windows_threads();
-#endif
         thread([]{EventLoop::instance().start();}).detach();
     }
     static void TearDownTestSuite() {

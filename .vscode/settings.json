@@ -73,6 +73,7 @@
         "bitset": "cpp",
         "regex": "cpp",
         "*.inc": "cpp",
-        "ranges": "cpp"
+        "ranges": "cpp",
+        "filesystem": "cpp"
     }
 }
