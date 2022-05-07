@@ -14,6 +14,7 @@ void StdOut::send(constr str) {
     lock_guard<mutex> l(mMutex);
     mLastLine = str;
     printf("%s", str.c_str());
+    fflush(stdout);
 }
 
 void StdOut::debug(constr fmt, ...) {
