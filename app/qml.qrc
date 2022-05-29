@@ -1,0 +1,19 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>QuickPromise/promise.js</file>
+        <file>QuickPromise/PromiseTimer.qml</file>
+        <file>QuickPromise/Promise.qml</file>
+        <file>Axis.qml</file>
+        <file>ColorIndicator.qml</file>
+        <file>TimeLine.qml</file>
+        <file>TimeNode.qml</file>
+        <file>Core.qml</file>
+        <file>ClosableTabButton.qml</file>
+        <file>images/close.png</file>
+        <file>Session.qml</file>
+        <file>LogView.qml</file>
+        <file>LogLine.qml</file>
+        <file>coredef.js</file>
+    </qresource>
+</RCC>
