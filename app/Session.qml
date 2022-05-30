@@ -116,6 +116,8 @@ Item {
                         _onLogRemoved(subLog.logId)
                         subLog.destroy()
                     })
+
+                  tabBar.currentIndex = tabBar.count - 1
                 }
             }
         }

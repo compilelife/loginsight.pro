@@ -42,8 +42,15 @@ ApplicationWindow {
         }
     }
 
-    Session {
-        id: session
-        anchors.fill: parent
+    TabBar {
+      contentHeight: 22
+      ClosableTabButton{ title: 'abc' }
+      ClosableTabButton{ title: 'efg' }
+      TabButton { text: 'xyz' }
     }
+
+//    Session {
+//        id: session
+//        anchors.fill: parent
+//    }
 }
