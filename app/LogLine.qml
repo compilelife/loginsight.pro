@@ -4,6 +4,7 @@ import QtQuick 2.0
 Item {
   property var model: null
   property int lineNumWidth: 0
+  property var segColors: []
 
   id: root
   width: parent.width
@@ -20,6 +21,30 @@ Item {
     } else {
       loader.sourceComponent = null
     }
+  }
+
+  function createFormatText() {
+    if (model.segs.length === 0)
+        return model.content
+
+    let ret = ''
+    const ori = model.content
+    let pos = 0
+
+    for (let i = 0; i < model.segs.length; i++) {
+      const {offset,length} = model.segs[i]
+      if (offset > pos) {
+        ret += ori.substring(pos, offset)
+      }
+      pos = offset +length
+      ret += `<font color="${segColors[i]}">${ori.substring(offset, pos)}</font>`
+    }
+
+    if (pos < ori.length) {
+      ret += ori.substring(pos)
+    }
+
+    return ret
   }
 
   Component {
@@ -42,7 +67,7 @@ Item {
       Text {
         id: content
         width: root.width - indicator.width
-        text: model.content
+        text: createFormatText()
         wrapMode: Text.WrapAnywhere
       }
     }

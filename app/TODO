@@ -1,8 +1,6 @@
 session:
     dynamic log(file , then process...
 	    运行一段时间的dynamice file log会自动退出core: promisex.cpp:23 ~Promise crash
-        segs
-        monitor log
     tabs
 
 TimeLine:

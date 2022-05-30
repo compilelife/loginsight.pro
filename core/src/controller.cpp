@@ -268,17 +268,17 @@ ImplCmdHandler(openFile) {
 }
 
 ImplCmdHandler(openProcess) {
-    auto cmd = msg["cmd"].asString();
+    auto cmd = msg["process"].asString();
 
     auto log = make_shared<MonitorLog>();
     auto ret = log->open(cmd, EventLoop::instance().base());
 
-    if (ret) {
-        send(onRootLogReady(msg, log));
+    if (!ret) {
+        send(failedAck(msg, "命令运行失败"));
+        return Promise::resolved(false);
     }
-
-    send(failedAck(msg, "命令运行失败"));
-
+    
+    send(onRootLogReady(msg, log));
     return Promise::resolved(true);
 }
 
@@ -544,7 +544,7 @@ ImplCmdHandler(mapLine) {
 ImplCmdHandler(setLineSegment) {
     auto pattern = msg["pattern"].asString();
     auto caseSense = msg["caseSense"].asBool();
-    
+
     auto flag = regex_constants::ECMAScript;
     if (caseSense)
         flag |= regex_constants::icase;
@@ -559,6 +559,16 @@ ImplCmdHandler(setLineSegment) {
         };
         if (item.type == SegType::Date) {
             item.extra = seg["extra"].asString();
+        } else if (item.type == SegType::LogLevel) {
+            auto it = seg["extra"].begin();
+            auto end = seg["extra"].end();
+            LogLevelExtra extra;
+            while (it != end) {
+                auto key = it.key().asString();
+                auto value = it->asInt();
+                extra[key] = value;
+            }
+            item.extra = extra;
         }
         segs.push_back(item);
     }

@@ -180,6 +180,7 @@ Item {
             width: list.width
             model: logModel.dataAt(curIndex + index)
             lineNumWidth: indicatorMeasure.width
+            segColors: ['red','blue','green','grey']
           }
         }
       }

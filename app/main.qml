@@ -20,7 +20,8 @@ ApplicationWindow {
                  text: 'open'
                  onTriggered: {
 //                     session.openFile('/home/chenyong/my/loginsight/core/test/assets/sample.log')
-                     session.openFile('/tmp/1.txt')
+//                     session.openFile('/tmp/1.txt')
+                   session.openProcess('while true;do echo `date`; sleep 1;done')
                  }
              }
 

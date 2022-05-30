@@ -25,10 +25,12 @@ struct Segment {
     string name;
     /**
      * Date: 用于strftime的格式化字符串
-     * LogLevel: 用于将各式各样的等级字符串映射为LogLevel枚举值
+     * LogLevel: 用于将各式各样的等级字符串映射为LogLevel枚举值(map<string,LogLevel>)
      */
     any extra;
 };
+
+using LogLevelExtra = map<string, int>;//value int as LogLevel
 
 class LineSegment {
 private:

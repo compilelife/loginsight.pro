@@ -12,6 +12,7 @@ void LineSegment::setSegments(vector<Segment>&& segmentsInGroupOrder) {
     mSegments = segmentsInGroupOrder;
 }
 
+#include "stdout.h"
 vector<LineSeg> LineSegment::formatLine(const string& line) {
     if (!mRegex.has_value())
         return {};
