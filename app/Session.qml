@@ -5,12 +5,17 @@ import './coredef.js' as CoreDef
 import QtQml.Models 2.15
 
 Item {
+  signal coreReady()
+
     Core {
         id: core
         onReady: {
             core.serverCmdHandlers[CoreDef.ServerCmdRangeChanged] = handleLogRangeChanged
+          coreReady()
         }
     }
+
+    property var meta: ({})
 
     property var logMap: ({})
     function _onLogAdded(logId, logView) {
@@ -24,7 +29,7 @@ Item {
     }
 
     function openFile(path) {
-        core.sendModalMessage(CoreDef.CmdOpenFile, {path})
+        return core.sendModalMessage(CoreDef.CmdOpenFile, {path})
             .then(msg=>{
                 rootLogView.initLogModel(msg.logId, msg.range)
                 _onLogAdded(msg.logId, rootLogView)

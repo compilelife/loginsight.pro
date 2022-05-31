@@ -3,9 +3,13 @@ session:
 	    运行一段时间的dynamice file log会自动退出core: promisex.cpp:23 ~Promise crash
 
 main:
-    session tabs
+    logview cursor/select/right clicked
+    timeline
+
 
 TimeLine:
     screen shot issue
+
+project
 
 第一次启动概率性连接websocket失败 

@@ -39,9 +39,17 @@ Item {
     visible: false
     standardButtons: StandardButton.Ok
     title: 'core error'
+
+    property var then: null
     function showError(content) {
       coreErrDlg.text = content
       coreErrDlg.visible = true
+    }
+
+    onVisibleChanged: {
+      if (!coreErrDlg.visible && then) {
+        then()
+      }
     }
   }
 
@@ -159,13 +167,14 @@ Item {
           delete pendings[msgObj.id]
         }
       } else if (msgObj.state === CoreDef.StateFail) {
-        coreErrDlg.showError(msgObj.why)
-
         const pending = pendings[msgObj.id]
         if (pending) {
-          pending.reject(msgObj)
-          delete pendings[msgObj.id]
+          coreErrDlg.then = ()=>{
+            pending.reject(msgObj)
+            delete pendings[msgObj.id]
+          }
         }
+        coreErrDlg.showError(msgObj.why)
       }
 
       if (msgObj.state === CoreDef.StateFuture) {

@@ -15,6 +15,9 @@ public:
     Q_INVOKABLE void startLocal();
     Q_INVOKABLE void stop();
 
+private:
+    int getIdlePort();
+
 signals:
     void stateChanged(bool running);
 
