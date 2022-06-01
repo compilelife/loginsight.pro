@@ -15,5 +15,6 @@
         <file>LogView.qml</file>
         <file>LogLine.qml</file>
         <file>coredef.js</file>
+        <file>LogViewContextMenu.qml</file>
     </qresource>
 </RCC>

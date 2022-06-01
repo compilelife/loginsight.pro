@@ -3,8 +3,10 @@ import QtQuick.Layouts 1.15
 import QtQuick.Controls 2.15
 import './coredef.js' as CoreDef
 import QtQml.Models 2.15
+import QtQml 2.15
 
 Item {
+  id: root
   signal coreReady()
 
     Core {
@@ -18,8 +20,65 @@ Item {
     property var meta: ({})
 
     property var logMap: ({})
+
+    SplitView {
+        anchors.fill: parent
+        orientation: Qt.Horizontal
+        SplitView {
+            height: parent.height
+            orientation: Qt.Vertical
+            SplitView.fillWidth: true
+
+            LogView {
+                id: rootLogView
+                core:core
+                width: parent.width
+                SplitView.minimumHeight: 200
+                SplitView.preferredHeight: 400
+            }
+            Column {
+                id: subLogs
+                width: parent.width
+                SplitView.fillHeight: true
+                SplitView.preferredHeight: 300
+                TabBar {
+                    id: tabBar
+                }
+                StackLayout {
+                    id: holder
+                    currentIndex: tabBar.currentIndex
+                    width: parent.width
+                    height: subLogs.height - tabBar.height
+                }
+
+                function append(id, range) {
+                    const tabBarButton = Qt.createComponent('qrc:/ClosableTabButton.qml')
+                                            .createObject(tabBar, {title: 'tab'})
+                    const subLog = Qt.createComponent('qrc:/LogView.qml')
+                                      .createObject(holder, {core})
+
+                    subLog.initLogModel(id, range)
+                    _onLogAdded(id, subLog)
+
+                    tabBarButton.closed.connect(function(){
+                        tabBarButton.destroy()
+                        _onLogRemoved(subLog.logId)
+                        subLog.destroy()
+                    })
+
+                  tabBar.currentIndex = tabBar.count - 1
+                }
+            }
+        }
+        TimeLine {
+            height: parent.height
+            implicitWidth: 200
+        }
+    }
+
     function _onLogAdded(logId, logView) {
         logMap[logId]=logView
+      logView.session = root
     }
     function _getLogView(logId) {
         return logMap[logId]
@@ -75,61 +134,6 @@ Item {
                         logView.updateRange(r.range)
                 }
             })
-    }
-
-    SplitView {
-        anchors.fill: parent
-        orientation: Qt.Horizontal
-        SplitView {
-            height: parent.height
-            orientation: Qt.Vertical
-            SplitView.fillWidth: true
-
-            LogView {
-                id: rootLogView
-                core:core
-                width: parent.width
-                SplitView.minimumHeight: 200
-                SplitView.preferredHeight: 400
-            }
-            Column {
-                id: subLogs
-                width: parent.width
-                SplitView.fillHeight: true
-                SplitView.preferredHeight: 300
-                TabBar {
-                    id: tabBar
-                }
-                StackLayout {
-                    id: holder
-                    currentIndex: tabBar.currentIndex
-                    width: parent.width
-                    height: subLogs.height - tabBar.height
-                }
-
-                function append(id, range) {
-                    const tabBarButton = Qt.createComponent('qrc:/ClosableTabButton.qml')
-                                            .createObject(tabBar, {title: 'tab'})
-                    const subLog = Qt.createComponent('qrc:/LogView.qml')
-                                      .createObject(holder, {core})
-
-                    subLog.initLogModel(id, range)
-                    _onLogAdded(id, subLog)
-
-                    tabBarButton.closed.connect(function(){
-                        tabBarButton.destroy()
-                        _onLogRemoved(subLog.logId)
-                        subLog.destroy()
-                    })
-
-                  tabBar.currentIndex = tabBar.count - 1
-                }
-            }
-        }
-        TimeLine {
-            height: parent.height
-            implicitWidth: 200
-        }
     }
 
 }

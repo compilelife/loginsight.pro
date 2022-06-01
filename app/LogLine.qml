@@ -10,6 +10,8 @@ Item {
   width: parent.width
   height: model === null ? 0 : loader.height
 
+  signal contextMenu(var model, string select)
+
   //act as vue v-if
   Loader {
     id: loader
@@ -62,13 +64,24 @@ Item {
           horizontalAlignment: Text.AlignHCenter
           text: model.index + 1
           wrapMode: Text.NoWrap
+          color: content.activeFocus ? 'white' : 'black'
         }
       }
-      Text {
+      TextEdit {
         id: content
+        readOnly: true
+        selectByMouse: true
         width: root.width - indicator.width
         text: createFormatText()
         wrapMode: Text.WrapAnywhere
+        MouseArea{
+          anchors.fill: parent
+          acceptedButtons: Qt.RightButton
+          onClicked: {
+            content.forceActiveFocus()
+            contextMenu(model, content.selectedText)
+          }
+        }
       }
     }
   }

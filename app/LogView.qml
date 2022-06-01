@@ -18,6 +18,133 @@ Item {
                             }
                           })
 
+  property var session: null
+
+  LogViewContextMenu {
+    id: menu
+    session: parent.session
+    logview: parent
+  }
+
+  Text {
+    id: contentMeasure
+    visible: false
+    width: parent.width - 8 - indicatorMeasure.width
+    wrapMode: Text.WrapAnywhere
+  }
+
+  TextMetrics {
+    id: indicatorMeasure
+    text: '' + logModel.range.end
+  }
+
+  MouseArea {
+    id: list
+    anchors.fill: parent
+    enabled: false
+    Column {
+      id: contentHolder
+      height: list.height
+      clip: true
+      Repeater {
+        id: content
+        //max line count correspond to list.height, may or may not
+        model: Math.round(list.height / indicatorMeasure.height)
+        LogLine {
+          width: list.width
+          model: logModel.dataAt(curIndex + index)
+          lineNumWidth: indicatorMeasure.width
+          segColors: ['red','blue','green','grey']
+          onContextMenu: {
+            menu.selectText = select
+            menu.lineModel = model
+            menu.popup()
+          }
+        }
+      }
+    }
+
+    function _findShownEndIndex() {
+      const maxAvail = content.model
+
+      let endIndex = curIndex
+      let height = 0
+      for (var i = 0; i < maxAvail; i++) {
+        height += content.itemAt(i).height
+
+        if (height > list.height)
+          break
+        endIndex++
+      }
+
+      return endIndex
+    }
+
+    onWheel: function (ev) {
+      const indexDelta = -ev.angleDelta.y / 120
+      const {beginLine, endLine} = logModel.range
+
+        let index = curIndex + indexDelta
+        if (index > endLine)
+          index = endLine
+        else if (index < beginLine)
+          index = beginLine
+
+        show(index)
+      }
+    }
+
+    //since vbar scroll range is 0 - 1.0
+    //and log index range is range.begin - range.end
+    //seems map [0,1.0] <=> [range.begin, range.end] is quite right
+    //but, in fact, vbar can only drag from 0 - (1.0 - size)
+    //(which means size represents how many lines already be shown)
+    //A convenient approach is just map [0, 1-vbar.size] to [range.begin, range.end]
+    //These are what exactly _positionToLineIndex and _lineIndexToPosition do
+    function _positionToLineIndex(position) {
+      return Math.floor(
+            position / (1 - vbar.size) * (logModel.count - 1)) + logModel.range.begin
+    }
+
+    function _lineIndexToPosition(index) {
+      return (index - logModel.range.begin) / (logModel.count - 1) * (1 - vbar.size)
+    }
+
+    Timer {
+      id: followScorllBarTimer
+      running: false
+      repeat: true
+      interval: 200
+      onTriggered: {
+        show(_positionToLineIndex(vbar.position))
+      }
+    }
+
+    ScrollBar {
+      id: vbar
+      visible: false
+      hoverEnabled: true
+      active: hovered || pressed
+      orientation: Qt.Vertical
+      position: _lineIndexToPosition(curIndex)
+      size: 0.05
+      stepSize: 1 / logModel.count
+      policy: ScrollBar.AsNeeded
+      anchors.top: parent.top
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      onPressedChanged: {
+        if (vbar.pressed) {
+          //user begin scrolling vbar
+          followScorllBarTimer.running = true
+        } else {
+          //user end scrolling vbar
+          followScorllBarTimer.running = false
+          show(_positionToLineIndex(position))
+        }
+      }
+    }
+
   function initLogModel(id, range) {
     console.log('init log model', id, range.begin, range.end)
     logId = id
@@ -111,13 +238,6 @@ Item {
     return _limitRange(prefer)
   }
 
-  Text {
-    id: contentMeasure
-    visible: false
-    width: parent.width - 8 - indicatorMeasure.width
-    wrapMode: Text.WrapAnywhere
-  }
-
   //if curIndex not changed, repeater won't react
   //but if we call _forceRefresh once, then we call it every time
   function _forceRefresh(index) {
@@ -159,110 +279,4 @@ Item {
       })
     }
 
-    TextMetrics {
-      id: indicatorMeasure
-      text: '' + logModel.range.end
-    }
-
-    MouseArea {
-      id: list
-      anchors.fill: parent
-      enabled: false
-      Column {
-        id: contentHolder
-        height: list.height
-        clip: true
-        Repeater {
-          id: content
-          //max line count correspond to list.height, may or may not
-          model: Math.round(list.height / indicatorMeasure.height)
-          LogLine {
-            width: list.width
-            model: logModel.dataAt(curIndex + index)
-            lineNumWidth: indicatorMeasure.width
-            segColors: ['red','blue','green','grey']
-          }
-        }
-      }
-
-      function _findShownEndIndex() {
-        const maxAvail = content.model
-
-        let endIndex = curIndex
-        let height = 0
-        for (var i = 0; i < maxAvail; i++) {
-          height += content.itemAt(i).height
-
-          if (height > list.height)
-            break
-          endIndex++
-        }
-
-        return endIndex
-      }
-
-      onWheel: function (ev) {
-        const indexDelta = -ev.angleDelta.y / 120
-        const {beginLine, endLine} = logModel.range
-
-          let index = curIndex + indexDelta
-          if (index > endLine)
-            index = endLine
-          else if (index < beginLine)
-            index = beginLine
-
-          show(index)
-        }
-      }
-
-      //since vbar scroll range is 0 - 1.0
-      //and log index range is range.begin - range.end
-      //seems map [0,1.0] <=> [range.begin, range.end] is quite right
-      //but, in fact, vbar can only drag from 0 - (1.0 - size)
-      //(which means size represents how many lines already be shown)
-      //A convenient approach is just map [0, 1-vbar.size] to [range.begin, range.end]
-      //These are what exactly _positionToLineIndex and _lineIndexToPosition do
-      function _positionToLineIndex(position) {
-        return Math.floor(
-              position / (1 - vbar.size) * (logModel.count - 1)) + logModel.range.begin
-      }
-
-      function _lineIndexToPosition(index) {
-        return (index - logModel.range.begin) / (logModel.count - 1) * (1 - vbar.size)
-      }
-
-      Timer {
-        id: followScorllBarTimer
-        running: false
-        repeat: true
-        interval: 200
-        onTriggered: {
-          show(_positionToLineIndex(vbar.position))
-        }
-      }
-
-      ScrollBar {
-        id: vbar
-        visible: false
-        hoverEnabled: true
-        active: hovered || pressed
-        orientation: Qt.Vertical
-        position: _lineIndexToPosition(curIndex)
-        size: 0.05
-        stepSize: 1 / logModel.count
-        policy: ScrollBar.AsNeeded
-        anchors.top: parent.top
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        onPressedChanged: {
-          if (vbar.pressed) {
-            //user begin scrolling vbar
-            followScorllBarTimer.running = true
-          } else {
-            //user end scrolling vbar
-            followScorllBarTimer.running = false
-            show(_positionToLineIndex(position))
-          }
-        }
-      }
-    }
+}

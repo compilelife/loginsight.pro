@@ -3,7 +3,13 @@ session:
 	    运行一段时间的dynamice file log会自动退出core: promisex.cpp:23 ~Promise crash
 
 main:
-    logview cursor/select/right clicked
+    logline context menu
+    logview passthrough signals
+    session handle events
+    or
+    Session dynamicly create Context menu from Component
+    pass into logview
+
     timeline
 
 
