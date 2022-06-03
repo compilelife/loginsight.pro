@@ -1,0 +1,99 @@
+import QtQuick 2.0
+import QtQuick.Controls 1.4
+import QtQuick.Dialogs 1.2
+import './gencolor.js' as GenColor
+
+Item {
+  signal search(string keyword)
+  signal filter(string keyword)
+  signal changed()
+
+  function getHighlights() {
+    const ret = []
+    for (let i = 0; i < highlights.count; i++) {
+      const {keyword, color} = highlights.get(i)
+      ret.push({keyword, color})
+    }
+    return ret
+  }
+
+  ListModel {
+    id: highlights
+    onCountChanged: changed()
+  }
+
+  ListView {
+    id: bar
+    width: parent.width
+    model: highlights
+    orientation: ListView.Horizontal
+    spacing: 10
+    delegate: MouseArea{
+      width: childrenRect.width
+      height: childrenRect.height
+      acceptedButtons: Qt.AllButtons
+      Row {
+        spacing: 2
+        Rectangle{
+          width: 20
+          height: 20
+          color: model.color
+        }
+        Text {
+          text: model.keyword
+        }
+      }
+      onClicked: {
+        bar.currentIndex = index
+        contextMenu.popup()
+      }
+    }
+  }
+
+  ColorDialog {
+    id: selectColorDialog
+    onAccepted: {
+      currentItem().color = String(color)
+      changed()
+    }
+  }
+
+  Menu {
+    id: contextMenu
+    MenuItem{
+      text: 'delete'
+      onTriggered: highlights.remove(bar.currentIndex, 1)
+    }
+    MenuItem{
+      text: 'set color'
+      onTriggered: selectColorDialog.visible = true
+    }
+    MenuSeparator{}
+    MenuItem{
+      text: 'search'
+      onTriggered: search(currentItem().keyword)
+    }
+    MenuItem{
+      text: 'filter'
+      onTriggered: filter(currentItem().keyword)
+    }
+  }
+
+  function add(keyword) {
+    highlights.append({keyword, color: String(GenColor.next())})
+  }
+
+  function currentItem() {
+    return highlights.get(bar.currentIndex)
+  }
+
+  function clear() {
+    highlights.clear()
+  }
+
+  //for debug
+  Component.onCompleted: {
+    add('km')
+    add('IJKMEDIA')
+  }
+}

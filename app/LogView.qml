@@ -4,6 +4,8 @@ import "./coredef.js" as CoreDef
 import "./QuickPromise/promise.js" as Q
 
 Item {
+  id: root
+
   property int curIndex: -1
   property var core: null
   property int logId: 0
@@ -22,7 +24,7 @@ Item {
 
   LogViewContextMenu {
     id: menu
-    session: parent.session
+    session: root.session
     logview: parent
   }
 
@@ -54,7 +56,7 @@ Item {
           width: list.width
           model: logModel.dataAt(curIndex + index)
           lineNumWidth: indicatorMeasure.width
-          segColors: ['red','blue','green','grey']
+          session: root.session
           onContextMenu: {
             menu.selectText = select
             menu.lineModel = model
@@ -278,5 +280,4 @@ Item {
          }
       })
     }
-
 }

@@ -11,9 +11,11 @@ Menu {
 
   MenuItem {
     text: 'add to timeline'
+    onTriggered: session.addToTimeLine(lineModel)
   }
   MenuItem {
     text: 'clear highlight'
+    onTriggered: session.highlightBar.clear()
   }
   MenuSeparator{}
   MenuItem {
@@ -23,10 +25,12 @@ Menu {
   MenuItem {
     visible: hasSeletion
     text: 'highlight'
+    onTriggered: session.highlightBar.add(selectText)
   }
   MenuItem {
     visible: hasSeletion
     text: 'filter'
+    onTriggered: session.filter(selectText, true)
   }
   MenuItem {
     visible: hasSeletion

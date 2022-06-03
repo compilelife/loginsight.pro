@@ -6,6 +6,7 @@ import QtQuick.Layouts 1.15
 import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
 import QtQuick.Dialogs 1.3
+import './app.js' as App
 
 ApplicationWindow {
   width: 800
@@ -39,8 +40,21 @@ ApplicationWindow {
       MenuItem {
         text: 'filter'
         onTriggered: {
-          session.filter()
+          currentSession().filter()
         }
+      }
+    }
+    Menu {
+      title: "TimeLine"
+      enabled: hasSession
+      MenuItem {
+        text: 'clear'
+        onTriggered: {
+          currentSession().timeline.clear()
+        }
+      }
+      MenuItem {
+        text: 'screenshot timeline'
       }
     }
   }
@@ -104,6 +118,7 @@ ApplicationWindow {
 
     session.meta.tabBtn = tabBarButton
     tabBar.currentIndex = tabBar.count - 1
+
     return session
   }
 

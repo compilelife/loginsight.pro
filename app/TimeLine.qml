@@ -6,6 +6,7 @@ import QtQuick.Controls.Styles 1.4
 
 Item {
     id: root
+    signal doubleClickNode(int line)
 
     ColorIndicator {
         id: currentColor
@@ -15,60 +16,6 @@ Item {
     ListModel {
         id: nodes
     }
-
-    function saveToJson() {
-        var allNodes = []
-        for (var i = 0; i < nodes.count; i++) {
-            allNodes.push(nodes.get(i))
-        }
-
-        return JSON.stringify(allNodes)
-    }
-
-    function loadFromJson(json) {
-        var allNodes = JSON.parse(json)
-        allNodes.forEach(node=>nodes.append(node))
-    }
-
-    function addNode(line, log) {
-        var node = {line, log, comment:'备注： ', color: currentColor.color}
-        let index = nodes.count
-        for (let i = 0; i < nodes.count; i++) {
-            const nodeLine = nodes.get(i).line
-            if (nodeLine === line) {
-                index = i
-                break;
-            } else if (nodeLine > line) {
-                nodes.insert(i, node)
-                index = i;
-                break;
-            }
-        }
-
-        if (index === nodes.count) {
-            nodes.append(node)
-        }
-
-        timeline.currentIndex = index
-    }
-
-    function clear() {
-        nodes.clear()
-    }
-
-    property int currentIndex: -1
-    function beginScreenShot() {
-        currentColor.visible = false
-        currentIndex = timeline.currentIndex
-        timeline.currentIndex = -1
-    }
-
-    function endScreenShot() {
-        currentColor.visible = true
-        timeline.currentIndex = currentIndex
-    }
-
-    signal doubleClickNode(int line)
 
     Axis {
         anchors.left: timeline.left
@@ -121,6 +68,58 @@ Item {
         }
         highlightResizeDuration: 300
         highlightMoveDuration: 300
+    }
+
+    function saveToJson() {
+        var allNodes = []
+        for (var i = 0; i < nodes.count; i++) {
+            allNodes.push(nodes.get(i))
+        }
+
+        return JSON.stringify(allNodes)
+    }
+
+    function loadFromJson(json) {
+        var allNodes = JSON.parse(json)
+        allNodes.forEach(node=>nodes.append(node))
+    }
+
+    function addNode(line, log) {
+        var node = {line, log, comment:'备注： ', color: currentColor.color}
+        let index = nodes.count
+        for (let i = 0; i < nodes.count; i++) {
+            const nodeLine = nodes.get(i).line
+            if (nodeLine === line) {
+                index = i
+                break;
+            } else if (nodeLine > line) {
+                nodes.insert(i, node)
+                index = i;
+                break;
+            }
+        }
+
+        if (index === nodes.count) {
+            nodes.append(node)
+        }
+
+        timeline.currentIndex = index
+    }
+
+    function clear() {
+        nodes.clear()
+    }
+
+    property int currentIndex: -1
+    function beginScreenShot() {
+        currentColor.visible = false
+        currentIndex = timeline.currentIndex
+        timeline.currentIndex = -1
+    }
+
+    function endScreenShot() {
+        currentColor.visible = true
+        timeline.currentIndex = currentIndex
     }
 
 //    Row {//调试按钮

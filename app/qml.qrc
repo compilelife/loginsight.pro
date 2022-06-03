@@ -16,5 +16,8 @@
         <file>LogLine.qml</file>
         <file>coredef.js</file>
         <file>LogViewContextMenu.qml</file>
+        <file>HighlightBar.qml</file>
+        <file>gencolor.js</file>
+        <file>app.js</file>
     </qresource>
 </RCC>

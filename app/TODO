@@ -1,21 +1,18 @@
-session:
-    dynamic log(file , then process...
-	    运行一段时间的dynamice file log会自动退出core: promisex.cpp:23 ~Promise crash
-
 main:
-    logline context menu
-    logview passthrough signals
-    session handle events
-    or
-    Session dynamicly create Context menu from Component
-    pass into logview
+    highlight
+        search
+    settings
+        stateless library global shared
 
-    timeline
+utils:
+    copy to clipboard
+    pass timeline to native to shot
 
+Project:
 
-TimeLine:
-    screen shot issue
-
-project
-
+BUG:
+update highlight and segs require refreshing all logview
+timeline screen shot issue
+timeline menu not consistent
 第一次启动概率性连接websocket失败 
+dynamic log: 运行一段时间的dynamice file log会自动退出core: promisex.cpp:23 ~Promise crash

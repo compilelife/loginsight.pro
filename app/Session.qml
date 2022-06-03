@@ -21,8 +21,26 @@ Item {
 
     property var logMap: ({})
 
+    property var timeline: timelineImpl
+    property var highlightBar: highlightBarImpl
+
+    property var highlights: []
+    property var segColors: ["blue","green","red",""]
+
+    HighlightBar {
+      id: highlightBarImpl
+      height: 20
+      width: parent.width
+      onChanged: {
+        highlights = getHighlights()
+        //TODO: force refresh all logview here
+      }
+    }
+
     SplitView {
-        anchors.fill: parent
+      anchors.top: highlightBarImpl.bottom
+      height: parent.height - highlightBarImpl.height
+        width: parent.width
         orientation: Qt.Horizontal
         SplitView {
             height: parent.height
@@ -43,6 +61,7 @@ Item {
                 SplitView.preferredHeight: 300
                 TabBar {
                     id: tabBar
+                    contentHeight: 26
                 }
                 StackLayout {
                     id: holder
@@ -71,6 +90,7 @@ Item {
             }
         }
         TimeLine {
+          id: timelineImpl
             height: parent.height
             implicitWidth: 200
         }
@@ -113,11 +133,11 @@ Item {
         })
     }
 
-    function filter() {
+    function filter(pattern, caseSense) {
         core.sendModalMessage(CoreDef.CmdFilter,
                               {regex: false,
-                                  caseSense:true,
-                                  pattern: '1',//chromium
+                                  caseSense,
+                                  pattern,
                                   logId: rootLogView.logId
                               })
             .then(msg=>{
@@ -136,4 +156,7 @@ Item {
             })
     }
 
+    function addToTimeLine(lineModel) {
+      timeline.addNode(lineModel.line+1, lineModel.content)
+    }
 }

@@ -1,10 +1,12 @@
 import QtQuick 2.0
+import com.cy.LineHighlighter 1.0
+import QtQuick 2.15
 
 //when use as Repeater's child, this could be reused
 Item {
   property var model: null
   property int lineNumWidth: 0
-  property var segColors: []
+  property var session: null
 
   id: root
   width: parent.width
@@ -23,30 +25,6 @@ Item {
     } else {
       loader.sourceComponent = null
     }
-  }
-
-  function createFormatText() {
-    if (model.segs.length === 0)
-        return model.content
-
-    let ret = ''
-    const ori = model.content
-    let pos = 0
-
-    for (let i = 0; i < model.segs.length; i++) {
-      const {offset,length} = model.segs[i]
-      if (offset > pos) {
-        ret += ori.substring(pos, offset)
-      }
-      pos = offset +length
-      ret += `<font color="${segColors[i]}">${ori.substring(offset, pos)}</font>`
-    }
-
-    if (pos < ori.length) {
-      ret += ori.substring(pos)
-    }
-
-    return ret
   }
 
   Component {
@@ -69,10 +47,11 @@ Item {
       }
       TextEdit {
         id: content
+        textFormat: TextEdit.RichText
         readOnly: true
         selectByMouse: true
         width: root.width - indicator.width
-        text: createFormatText()
+        text: model.content
         wrapMode: Text.WrapAnywhere
         MouseArea{
           anchors.fill: parent
@@ -81,6 +60,15 @@ Item {
             content.forceActiveFocus()
             contextMenu(model, content.selectedText)
           }
+        }
+        LineHighlighter {
+          id: highlighter
+          segColors: session.segColors
+          highlights: session.highlights
+          segs: model.segs
+        }
+        Component.onCompleted: {
+          highlighter.setup(content.textDocument)
         }
       }
     }

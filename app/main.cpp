@@ -5,6 +5,7 @@
 #include <QFile>
 #include <QDir>
 #include <QDateTime>
+#include "linehighlighter.h"
 
 QFile gLogFile;
 static const QString gLevels[] = {"Debg", "Warn", "Err-", "Err+", "Info", "Syst"};
@@ -49,6 +50,7 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
     qmlRegisterType<CoreBoot>("com.cy.CoreBoot", 1, 0, "CoreBoot");
+    qmlRegisterType<LineHighlighter>("com.cy.LineHighlighter", 1, 0, "LineHighlighter");
 
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
