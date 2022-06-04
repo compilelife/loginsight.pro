@@ -25,15 +25,25 @@ Item {
     property var highlightBar: highlightBarImpl
 
     property var highlights: []
-    property var segColors: ["blue","green","red",""]
+    property var segColors: ["blue","green","red","yellow"]
+
+    property var logExclusive : null
+    Component.onCompleted: {
+      logExclusive = Qt.createQmlObject('import QtQuick.Controls 1.4; ExclusiveGroup{}', root, 'logExclusive')
+    }
 
     HighlightBar {
       id: highlightBarImpl
-      height: 20
       width: parent.width
       onChanged: {
         highlights = getHighlights()
         //TODO: force refresh all logview here
+      }
+      onFilter: {
+        root.filter(keyword, true)
+      }
+      onSearch: {
+        root.search(keyword, true)
       }
     }
 
@@ -99,6 +109,8 @@ Item {
     function _onLogAdded(logId, logView) {
         logMap[logId]=logView
       logView.session = root
+      logView.exclusiveGroup = logExclusive
+      logView.checked = true//FIXME: not working?
     }
     function _getLogView(logId) {
         return logMap[logId]
@@ -138,11 +150,27 @@ Item {
                               {regex: false,
                                   caseSense,
                                   pattern,
-                                  logId: rootLogView.logId
+                                  logId: _getCurLogView().logId
                               })
             .then(msg=>{
                 subLogs.append(msg.logId, msg.range)
             })
+    }
+
+    function search(pattern, caseSense) {
+      const curLog = _getCurLogView()
+      const {fromLine,fromChar} = curLog.getSearchPos()
+      core.sendModalMessage(CoreDef.CmdSearch, {
+                              logId: curLog.logId,
+                              fromLine,
+                              fromChar,
+                              pattern,
+                              caseSense,
+                              reverse: false,
+                              regex: false
+                            }).then(function(msg){
+                              console.log(msg)
+                            })
     }
 
     function handleLogRangeChanged(msg) {
@@ -158,5 +186,13 @@ Item {
 
     function addToTimeLine(lineModel) {
       timeline.addNode(lineModel.line+1, lineModel.content)
+    }
+
+    function _getCurLogView() {
+      for (const key in logMap) {
+        if (logMap[key].checked)
+           return logMap[key]
+      }
+      return rootLogView
     }
 }

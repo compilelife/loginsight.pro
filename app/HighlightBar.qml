@@ -4,6 +4,8 @@ import QtQuick.Dialogs 1.2
 import './gencolor.js' as GenColor
 
 Item {
+  height: highlights.count > 0 ? 20 : 0
+
   signal search(string keyword)
   signal filter(string keyword)
   signal changed()
@@ -15,6 +17,22 @@ Item {
       ret.push({keyword, color})
     }
     return ret
+  }
+
+  Menu {
+    id: barMenu
+    MenuItem {
+      text: 'clear'
+      onTriggered: clear()
+    }
+  }
+
+  MouseArea {
+    anchors.fill: parent
+    acceptedButtons: Qt.RightButton
+    onClicked: {
+      barMenu.popup()
+    }
   }
 
   ListModel {
@@ -92,8 +110,8 @@ Item {
   }
 
   //for debug
-  Component.onCompleted: {
-    add('km')
-    add('IJKMEDIA')
-  }
+//  Component.onCompleted: {
+//    add('km')
+//    add('IJKMEDIA')
+//  }
 }

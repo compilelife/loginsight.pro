@@ -6,6 +6,9 @@ import "./QuickPromise/promise.js" as Q
 Item {
   id: root
 
+  property bool checked: false
+  property var exclusiveGroup: null
+
   property int curIndex: -1
   property var core: null
   property int logId: 0
@@ -21,6 +24,15 @@ Item {
                           })
 
   property var session: null
+
+  onExclusiveGroupChanged: {
+    if (exclusiveGroup)
+      exclusiveGroup.bindCheckable(root)
+  }
+
+  onCheckedChanged: {
+    console.log('check', logId, checked)
+  }
 
   LogViewContextMenu {
     id: menu
@@ -57,11 +69,51 @@ Item {
           model: logModel.dataAt(curIndex + index)
           lineNumWidth: indicatorMeasure.width
           session: root.session
+          isViewChecked: root.checked
           onContextMenu: {
             menu.selectText = select
             menu.lineModel = model
             menu.popup()
           }
+          onActiveLogFocus: {
+            root.checked = true
+          }
+        }
+      }
+    }
+
+    Timer {
+      id: followScorllBarTimer
+      running: false
+      repeat: true
+      interval: 200
+      onTriggered: {
+        show(_positionToLineIndex(vbar.position))
+      }
+    }
+
+    ScrollBar {
+      id: vbar
+      visible: false
+      hoverEnabled: true
+      active: hovered || pressed
+      orientation: Qt.Vertical
+      position: _lineIndexToPosition(curIndex)
+      size: 0.05
+      stepSize: 1 / logModel.count
+      policy: ScrollBar.AsNeeded
+      anchors.top: parent.top
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      onPressedChanged: {
+        if (vbar.pressed) {
+          root.checked = true
+          //user begin scrolling vbar
+          followScorllBarTimer.running = true
+        } else {
+          //user end scrolling vbar
+          followScorllBarTimer.running = false
+          show(_positionToLineIndex(position))
         }
       }
     }
@@ -83,6 +135,7 @@ Item {
     }
 
     onWheel: function (ev) {
+      root.checked = true
       const indexDelta = -ev.angleDelta.y / 120
       const {beginLine, endLine} = logModel.range
 
@@ -112,40 +165,7 @@ Item {
       return (index - logModel.range.begin) / (logModel.count - 1) * (1 - vbar.size)
     }
 
-    Timer {
-      id: followScorllBarTimer
-      running: false
-      repeat: true
-      interval: 200
-      onTriggered: {
-        show(_positionToLineIndex(vbar.position))
-      }
-    }
 
-    ScrollBar {
-      id: vbar
-      visible: false
-      hoverEnabled: true
-      active: hovered || pressed
-      orientation: Qt.Vertical
-      position: _lineIndexToPosition(curIndex)
-      size: 0.05
-      stepSize: 1 / logModel.count
-      policy: ScrollBar.AsNeeded
-      anchors.top: parent.top
-      anchors.right: parent.right
-      anchors.bottom: parent.bottom
-      onPressedChanged: {
-        if (vbar.pressed) {
-          //user begin scrolling vbar
-          followScorllBarTimer.running = true
-        } else {
-          //user end scrolling vbar
-          followScorllBarTimer.running = false
-          show(_positionToLineIndex(position))
-        }
-      }
-    }
 
   function initLogModel(id, range) {
     console.log('init log model', id, range.begin, range.end)
@@ -280,4 +300,14 @@ Item {
          }
       })
     }
+
+  function getSearchPos() {
+    for(let i = 0; i < content.count; i++) {
+      const line = content.itemAt(i)
+      if (line.hasActiveFocus()) {
+        return line.getSearchPos()
+      }
+    }
+    return {fromLine: 0, fromChar: 0}
+  }
 }

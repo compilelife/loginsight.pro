@@ -1,8 +1,20 @@
 main:
     highlight
         search
+            focus missing
+            crash
+        manage dialog
+            default syntax(or null)
+            select syntax for session
+    timeline
+        double click
     settings
-        stateless library global shared
+
+
+features:
+    filter
+        by seg, for example: filter log level above warn
+
 
 utils:
     copy to clipboard
@@ -11,8 +23,10 @@ utils:
 Project:
 
 BUG:
+readonly no cursor
 update highlight and segs require refreshing all logview
 timeline screen shot issue
 timeline menu not consistent
 第一次启动概率性连接websocket失败 
 dynamic log: 运行一段时间的dynamice file log会自动退出core: promisex.cpp:23 ~Promise crash
+color not beautiful

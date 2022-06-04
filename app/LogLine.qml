@@ -7,12 +7,16 @@ Item {
   property var model: null
   property int lineNumWidth: 0
   property var session: null
+  property bool isViewChecked: false
 
   id: root
   width: parent.width
   height: model === null ? 0 : loader.height
 
   signal contextMenu(var model, string select)
+  signal activeLogFocus()
+
+  property TextEdit _content: null
 
   //act as vue v-if
   Loader {
@@ -36,7 +40,7 @@ Item {
         id: indicator
         width: lineNumWidth + 4
         height: content.height
-        color: '#49b2f6'
+        color: isViewChecked ? '#49b2f6' : 'grey'
         Text {
           width: parent.width
           horizontalAlignment: Text.AlignHCenter
@@ -47,8 +51,9 @@ Item {
       }
       TextEdit {
         id: content
+        focus:true
         textFormat: TextEdit.RichText
-        readOnly: true
+//        readOnly: true
         selectByMouse: true
         width: root.width - indicator.width
         text: model.content
@@ -69,8 +74,22 @@ Item {
         }
         Component.onCompleted: {
           highlighter.setup(content.textDocument)
+          _content = content
+        }
+        onActiveFocusChanged: {
+          console.log('active focus', model.index, content.activeFocus)
+          if (activeFocus)
+            activeLogFocus()
         }
       }
     }
+  }
+
+  function hasActiveFocus() {
+    return _content.activeFocus
+  }
+
+  function getSearchPos() {
+    return {fromLine: model.index, fromChar: _content.cursorPosition}
   }
 }

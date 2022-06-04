@@ -43,6 +43,10 @@ ApplicationWindow {
           currentSession().filter()
         }
       }
+      MenuItem {
+        text: 'search'
+        onTriggered: currentSession().search('chromium', true)
+      }
     }
     Menu {
       title: "TimeLine"
@@ -99,6 +103,8 @@ ApplicationWindow {
       })
     })
   }
+
+//  Session{}
 
   function currentSession() {
     return sessions.itemAt(sessions.currentIndex)

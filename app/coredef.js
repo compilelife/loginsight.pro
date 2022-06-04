@@ -14,6 +14,7 @@ const CmdOpenProcess = 'openProcess'
 const CmdFilter = 'filter'
 const CmdSyncLogs = 'syncLogs'
 const CmdSetLineSegment = 'setLineSegment'
+const CmdSearch = 'search'
 const ServerCmdRangeChanged = 'rangeChanged'
 
 const SegTypeDate = 0;
