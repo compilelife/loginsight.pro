@@ -8,13 +8,15 @@ Item {
   property int lineNumWidth: 0
   property var session: null
   property bool isViewChecked: false
+  property bool isFocusLine: false
 
   id: root
   width: parent.width
   height: model === null ? 0 : loader.height
 
   signal contextMenu(var model, string select)
-  signal activeLogFocus()
+  signal focusLine(int lineIndex)
+  signal emphasisLine(int line)
 
   property TextEdit _content: null
 
@@ -43,10 +45,10 @@ Item {
         color: isViewChecked ? '#49b2f6' : 'grey'
         Text {
           width: parent.width
-          horizontalAlignment: Text.AlignHCenter
-          text: model.index + 1
+          horizontalAlignment: Text.AlignLeft
+          text: isFocusLine ? String(model.index + 1)+' >>' : String(model.index + 1)
           wrapMode: Text.NoWrap
-          color: content.activeFocus ? 'white' : 'black'
+          color: isFocusLine ? 'white' : 'black'
         }
       }
       TextEdit {
@@ -62,8 +64,10 @@ Item {
           anchors.fill: parent
           acceptedButtons: Qt.RightButton
           onClicked: {
-            content.forceActiveFocus()
-            contextMenu(model, content.selectedText)
+            if (mouse.button === Qt.RightButton) {
+              content.forceActiveFocus()
+              contextMenu(model, content.selectedText)
+            }
           }
         }
         LineHighlighter {
@@ -77,9 +81,8 @@ Item {
           _content = content
         }
         onActiveFocusChanged: {
-          console.log('active focus', model.index, content.activeFocus)
           if (activeFocus)
-            activeLogFocus()
+            focusLine(model.index)
         }
       }
     }

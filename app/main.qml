@@ -45,7 +45,7 @@ ApplicationWindow {
       }
       MenuItem {
         text: 'search'
-        onTriggered: currentSession().search('crashedddd', true)
+        onTriggered: currentSession().search('chromium', true)
       }
     }
     Menu {

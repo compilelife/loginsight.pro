@@ -38,7 +38,7 @@ Item {
             height: node.height+20
             TimeNode{
                 id: node
-                line: model.line
+                line: model.line+1
                 log: model.log
                 comment: model.comment
                 color: model.color
@@ -47,7 +47,7 @@ Item {
                 anchors.margins: 10
                 anchors.centerIn: parent
                 onRecommendHeight: v=>{
-                    height = v
+                    node.height = v
                 }
                 onClicked: {
                     timeline.currentIndex = index
@@ -104,6 +104,16 @@ Item {
         }
 
         timeline.currentIndex = index
+    }
+
+    function highlightNode(line) {
+      for (let i = 0; i < nodes.count; i++) {
+          const nodeLine = nodes.get(i).line
+          if (nodeLine === line) {
+              timeline.currentIndex = i;
+            return;
+          }
+      }
     }
 
     function clear() {

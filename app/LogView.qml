@@ -25,6 +25,8 @@ Item {
 
   property var session: null
 
+  property int curFocusLine: -1
+
   onExclusiveGroupChanged: {
     if (exclusiveGroup)
       exclusiveGroup.bindCheckable(root)
@@ -70,13 +72,15 @@ Item {
           lineNumWidth: indicatorMeasure.width
           session: root.session
           isViewChecked: root.checked
+          isFocusLine: curFocusLine === (curIndex + index)
           onContextMenu: {
             menu.selectText = select
             menu.lineModel = model
             menu.popup()
           }
-          onActiveLogFocus: {
+          onFocusLine: {
             root.checked = true
+            curFocusLine = lineIndex
           }
         }
       }
@@ -175,7 +179,7 @@ Item {
       "range": range,
       "count": range.end - range.begin + 1,
       "cache": [],
-      "inCache": function (begin, end) {
+      "inCache": function (begin, end = begin) {
         const cache = logModel.cache
         if (cache.length === 0)
           return false
@@ -277,16 +281,16 @@ Item {
   //async
   function show(index, placeAt) {
      if (logModel.range.end < logModel.range.begin)
-       return
+       return Q.resolved()
 
     const {begin, end} = _getShowRange(index, placeAt)
     if (logModel.inCache(begin, end)) {
       _show(begin)
-      return
+      return Q.resolved()
     }
 
     const cacheRange = _getCacheRange(index)
-    core.sendMessage(CoreDef.CmdGetLines, {
+    return core.sendMessage(CoreDef.CmdGetLines, {
                        "logId": logModel.logId,
                        "range": cacheRange
                      })
@@ -300,6 +304,33 @@ Item {
          }
       })
     }
+
+  function _isInView(index) {
+    if (!logModel.inCache(index))
+        return false
+
+    const nth = index - curIndex
+    if (nth < 0 || nth >= content.model)
+        return false
+
+    //calculate real height
+    let height = 0
+    const maxHeight = list.height
+    for (let i = 0; i <= nth; i++) {
+      height += content.itemAt(i).height
+    }
+
+    return height <= maxHeight
+  }
+
+  function showIntoView(index) {
+    if (_isInView(index)) {
+      curFocusLine = index
+    } else {
+      show(index, 'middle')
+        .then({curFocusLine = index})
+    }
+  }
 
   function getSearchPos() {
     for(let i = 0; i < content.count; i++) {

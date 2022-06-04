@@ -104,6 +104,10 @@ Item {
           id: timelineImpl
             height: parent.height
             implicitWidth: 200
+
+           onDoubleClickNode: {
+             emphasisLine(line)
+           }
         }
     }
 
@@ -183,10 +187,7 @@ Item {
       core.sendModalMessage(CoreDef.CmdSearch, searchArg)
         .then(function(msg){
           if (msg.found) {
-            curLog.show(msg.line, 'middle')
-            //TODO: replace with showIntoView(msg.line)
-            //which keep line unchanged while already in view, or display line in middle of view if invisible
-            //then make it currentline to highlight
+            curLog.showIntoView(msg.line)
           } else {
             //TODO: more specific like search down to bottom not found)
             errTip.display('search error', pattern + 'not found')
@@ -206,7 +207,7 @@ Item {
     }
 
     function addToTimeLine(lineModel) {
-      timeline.addNode(lineModel.line+1, lineModel.content)
+      timeline.addNode(lineModel.line, lineModel.content)
     }
 
     function _getCurLogView() {
@@ -215,5 +216,16 @@ Item {
            return logMap[key]
       }
       return rootLogView
+    }
+
+    function emphasisLine(line) {
+      console.log(line)
+      core.sendMessage(CoreDef.CmdMapLine, {logId: rootLogView.logId, line})
+        .then(function(msg){
+          for (const {logId,line} of msg.lines) {
+            logMap[logId].showIntoView(line)
+          }
+          timeline.highlightNode(line)
+        })
     }
 }

@@ -15,6 +15,7 @@ const CmdFilter = 'filter'
 const CmdSyncLogs = 'syncLogs'
 const CmdSetLineSegment = 'setLineSegment'
 const CmdSearch = 'search'
+const CmdMapLine = 'mapLine'
 const ServerCmdRangeChanged = 'rangeChanged'
 
 const SegTypeDate = 0;

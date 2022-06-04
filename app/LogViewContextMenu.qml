@@ -14,6 +14,11 @@ Menu {
     onTriggered: session.addToTimeLine(lineModel)
   }
   MenuItem {
+    text: 'track this line'
+    onTriggered: session.emphasisLine(lineModel.line)
+  }
+
+  MenuItem {
     text: 'clear highlight'
     onTriggered: session.highlightBar.clear()
   }

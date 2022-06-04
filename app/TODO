@@ -3,10 +3,8 @@ main:
         manage dialog
             default syntax(or null)
             select syntax for session
-    timeline
-        add current line concept to logview, to make emphasis currentline possible
-        double click
     settings
+    sync , isolate views
 
 
 features:
@@ -21,6 +19,8 @@ utils:
 Project:
 
 BUG:
+timeline node randomly missing height
+current line highlight effect
 all todos
 after search, shown index on middle of logview
 readonly no cursor
