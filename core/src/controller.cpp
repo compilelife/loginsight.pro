@@ -144,8 +144,9 @@ shared_ptr<Promise> Controller::find(shared_ptr<ILog> log,
         while (!view->end() && !*cancelled) {
             auto lineRef = view->current();
             auto ret = f(lineRef.str());
-            if (ret)
+            if (ret){
                 return FindLogRet{lineRef, ret};
+            }
             view->next();
         }
         return FindLogRet{LineRef{}, FindRet::failed()};

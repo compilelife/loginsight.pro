@@ -94,12 +94,12 @@ TEST_F(ControllerTest, find) {
     controller->mockInput(R"({"cmd":"openFile","id":"ui-1","path":"./sample.log"})");
     this_thread::sleep_for(5s);
 
-    controller->mockInput(R"({"cmd":"search", "id":"ui-2", "logId":1, "fromLine": 178051, "fromChar":32, "reverse": false, "regex": true, "pattern": "\\w+_\\w+", "caseSense": false})");
+    controller->mockInput(R"({"cmd":"search", "id":"ui-2", "logId":1, "fromLine": 0, "fromChar":27, "reverse": false, "regex": false, "pattern": "chromium", "caseSense": true})");
     this_thread::sleep_for(500ms);
 
     auto reply = lastReply();
     ASSERT_TRUE(reply["found"].asBool());
-    ASSERT_EQ(38, reply["offset"].asUInt());
-    ASSERT_EQ(178051, reply["line"].asUInt64());
-    ASSERT_EQ(11, reply["len"].asUInt());
+    ASSERT_EQ(1, reply["line"].asUInt64());
+    ASSERT_EQ(21, reply["offset"].asUInt());
+    ASSERT_EQ(8, reply["len"].asUInt());
 }
