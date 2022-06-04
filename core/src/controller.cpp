@@ -145,11 +145,11 @@ shared_ptr<Promise> Controller::find(shared_ptr<ILog> log,
             auto lineRef = view->current();
             auto ret = f(lineRef.str());
             if (ret){
-                return FindLogRet{lineRef, ret};
+                return any(FindLogRet{lineRef, ret});
             }
             view->next();
         }
-        return FindLogRet{LineRef{}, FindRet::failed()};
+        return any();
     };
     return Calculation::instance().peekFirst(unprocessed, doIterateFind);
 }
