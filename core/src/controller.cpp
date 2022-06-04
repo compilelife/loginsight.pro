@@ -149,9 +149,17 @@ shared_ptr<Promise> Controller::find(shared_ptr<ILog> log,
             }
             view->next();
         }
-        return any();
+        return any();//让peekFirst识别该线程未搜索到匹配值
     };
-    return Calculation::instance().peekFirst(unprocessed, doIterateFind);
+    
+    auto p = Calculation::instance().peekFirst(unprocessed, doIterateFind);
+    p->then([](shared_ptr<Promise> p){
+        if (!p->isCancelled() && !p->value().has_value()) {
+            p->setValue(FindLogRet{});//设置失败值
+        }
+    });
+
+    return p;
 }
 
 

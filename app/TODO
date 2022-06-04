@@ -1,12 +1,10 @@
 main:
     highlight
-        search
-            focus missing
-            crash
         manage dialog
             default syntax(or null)
             select syntax for session
     timeline
+        add current line concept to logview, to make emphasis currentline possible
         double click
     settings
 
@@ -23,6 +21,8 @@ utils:
 Project:
 
 BUG:
+all todos
+after search, shown index on middle of logview
 readonly no cursor
 update highlight and segs require refreshing all logview
 timeline screen shot issue

@@ -4,6 +4,7 @@ import QtQuick.Controls 2.15
 import './coredef.js' as CoreDef
 import QtQml.Models 2.15
 import QtQml 2.15
+import QtQuick.Dialogs 1.3
 
 Item {
   id: root
@@ -106,6 +107,16 @@ Item {
         }
     }
 
+  MessageDialog {
+    id: errTip
+    standardButtons: StandardButton.OK
+    function display(title, detail) {
+      errTip.title = title
+      errTip.text = detail
+      errTip.visible = true
+    }
+  }
+
     function _onLogAdded(logId, logView) {
         logMap[logId]=logView
       logView.session = root
@@ -160,17 +171,27 @@ Item {
     function search(pattern, caseSense) {
       const curLog = _getCurLogView()
       const {fromLine,fromChar} = curLog.getSearchPos()
-      core.sendModalMessage(CoreDef.CmdSearch, {
-                              logId: curLog.logId,
-                              fromLine,
-                              fromChar,
-                              pattern,
-                              caseSense,
-                              reverse: false,
-                              regex: false
-                            }).then(function(msg){
-                              console.log(msg)
-                            })
+      const searchArg = {
+        logId: curLog.logId,
+        fromLine,
+        fromChar,
+        pattern,
+        caseSense,
+        reverse: false,
+        regex: false
+      }
+      core.sendModalMessage(CoreDef.CmdSearch, searchArg)
+        .then(function(msg){
+          if (msg.found) {
+            curLog.show(msg.line, 'middle')
+            //TODO: replace with showIntoView(msg.line)
+            //which keep line unchanged while already in view, or display line in middle of view if invisible
+            //then make it currentline to highlight
+          } else {
+            //TODO: more specific like search down to bottom not found)
+            errTip.display('search error', pattern + 'not found')
+          }
+        })
     }
 
     function handleLogRangeChanged(msg) {

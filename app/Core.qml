@@ -53,11 +53,13 @@ Item {
     }
   }
 
+  //shown when op take more than 200ms
   Dialog {
     id: longOpDlg
     property string waitId: ''
     property int waitPromiseId: 0
     property string hint: ''
+    property int status: 0 //0-idle,1-ready,2-shown
 
     title: 'proceeding long op'
     standardButtons: StandardButton.Cancel
@@ -73,11 +75,14 @@ Item {
       }
       Timer {
         interval: 200
-        running: longOpDlg.visible
+        running: status >= 1
         onTriggered: {
-          sendMessage(CoreDef.CmdQueryPromise, {pid: longOpDlg.waitPromiseId}).then(msg => {
-                                                      progressBar.value = msg.progress
-                                                    })
+          sendMessage(CoreDef.CmdQueryPromise, {pid: longOpDlg.waitPromiseId})
+            .then(function(msg){
+              progressBar.value = msg.progress
+              status = 2
+              visible = true
+            })
         }
       }
     }
@@ -88,7 +93,11 @@ Item {
 
     function startWait(id) {
       waitId = id
-      visible = true
+      status = 1
+    }
+
+    function finishWait() {
+      status = 0
     }
   }
 
@@ -183,7 +192,7 @@ Item {
         }
       } else {
         if (longOpDlg.visible && longOpDlg.waitId === msgObj.id) {
-          longOpDlg.visible = false
+          longOpDlg.finishWait()
         }
       }
     } else {
