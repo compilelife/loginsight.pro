@@ -5,6 +5,7 @@ import './coredef.js' as CoreDef
 import QtQml.Models 2.15
 import QtQml 2.15
 import QtQuick.Dialogs 1.3
+import './util.js' as Util
 
 Item {
   id: root
@@ -44,7 +45,7 @@ Item {
         root.filter(keyword, true)
       }
       onSearch: {
-        root.search(keyword, true)
+        root.search({pattern: keyword})
       }
     }
 
@@ -172,25 +173,27 @@ Item {
             })
     }
 
-    function search(pattern, caseSense) {
+    //param: {pattern, caseSense, reverse, regex}
+    function search(param) {
       const curLog = _getCurLogView()
       const {fromLine,fromChar} = curLog.getSearchPos()
-      const searchArg = {
+      const searchArg = Util.merge({
         logId: curLog.logId,
         fromLine,
         fromChar,
-        pattern,
-        caseSense,
+        pattern: '',
+        caseSense: true,
         reverse: false,
         regex: false
-      }
+      }, param)
+
       core.sendModalMessage(CoreDef.CmdSearch, searchArg)
         .then(function(msg){
           if (msg.found) {
             curLog.showSearchResult(msg)
           } else {
             //TODO: more specific log, such as 'search down to bottom not found'
-            errTip.display('search error', pattern + 'not found')
+            errTip.display('search error', searchArg.pattern + ' not found')
           }
         })
     }
@@ -219,11 +222,10 @@ Item {
     }
 
     function emphasisLine(line) {
-      console.log(line)
-      core.sendMessage(CoreDef.CmdMapLine, {logId: rootLogView.logId, line})
+      core.sendMessage(CoreDef.CmdMapLine, {logId: rootLogView.logId, index: line})
         .then(function(msg){
-          for (const {logId,line} of msg.lines) {
-            logMap[logId].showIntoView(line)
+          for (const {logId,index} of msg.lines) {
+            logMap[logId].showIntoView(index)
           }
           timeline.highlightNode(line)
         })

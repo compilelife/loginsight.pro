@@ -1,14 +1,5 @@
 main:
-    index and line:
-        index: index of current log/sublog
-            emphasis
-            showSearchResult
-            search
-        line: line of root
     search
-        search bar
-            search foward
-            search backward
         continuous search
             set a flag to remember last search direction since visible/word unchanged
             when flag equals current direction, skip a word length
@@ -26,7 +17,6 @@ features:
     filter
         by seg, for example: filter log level above warn
 
-
 utils:
     copy to clipboard
     pass timeline to native to shot
@@ -40,6 +30,5 @@ readonly no cursor
 update highlight and segs require refreshing all logview
 timeline screen shot issue
 timeline menu ui seems for touch op, not consistent to other menus
-第一次启动概率性连接websocket失败 
 dynamic log: 运行一段时间的dynamice file log会自动退出core: promisex.cpp:23 ~Promise crash
 color not beautiful

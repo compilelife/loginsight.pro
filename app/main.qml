@@ -45,7 +45,7 @@ ApplicationWindow {
       }
       MenuItem {
         text: 'search'
-        onTriggered: currentSession().search('chromium', true)
+        onTriggered: currentSession().search({pattern: 'chromium'})
       }
     }
     Menu {

@@ -138,6 +138,9 @@ shared_ptr<Promise> Controller::find(shared_ptr<ILog> log,
         });
     }
 
+    if (view->size() <= 1)
+    return Promise::resolved(FindLogRet{});
+
     //如果在第一行没有找到匹配，那么我们用多线程查找
     auto unprocessed = view->subview(1, view->size() - 1);
     auto doIterateFind = [f](bool* cancelled, shared_ptr<LogView> view) {
@@ -493,7 +496,7 @@ ImplCmdHandler(search) {
             auto findRet = any_cast<FindLogRet>(p->value());
             auto ret = ack(msg, ReplyState::Ok);
             if (findRet.extra) {
-                ret["line"] = findRet.line.index();
+                ret["index"] = log->fromSource(findRet.line.index());
                 ret["offset"] = findRet.extra.offset;
                 ret["len"] = findRet.extra.len;
                 ret["found"] = true;
@@ -533,16 +536,16 @@ ImplCmdHandler(mapLine) {
         return Promise::resolved(false);
     }
 
-    auto line = msg["line"].as<LogLineI>();
+    auto index = msg["index"].as<LogLineI>();
 
-    auto srcLine = log->mapToSource(line);
-    auto allLines = mLogTree.mapLine(srcLine);
+    auto srcIndex = log->mapToSource(index);
+    auto allIndexes = mLogTree.mapLine(srcIndex);
 
     auto ret = ack(msg, ReplyState::Ok);
-    for (auto &&e : allLines) {
+    for (auto &&e : allIndexes) {
         Json::Value item;
         item["logId"] = e.first;
-        item["line"] = e.second;
+        item["index"] = e.second;
         ret["lines"].append(item);
     }
     

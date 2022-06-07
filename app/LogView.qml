@@ -25,7 +25,7 @@ Item {
 
   property var session: null
 
-  property int curFocusIndex: -1
+  property int curFocusIndex: 0
 
   Shortcut {
     sequence: 'Ctrl+F'
@@ -163,9 +163,10 @@ Item {
 
   SearchBar {
     id: searchBar
+    visible: false
     anchors.top: parent.top
     anchors.right: parent.right
-    onSearch: session.search(keyword, isCaseSense)
+    onSearch: session.search({pattern: keyword, caseSense: isCaseSense, regex: isRegex, reverse})
   }
 
     //since vbar scroll range is 0 - 1.0
@@ -354,11 +355,11 @@ Item {
     return line ? line.getSearchPos() : {fromLine: curFocusIndex, fromChar: 0}
   }
 
-  function showSearchResult({line, offset, len}) {
-    showIntoView(line)
+  function showSearchResult({index, offset, len}) {
+    showIntoView(index)
       .then(function(){
         for (const cacheLine of logModel.cache) {
-          if (cacheLine.line === line) {
+          if (cacheLine.index === index) {
             cacheLine.searchResult = {offset, len}
           } else {
             cacheLine.searchResult = null

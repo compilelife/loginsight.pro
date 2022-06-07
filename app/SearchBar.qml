@@ -10,7 +10,7 @@ Item {
   property alias isRegex: regexBox.checked
   property alias isCaseSense: caseBox.checked
 
-  signal search(string keyword)
+  signal search(string keyword, bool reverse)
 
   Rectangle {
     id:background
@@ -34,20 +34,24 @@ Item {
     height: childrenRect.height
     anchors.centerIn: parent
     ComboBox {
+      id: keywordBox
+      focus: root.visible
       editable: true
       currentIndex: -1
       width: 100
       model: []
-      onAccepted: search(editText)
-      onActivated: search(model[index])
+      onAccepted: search(editText, false)
+      onActivated: search(model[index], false)
     }
     IconButton {
       size: parent.height
       source: "qrc:/images/left.png"
+      onClicked: search(keywordBox.editText, true)
     }
     IconButton {
       size: parent.height
       source: "qrc:/images/right.png"
+      onClicked: search(keywordBox.editText, false)
     }
     CheckBox {
       id: caseBox

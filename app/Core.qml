@@ -5,6 +5,7 @@ import "./QuickPromise/promise.js" as Q
 import com.cy.CoreBoot 1.0
 import "./coredef.js" as CoreDef
 import QtQuick.Dialogs 1.3
+import './util.js' as Util
 
 Item {
   property var pendings: ({})
@@ -108,14 +109,10 @@ Item {
   }
 
   function sendMessage(cmd, extra) {
-    const packed = {
-      "id": `ui-${++idGen}`,
-      "cmd": cmd
-    }
-    if (extra) {
-      for (const field in extra)
-        packed[field] = extra[field]
-    }
+    const packed = Util.merge({
+                 "id": `ui-${++idGen}`,
+                 "cmd": cmd
+               }, extra)
 
     const ret = Q.promise(function (resolve, reject) {
       pendings[packed.id] = {
