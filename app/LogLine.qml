@@ -75,6 +75,7 @@ Item {
           segColors: session.segColors
           highlights: session.highlights
           segs: model.segs
+          searchResult: model.searchResult || {}
         }
         Component.onCompleted: {
           highlighter.setup(content.textDocument)

@@ -25,7 +25,13 @@ Item {
 
   property var session: null
 
-  property int curFocusLine: -1
+  property int curFocusIndex: -1
+
+  Shortcut {
+    sequence: 'Ctrl+F'
+    enabled: checked
+    onActivated: searchBar.visible = true
+  }
 
   onExclusiveGroupChanged: {
     if (exclusiveGroup)
@@ -54,6 +60,8 @@ Item {
     text: '' + logModel.range.end
   }
 
+
+
   MouseArea {
     id: list
     anchors.fill: parent
@@ -72,7 +80,7 @@ Item {
           lineNumWidth: indicatorMeasure.width
           session: root.session
           isViewChecked: root.checked
-          isFocusLine: curFocusLine === (curIndex + index)
+          isFocusLine: curFocusIndex === (curIndex + index)
           onContextMenu: {
             menu.selectText = select
             menu.lineModel = model
@@ -80,7 +88,7 @@ Item {
           }
           onFocusLine: {
             root.checked = true
-            curFocusLine = lineIndex
+            curFocusIndex = lineIndex
           }
         }
       }
@@ -152,6 +160,13 @@ Item {
         show(index)
       }
     }
+
+  SearchBar {
+    id: searchBar
+    anchors.top: parent.top
+    anchors.right: parent.right
+    onSearch: session.search(keyword, isCaseSense)
+  }
 
     //since vbar scroll range is 0 - 1.0
     //and log index range is range.begin - range.end
@@ -264,8 +279,8 @@ Item {
     return _limitRange(prefer)
   }
 
-  //if curIndex not changed, repeater won't react
-  //but if we call _forceRefresh once, then we call it every time
+  //if curIndex not changed, repeater won't react, that's why we need force
+  //However if we call _forceRefresh once, then we should call it every time logModel changes
   function _forceRefresh(index) {
     for (let i = 0; i < content.model; i++) {
       const item = content.itemAt(i)
@@ -325,20 +340,31 @@ Item {
 
   function showIntoView(index) {
     if (_isInView(index)) {
-      curFocusLine = index
+      curFocusIndex = index
+      return Q.resolved()
     } else {
-      show(index, 'middle')
-        .then({curFocusLine = index})
+      return show(index, 'middle')
+        .then({curFocusIndex = index})
     }
   }
 
   function getSearchPos() {
-    for(let i = 0; i < content.count; i++) {
-      const line = content.itemAt(i)
-      if (line.hasActiveFocus()) {
-        return line.getSearchPos()
-      }
-    }
-    return {fromLine: 0, fromChar: 0}
+    const indexInView = curFocusIndex - curIndex
+    const line = content.itemAt(indexInView)
+    return line ? line.getSearchPos() : {fromLine: curFocusIndex, fromChar: 0}
+  }
+
+  function showSearchResult({line, offset, len}) {
+    showIntoView(line)
+      .then(function(){
+        for (const cacheLine of logModel.cache) {
+          if (cacheLine.line === line) {
+            cacheLine.searchResult = {offset, len}
+          } else {
+            cacheLine.searchResult = null
+          }
+          _forceRefresh(curIndex)
+        }
+      })
   }
 }

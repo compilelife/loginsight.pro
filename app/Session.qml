@@ -187,9 +187,9 @@ Item {
       core.sendModalMessage(CoreDef.CmdSearch, searchArg)
         .then(function(msg){
           if (msg.found) {
-            curLog.showIntoView(msg.line)
+            curLog.showSearchResult(msg)
           } else {
-            //TODO: more specific like search down to bottom not found)
+            //TODO: more specific log, such as 'search down to bottom not found'
             errTip.display('search error', pattern + 'not found')
           }
         })

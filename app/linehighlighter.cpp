@@ -43,5 +43,15 @@ void LineHighlighter::highlightBlock(const QString &text)
                 setFormat(index, keywordLen, fmt);
         }while(index >= 0);
     }
+
+    //search result
+    if (!searchResult.empty()) {
+        auto offset = searchResult["offset"].toUInt();
+        auto length = searchResult["len"].toUInt();
+        QTextCharFormat fmt;
+        fmt.clearBackground();
+        fmt.setBackground(QColor(0,200,200));
+        setFormat(offset, length, fmt);
+    }
 }
 

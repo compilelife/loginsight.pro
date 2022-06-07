@@ -1,10 +1,25 @@
 main:
-    highlight
+    index and line:
+        index: index of current log/sublog
+            emphasis
+            showSearchResult
+            search
+        line: line of root
+    search
+        search bar
+            search foward
+            search backward
+        continuous search
+            set a flag to remember last search direction since visible/word unchanged
+            when flag equals current direction, skip a word length
+        completer:
+            add {keyword,isregex,caseSense} to model if enter/return
+    syntax
         manage dialog
             default syntax(or null)
             select syntax for session
     settings
-    sync , isolate views
+    follow dynamic log
 
 
 features:
@@ -19,14 +34,12 @@ utils:
 Project:
 
 BUG:
-timeline node randomly missing height
 current line highlight effect
 all todos
-after search, shown index on middle of logview
 readonly no cursor
 update highlight and segs require refreshing all logview
 timeline screen shot issue
-timeline menu not consistent
+timeline menu ui seems for touch op, not consistent to other menus
 第一次启动概率性连接websocket失败 
 dynamic log: 运行一段时间的dynamice file log会自动退出core: promisex.cpp:23 ~Promise crash
 color not beautiful

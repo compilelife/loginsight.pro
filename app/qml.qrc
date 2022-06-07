@@ -19,5 +19,9 @@
         <file>HighlightBar.qml</file>
         <file>gencolor.js</file>
         <file>app.js</file>
+        <file>SearchBar.qml</file>
+        <file>images/left.png</file>
+        <file>images/right.png</file>
+        <file>IconButton.qml</file>
     </qresource>
 </RCC>

@@ -16,11 +16,13 @@ public:
     Q_PROPERTY(QVector<QString> segColors MEMBER segColors);
     Q_PROPERTY(QVector<QVariantMap> highlights MEMBER highlights);
     Q_PROPERTY(QVector<QVariantMap> segs MEMBER segs);
+    Q_PROPERTY(QVariantMap searchResult MEMBER searchResult);
 
 private:
     QVector<QVariantMap> segs;
     QVector<QString> segColors;
     QVector<QVariantMap> highlights;
+    QVariantMap searchResult;
 
 protected:
     void highlightBlock(const QString &text) override;
