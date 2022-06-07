@@ -55,11 +55,12 @@ Item {
         id: content
         focus:true
         textFormat: TextEdit.RichText
-        readOnly: true
+//        readOnly: true
         selectByMouse: true
         width: root.width - indicator.width
         text: model.content
         wrapMode: Text.WrapAnywhere
+
         MouseArea{
           anchors.fill: parent
           acceptedButtons: Qt.RightButton

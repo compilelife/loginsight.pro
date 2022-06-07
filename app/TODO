@@ -1,8 +1,5 @@
 main:
     search
-        continuous search
-            set a flag to remember last search direction since visible/word unchanged
-            when flag equals current direction, skip a word length
         completer:
             add {keyword,isregex,caseSense} to model if enter/return
     syntax

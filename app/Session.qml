@@ -174,9 +174,9 @@ Item {
     }
 
     //param: {pattern, caseSense, reverse, regex}
-    function search(param) {
+    function search(param, searchPos = null) {
       const curLog = _getCurLogView()
-      const {fromLine,fromChar} = curLog.getSearchPos()
+      const {fromLine,fromChar} = searchPos ? searchPos : curLog.getSearchPos()
       const searchArg = Util.merge({
         logId: curLog.logId,
         fromLine,

@@ -10,7 +10,25 @@ Item {
   property alias isRegex: regexBox.checked
   property alias isCaseSense: caseBox.checked
 
-  signal search(string keyword, bool reverse)
+  signal search(string keyword, bool reverse, bool isContinue)
+
+  property string _lastKeyword: null
+  property bool _lastReverse: false
+  function _updateIsContinue(keyword, reverse) {
+    const isContinue = (_lastKeyword === keyword) && (_lastReverse === reverse)
+    _lastKeyword = keyword
+    _lastReverse = reverse
+    return isContinue
+  }
+
+  function requestSearch(keyword, reverse=false) {
+    search(keyword, reverse, _updateIsContinue(keyword, reverse))
+  }
+
+  onVisibleChanged: {
+    _lastKeyword = null
+    _lastReverse = false
+  }
 
   Rectangle {
     id:background
@@ -40,18 +58,18 @@ Item {
       currentIndex: -1
       width: 100
       model: []
-      onAccepted: search(editText, false)
-      onActivated: search(model[index], false)
+      onAccepted: requestSearch(editText)
+      onActivated: requestSearch(model[index])
     }
     IconButton {
       size: parent.height
       source: "qrc:/images/left.png"
-      onClicked: search(keywordBox.editText, true)
+      onClicked: requestSearch(keywordBox.editText, true)
     }
     IconButton {
       size: parent.height
       source: "qrc:/images/right.png"
-      onClicked: search(keywordBox.editText, false)
+      onClicked: requestSearch(keywordBox.editText)
     }
     CheckBox {
       id: caseBox

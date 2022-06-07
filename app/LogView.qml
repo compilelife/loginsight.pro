@@ -27,6 +27,9 @@ Item {
 
   property int curFocusIndex: 0
 
+  //for continue search
+  property var _lastSearchPos: ({fromLine: 0, fromChar: 0, len: 0})
+
   Shortcut {
     sequence: 'Ctrl+F'
     enabled: checked
@@ -166,7 +169,18 @@ Item {
     visible: false
     anchors.top: parent.top
     anchors.right: parent.right
-    onSearch: session.search({pattern: keyword, caseSense: isCaseSense, regex: isRegex, reverse})
+    onSearch: {
+      let searchPos = null
+      if (isContinue) {
+        searchPos = _lastSearchPos
+        if (reverse)
+          searchPos.fromChar -= searchPos.len
+        else
+          searchPos.fromChar += searchPos.len
+      }
+
+      session.search({pattern: keyword, caseSense: isCaseSense, regex: isRegex, reverse}, searchPos)
+    }
   }
 
     //since vbar scroll range is 0 - 1.0
@@ -349,13 +363,20 @@ Item {
     }
   }
 
-  function getSearchPos() {
-    const indexInView = curFocusIndex - curIndex
+  function _getLogLine(index) {
+    const indexInView = index - curIndex
     const line = content.itemAt(indexInView)
+    return line
+  }
+
+  function getSearchPos() {
+    const line = _getLogLine(curFocusIndex)
     return line ? line.getSearchPos() : {fromLine: curFocusIndex, fromChar: 0}
   }
 
   function showSearchResult({index, offset, len}) {
+    _lastSearchPos = {fromLine: index, fromChar: offset, len}
+
     showIntoView(index)
       .then(function(){
         for (const cacheLine of logModel.cache) {
@@ -364,7 +385,7 @@ Item {
           } else {
             cacheLine.searchResult = null
           }
-          _forceRefresh(curIndex)
+          _forceRefresh(curIndex)//to make searchResult highlight
         }
       })
   }
