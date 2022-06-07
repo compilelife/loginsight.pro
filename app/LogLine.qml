@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import com.cy.LineHighlighter 1.0
 import QtQuick 2.15
+import './app.js' as App
 
 //when use as Repeater's child, this could be reused
 Item {
@@ -60,6 +61,10 @@ Item {
         width: root.width - indicator.width
         text: model.content
         wrapMode: Text.WrapAnywhere
+        font {
+          family: App.settings.logView.font.family
+          pixelSize: App.settings.logView.font.size
+        }
 
         MouseArea{
           anchors.fill: parent

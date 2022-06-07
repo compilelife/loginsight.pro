@@ -170,9 +170,8 @@ Item {
     anchors.top: parent.top
     anchors.right: parent.right
     onSearch: {
-      let searchPos = null
-      if (isContinue) {
-        searchPos = _lastSearchPos
+      let searchPos = _lastSearchPos
+      if (isContinue && _lastSearchPos) {
         if (reverse)
           searchPos.fromChar -= searchPos.len
         else
@@ -180,6 +179,9 @@ Item {
       }
 
       session.search({pattern: keyword, caseSense: isCaseSense, regex: isRegex, reverse}, searchPos)
+    }
+    onVisibleChanged: {
+      _lastSearchPos = null
     }
   }
 

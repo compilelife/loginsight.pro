@@ -1,13 +1,14 @@
 main:
-    search
-        completer:
-            add {keyword,isregex,caseSense} to model if enter/return
     syntax
         manage dialog
             default syntax(or null)
             select syntax for session
     settings
     follow dynamic log
+
+enhance:
+    line spacing
+    page up/down
 
 
 features:
@@ -21,6 +22,7 @@ utils:
 Project:
 
 BUG:
+filter OsdDisplayReceiver, first 3 line not highlight?like first cache(50 lines) has no segs info
 current line highlight effect
 all todos
 readonly no cursor

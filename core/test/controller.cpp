@@ -94,7 +94,7 @@ TEST_F(ControllerTest, find) {
     controller->mockInput(R"({"cmd":"openFile","id":"ui-1","path":"./sample.log"})");
     this_thread::sleep_for(5s);
 
-    controller->mockInput(R"({"cmd":"search", "id":"ui-2", "logId":1, "fromLine": 0, "fromChar":27, "reverse": false, "regex": false, "pattern": "chromium", "caseSense": true})");
+    controller->mockInput(R"({"cmd":"search", "id":"ui-2", "logId":1, "fromLine": 1, "fromChar":90, "reverse": true, "regex": false, "pattern": "chro", "caseSense": true})");
     this_thread::sleep_for(500ms);
 
     auto reply = lastReply();

@@ -131,7 +131,7 @@ shared_ptr<Promise> Controller::find(shared_ptr<ILog> log,
     auto firstLine = reverse ? (lineRef.str().substr(0, fromChar+1)) : (lineRef.str().substr(fromChar));
     auto firstLineRet = f(firstLine);
     if (firstLineRet) {
-        FindRet r{firstLineRet.offset + fromChar, firstLineRet.len};
+        FindRet r{firstLineRet.offset + (reverse ? 0 : fromChar), firstLineRet.len};
         return Promise::resolved(FindLogRet{
             lineRef,
             r

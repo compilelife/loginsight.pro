@@ -14,16 +14,7 @@ Item {
 
   property string _lastKeyword: null
   property bool _lastReverse: false
-  function _updateIsContinue(keyword, reverse) {
-    const isContinue = (_lastKeyword === keyword) && (_lastReverse === reverse)
-    _lastKeyword = keyword
-    _lastReverse = reverse
-    return isContinue
-  }
 
-  function requestSearch(keyword, reverse=false) {
-    search(keyword, reverse, _updateIsContinue(keyword, reverse))
-  }
 
   onVisibleChanged: {
     _lastKeyword = null
@@ -45,6 +36,10 @@ Item {
     color: '#80000000'
   }
 
+  ListModel {
+    id: candidateList
+  }
+
   Row {
     id: content
     spacing: 10
@@ -57,9 +52,15 @@ Item {
       editable: true
       currentIndex: -1
       width: 100
-      model: []
+      model: candidateList
+      textRole: 'keyword'
       onAccepted: requestSearch(editText)
-      onActivated: requestSearch(model[index])
+      onCurrentIndexChanged: {
+        const model = candidateList.get(currentIndex)
+        editText = model.keyword
+        caseBox.checked = model.isCaseSense
+        regexBox.checked = model.isRegex
+      }
     }
     IconButton {
       size: parent.height
@@ -86,4 +87,22 @@ Item {
       onClicked: root.visible = false
     }
   }
+
+  function _updateIsContinue(keyword, reverse) {
+    const isContinue = (_lastKeyword === keyword) && (_lastReverse === reverse)
+    _lastKeyword = keyword
+    _lastReverse = reverse
+    return isContinue
+  }
+
+  function requestSearch(keyword, reverse=false) {
+    search(keyword, reverse, _updateIsContinue(keyword, reverse))
+    for (let i = 0; i < candidateList.count; i++) {
+      if (candidateList.get(i).keyword === keyword)
+        return
+    }
+    candidateList.append({keyword, isRegex, isCaseSense})
+  }
+
+
 }
