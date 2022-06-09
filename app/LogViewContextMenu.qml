@@ -35,7 +35,7 @@ Menu {
   MenuItem {
     visible: hasSeletion
     text: 'filter'
-    onTriggered: session.filter(selectText, true)
+    onTriggered: session.filter({pattern: selectText})
   }
   MenuItem {
     visible: hasSeletion

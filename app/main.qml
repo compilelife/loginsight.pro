@@ -22,16 +22,12 @@ ApplicationWindow {
       title: "File"
       MenuItem {
         text: 'open'
-        onTriggered: {
-          openDlg.visible = true
-        }
+        onTriggered: openDlg.visible = true
       }
       MenuItem {
         text: "close"
         enabled: hasSession
-        onTriggered: {
-          delSession(currentSession())
-        }
+        onTriggered: delSession(currentSession())
       }
     }
     Menu {
@@ -39,13 +35,15 @@ ApplicationWindow {
       enabled: hasSession
       MenuItem {
         text: 'filter'
-        onTriggered: {
-          currentSession().filter()
-        }
+        onTriggered: currentSession().filterAction()
       }
       MenuItem {
         text: 'search'
-        onTriggered: currentSession().search({pattern: 'chromium'})
+        onTriggered: currentSession().searchAction()
+      }
+      MenuItem {
+        text: 'goto'
+        onTriggered: currentSession().gotoAction()
       }
     }
     Menu {
@@ -53,12 +51,11 @@ ApplicationWindow {
       enabled: hasSession
       MenuItem {
         text: 'clear'
-        onTriggered: {
-          currentSession().timeline.clear()
-        }
+        onTriggered: currentSession().timeline.clear()
       }
       MenuItem {
         text: 'screenshot timeline'
+        onTriggered: currentSession().timeLine.screenShot()
       }
     }
   }

@@ -2,6 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import "./coredef.js" as CoreDef
 import "./QuickPromise/promise.js" as Q
+import "./app.js" as App
 
 Item {
   id: root
@@ -34,6 +35,12 @@ Item {
     sequence: 'Ctrl+F'
     enabled: checked
     onActivated: searchBar.visible = true
+  }
+
+  Shortcut {
+    sequence: 'Ctrl+D'
+    enabled: checked
+    onActivated: filterDialog.visible = true
   }
 
   onExclusiveGroupChanged: {
@@ -76,7 +83,7 @@ Item {
       Repeater {
         id: content
         //max line count correspond to list.height, may or may not
-        model: Math.round(list.height / indicatorMeasure.height)
+        model: Math.round(list.height / (indicatorMeasure.height + App.settings.logView.lineSpacing))
         LogLine {
           width: list.width
           model: logModel.dataAt(curIndex + index)
@@ -182,6 +189,24 @@ Item {
     }
     onVisibleChanged: {
       _lastSearchPos = null
+    }
+  }
+
+  FilterDialog {
+    id: filterDialog
+    anchors.centerIn: parent
+    visible: false
+    onAccepted: {
+      session.filter(getFilterArgs())
+    }
+  }
+
+  GotoDialog {
+    id: gotoDialog
+    visible: true
+    range: logModel.range
+    onAccepted: {
+      show(index, 'middle')
     }
   }
 
@@ -390,5 +415,18 @@ Item {
           _forceRefresh(curIndex)//to make searchResult highlight
         }
       })
+  }
+
+  function filterAction() {
+    filterDialog.visible = true
+  }
+
+  function searchAction() {
+    searchBar.visible = true
+  }
+
+  function gotoAction() {
+    gotoDialog.setIndex(curFocusIndex)
+    gotoDialog.visible = true
   }
 }

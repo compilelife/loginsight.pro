@@ -42,7 +42,7 @@ Item {
       Rectangle {
         id: indicator
         width: lineNumWidth + 4
-        height: content.height
+        height: content.height + App.settings.logView.lineSpacing
         color: isViewChecked ? '#49b2f6' : 'grey'
         Text {
           width: parent.width

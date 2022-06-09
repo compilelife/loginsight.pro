@@ -1,4 +1,6 @@
 main:
+    navigate history
+    session toolbar: search / filter / goto line / add to timeline / screen shot timeline
     syntax
         manage dialog
             default syntax(or null)
@@ -7,13 +9,15 @@ main:
     follow dynamic log
 
 enhance:
-    line spacing
     page up/down
 
 
 features:
     filter
         by seg, for example: filter log level above warn
+    ctrl + k like qt
+    filter preview
+    show log line in subview
 
 utils:
     copy to clipboard
@@ -21,7 +25,14 @@ utils:
 
 Project:
 
+Pro Feature:
+- syntax
+- file bigger than 200M
+- run on server
+
 BUG:
+patternbox focus issue
+press esc to hide searchbar
 filter OsdDisplayReceiver, first 3 line not highlight?like first cache(50 lines) has no segs info
 current line highlight effect
 all todos

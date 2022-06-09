@@ -5,6 +5,7 @@ const settings = {
     font: {
       size: 14,
       family: 'monospace'
-    }
+    },
+    lineSpacing: 5
   }
 }

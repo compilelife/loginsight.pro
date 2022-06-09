@@ -76,12 +76,12 @@ Item {
       }
       Timer {
         interval: 200
-        running: status >= 1
+        running: longOpDlg.status >= 1
         onTriggered: {
           sendMessage(CoreDef.CmdQueryPromise, {pid: longOpDlg.waitPromiseId})
             .then(function(msg){
               progressBar.value = msg.progress
-              status = 2
+              longOpDlg.status = 2
               visible = true
             })
         }

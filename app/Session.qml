@@ -42,7 +42,7 @@ Item {
         //TODO: force refresh all logview here
       }
       onFilter: {
-        root.filter(keyword, true)
+        root.filter({pattern: keyword})
       }
       onSearch: {
         root.search({pattern: keyword})
@@ -114,7 +114,7 @@ Item {
 
   MessageDialog {
     id: errTip
-    standardButtons: StandardButton.OK
+    standardButtons: MessageDialog.Ok
     function display(title, detail) {
       errTip.title = title
       errTip.text = detail
@@ -161,13 +161,15 @@ Item {
         })
     }
 
-    function filter(pattern, caseSense) {
-        core.sendModalMessage(CoreDef.CmdFilter,
-                              {regex: false,
-                                  caseSense,
-                                  pattern,
-                                  logId: _getCurLogView().logId
-                              })
+    //param: {pattern, caseSense, regex}
+    function filter(param) {
+      const curLog = currentLogView()
+      const filterArg = Util.merge({
+                                     logId: curLog.logId,
+                                     caseSense: true,
+                                     regex: false,
+                                   }, param)
+        core.sendModalMessage(CoreDef.CmdFilter, filterArg)
             .then(msg=>{
                 subLogs.append(msg.logId, msg.range)
             })
@@ -175,7 +177,7 @@ Item {
 
     //param: {pattern, caseSense, reverse, regex}
     function search(param, searchPos = null) {
-      const curLog = _getCurLogView()
+      const curLog = currentLogView()
       const {fromLine,fromChar} = searchPos ? searchPos : curLog.getSearchPos()
       const searchArg = Util.merge({
         logId: curLog.logId,
@@ -213,7 +215,7 @@ Item {
       timeline.addNode(lineModel.line, lineModel.content)
     }
 
-    function _getCurLogView() {
+    function currentLogView() {
       for (const key in logMap) {
         if (logMap[key].checked)
            return logMap[key]
@@ -229,5 +231,17 @@ Item {
           }
           timeline.highlightNode(line)
         })
+    }
+
+    function filterAction() {
+      currentLogView().filterAction()
+    }
+
+    function searchAction() {
+      currentLogView().searchAction()
+    }
+
+    function gotoAction() {
+      currentLogView().gotoAction()
     }
 }
