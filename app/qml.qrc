@@ -28,5 +28,6 @@
         <file>MemoLineEdit.qml</file>
         <file>PatternBox.qml</file>
         <file>GotoDialog.qml</file>
+        <file>navigate.js</file>
     </qresource>
 </RCC>

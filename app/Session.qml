@@ -227,7 +227,7 @@ Item {
       core.sendMessage(CoreDef.CmdMapLine, {logId: rootLogView.logId, index: line})
         .then(function(msg){
           for (const {logId,index} of msg.lines) {
-            logMap[logId].showIntoView(index)
+            logMap[logId].showIntoView(index, {remember: true})
           }
           timeline.highlightNode(line)
         })

@@ -3,6 +3,8 @@ import QtQuick.Controls 2.15
 import "./coredef.js" as CoreDef
 import "./QuickPromise/promise.js" as Q
 import "./app.js" as App
+import './navigate.js' as Navigate
+import './util.js' as Util
 
 Item {
   id: root
@@ -41,6 +43,18 @@ Item {
     sequence: 'Ctrl+D'
     enabled: checked
     onActivated: filterDialog.visible = true
+  }
+
+  Shortcut {
+    sequence: 'Ctrl+]'
+    enabled: checked
+    onActivated: goForward()
+  }
+
+  Shortcut {
+    sequence: 'Ctrl+['
+    enabled: checked
+    onActivated: goBack()
   }
 
   onExclusiveGroupChanged: {
@@ -203,10 +217,11 @@ Item {
 
   GotoDialog {
     id: gotoDialog
-    visible: true
+    anchors.centerIn: parent
+    visible: false
     range: logModel.range
     onAccepted: {
-      show(index, 'middle')
+      show(index, {placeAt: 'middle', remember: true})
     }
   }
 
@@ -336,9 +351,14 @@ Item {
   }
 
   //async
-  function show(index, placeAt) {
+  function show(index, param) {
+    const {placeAt, remember} = Util.merge({placeAt: 'top', remember: false}, param)
+
      if (logModel.range.end < logModel.range.begin)
        return Q.resolved()
+
+     if (remember)
+       Navigate.addPos({index, placeAt})
 
     const {begin, end} = _getShowRange(index, placeAt)
     if (logModel.inCache(begin, end)) {
@@ -380,12 +400,18 @@ Item {
     return height <= maxHeight
   }
 
-  function showIntoView(index) {
+  function showIntoView(index, param) {
+    param = Util.merge({placeAt: 'middle', remember: false}, param)
+
     if (_isInView(index)) {
       curFocusIndex = index
+      if (param.remember) {
+        Navigate.addPos({index: curFocusIndex, placeAt: param.placeAt})
+      }
+
       return Q.resolved()
     } else {
-      return show(index, 'middle')
+      return show(index, param)
         .then({curFocusIndex = index})
     }
   }
@@ -404,7 +430,7 @@ Item {
   function showSearchResult({index, offset, len}) {
     _lastSearchPos = {fromLine: index, fromChar: offset, len}
 
-    showIntoView(index)
+    showIntoView(index, {remember: true})
       .then(function(){
         for (const cacheLine of logModel.cache) {
           if (cacheLine.index === index) {
@@ -428,5 +454,37 @@ Item {
   function gotoAction() {
     gotoDialog.setIndex(curFocusIndex)
     gotoDialog.visible = true
+  }
+
+  function goForward() {
+    if (!Navigate.canGoForward())
+        return
+
+    let pos = Navigate.goForward()
+    while (pos && pos.index === curFocusIndex) {
+      pos = Navigate.goForward()
+    }
+    if (!pos)
+      return
+
+    const {index, placeAt} = pos
+    show(index, {placeAt, remember:false})
+    curFocusIndex = index
+  }
+
+  function goBack() {
+    if (!Navigate.canGoBack())
+      return
+
+    let pos = Navigate.goBack()
+    while (pos && pos.index === curFocusIndex) {
+      pos = Navigate.goBack()
+    }
+    if (!pos)
+      return
+
+    const {index, placeAt} = pos
+    show(index, {placeAt, remember:false})
+    curFocusIndex = index
   }
 }
