@@ -9,8 +9,9 @@ import QtQuick.Dialogs 1.3
 import './app.js' as App
 
 ApplicationWindow {
-  width: 800
+  width: 1000
   height: 700
+
   visible: true
   title: qsTr("LogInsight")
 
@@ -90,6 +91,8 @@ ApplicationWindow {
   }
 
   Component.onCompleted: {
+    showMaximized()
+
     const url = '/home/chenyong/my/loginsight/core/test/assets/sample.log'
     const name = url.substring(url.lastIndexOf('/'))
     const session = addSession(name)

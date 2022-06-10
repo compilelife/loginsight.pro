@@ -63,23 +63,23 @@ Item {
                 id: rootLogView
                 core:core
                 width: parent.width
+                SplitView.fillHeight: true
                 SplitView.minimumHeight: 200
                 SplitView.preferredHeight: 400
             }
-            Column {
+            ColumnLayout {
                 id: subLogs
                 width: parent.width
-                SplitView.fillHeight: true
                 SplitView.preferredHeight: 300
+                visible: tabBar.count > 0
                 TabBar {
                     id: tabBar
                     contentHeight: 26
                 }
                 StackLayout {
                     id: holder
+                    Layout.fillHeight: true
                     currentIndex: tabBar.currentIndex
-                    width: parent.width
-                    height: subLogs.height - tabBar.height
                 }
 
                 function append(id, range) {
@@ -104,7 +104,8 @@ Item {
         TimeLine {
           id: timelineImpl
             height: parent.height
-            implicitWidth: 200
+            SplitView.preferredWidth: 400
+            visible: !empty
 
            onDoubleClickNode: {
              emphasisLine(line)

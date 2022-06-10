@@ -6,6 +6,8 @@ import QtQuick.Controls.Styles 1.4
 
 Item {
     id: root
+
+    property bool empty: nodes.count == 0
     signal doubleClickNode(int line)
 
     ColorIndicator {
