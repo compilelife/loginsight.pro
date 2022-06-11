@@ -60,7 +60,7 @@ Item {
     property string waitId: ''
     property int waitPromiseId: 0
     property string hint: ''
-    property int status: 0 //0-idle,1-ready,2-shown
+    property bool enabled: false
 
     title: 'proceeding long op'
     standardButtons: StandardButton.Cancel
@@ -75,14 +75,17 @@ Item {
         value: 0
       }
       Timer {
+        id: checkProgressTimer
         interval: 200
-        running: longOpDlg.status >= 1
+        repeat: true
+        running: longOpDlg.enabled
         onTriggered: {
+          console.log('timer sent')
           sendMessage(CoreDef.CmdQueryPromise, {pid: longOpDlg.waitPromiseId})
             .then(function(msg){
+              console.log('timer', longOpDlg.waitId)
               progressBar.value = msg.progress
-              longOpDlg.status = 2
-              visible = true
+              longOpDlg.visible = true
             })
         }
       }
@@ -94,11 +97,12 @@ Item {
 
     function startWait(id) {
       waitId = id
-      status = 1
+      enabled = true
     }
 
     function finishWait() {
-      status = 0
+      visible = false
+      enabled = false
     }
   }
 
@@ -184,11 +188,11 @@ Item {
       }
 
       if (msgObj.state === CoreDef.StateFuture) {
-        if (longOpDlg.visible && longOpDlg.waitId === msgObj.id) {
+        if (longOpDlg.enabled && longOpDlg.waitId === msgObj.id) {
           longOpDlg.waitPromiseId = msgObj["pid"]
         }
       } else {
-        if (longOpDlg.visible && longOpDlg.waitId === msgObj.id) {
+        if (longOpDlg.enabled && longOpDlg.waitId === msgObj.id) {
           longOpDlg.finishWait()
         }
       }

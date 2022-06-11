@@ -15,54 +15,46 @@ ApplicationWindow {
   visible: true
   title: qsTr("LogInsight")
 
-  property bool hasSession: tabBar.currentIndex >= 0
+  Actions{
+    id: actions
+  }
 
   menuBar: MenuBar {
     id: menubar
     Menu {
       title: "File"
-      MenuItem {
-        text: 'open'
-        onTriggered: openDlg.visible = true
-      }
-      MenuItem {
-        text: "close"
-        enabled: hasSession
-        onTriggered: delSession(currentSession())
-      }
+      MenuItem {action: actions.open}
+      MenuItem {action: actions.close}
     }
     Menu {
       title: "Insight"
-      enabled: hasSession
-      MenuItem {
-        text: 'filter'
-        onTriggered: currentSession().filterAction()
-      }
-      MenuItem {
-        text: 'search'
-        onTriggered: currentSession().searchAction()
-      }
-      MenuItem {
-        text: 'goto'
-        onTriggered: currentSession().gotoAction()
-      }
+      MenuItem {action: actions.filter}
+      MenuItem {action: actions.search}
+      MenuItem {action: actions.goTo}
+      MenuItem {action: actions.goBack}
+      MenuItem {action: actions.goForward}
     }
     Menu {
       title: "TimeLine"
-      enabled: hasSession
-      MenuItem {
-        text: 'clear'
-        onTriggered: currentSession().timeline.clear()
-      }
-      MenuItem {
-        text: 'screenshot timeline'
-        onTriggered: currentSession().timeLine.screenShot()
-      }
+      MenuItem {action: actions.clearTimeLine}
+      MenuItem {action: actions.shotTimeLine}
     }
+  }
+
+  toolBar: ToolBar {
+    ToolButton{action: actions.search}
+    ToolButton{action: actions.filter}
+    ToolButton{action: actions.goTo}
+    ToolButton{action: actions.goBack}
+    ToolButton{action: actions.goForward}
+    ToolSeparator{}
+    ToolButton{action: actions.clearTimeLine}
+    ToolButton{action: actions.shotTimeLine}
   }
 
   TabBar {
     contentHeight: 26
+    currentIndex: -1
     id: tabBar
   }
   StackLayout {
@@ -71,6 +63,15 @@ ApplicationWindow {
     anchors.top: tabBar.bottom
     width: parent.width
     height: parent.height - tabBar.height
+    onCountChanged: {
+      if (currentIndex >= 0) {
+        App.setCurrentSession(currentSession())
+      } else {
+        App.setCurrentSession(null)
+        App.setCurrentView(null)
+      }
+      actions.updateSessionActions(currentIndex >= 0)
+    }
   }
 
   FileDialog {
@@ -91,8 +92,9 @@ ApplicationWindow {
   }
 
   Component.onCompleted: {
+    App.setActions(actions)
+    App.setMain(this)
     showMaximized()
-
     const url = '/home/chenyong/my/loginsight/core/test/assets/sample.log'
     const name = url.substring(url.lastIndexOf('/'))
     const session = addSession(name)
@@ -105,6 +107,14 @@ ApplicationWindow {
   }
 
 //  Session{}
+
+  function openFileOrPrj() {
+    openDlg.visible = true
+  }
+
+  function currentLogView() {
+    return currentSession().currentLogView()
+  }
 
   function currentSession() {
     return sessions.itemAt(sessions.currentIndex)

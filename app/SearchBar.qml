@@ -12,11 +12,11 @@ Item {
 
   signal search(string keyword, bool reverse, bool isContinue)
 
-  property string _lastKeyword: null
+  property string _lastKeyword: ''
   property bool _lastReverse: false
 
   onVisibleChanged: {
-    _lastKeyword = null
+    _lastKeyword = ''
     _lastReverse = false
   }
 

@@ -1,4 +1,12 @@
 main:
+    global actions:
+        is session action, default true;
+        on session index changed, call initEnable function apply enable state, default to hasSession
+        goBack/forward change initEnable to currentView.canGo..
+        in logview, on canGo changed set action enable
+    app.js
+        store current session
+        store current view
     session toolbar: search / filter / goto line / add to timeline / screen shot timeline
     syntax
         manage dialog

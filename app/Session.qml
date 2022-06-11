@@ -127,7 +127,7 @@ Item {
         logMap[logId]=logView
       logView.session = root
       logView.exclusiveGroup = logExclusive
-      logView.checked = true//FIXME: not working?
+      logView.checked = true
     }
     function _getLogView(logId) {
         return logMap[logId]
@@ -232,17 +232,5 @@ Item {
           }
           timeline.highlightNode(line)
         })
-    }
-
-    function filterAction() {
-      currentLogView().filterAction()
-    }
-
-    function searchAction() {
-      currentLogView().searchAction()
-    }
-
-    function gotoAction() {
-      currentLogView().gotoAction()
     }
 }

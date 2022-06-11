@@ -1,0 +1,80 @@
+import QtQuick 2.0
+import QtQuick.Controls 1.4
+import './app.js' as App
+
+Item {
+  property var sessionActions: [
+    close,
+    filter,
+    search,
+    goTo,
+    clearTimeLine,
+    shotTimeLine
+  ]
+
+  function updateSessionActions(hasSession) {
+    const enable = hasSession
+    for (const action of sessionActions) {
+      action.enabled = enable
+    }
+  }
+
+  property Action open:   Action {
+    text: 'open'
+    shortcut: 'ctrl+o'
+    onTriggered: App.main.openFileOrPrj()
+  }
+
+  property Action close:   Action {
+    text: 'close tab'
+    shortcut: 'ctrl+w'
+    onTriggered: App.main.delSession(App.currentSession)
+  }
+
+  property Action filter:   Action {
+    text: 'filter'
+    shortcut: 'ctrl+d'
+    iconSource: 'qrc:/images/filter.png'
+    onTriggered: App.currentLogView.filterAction()
+  }
+
+  property Action search:   Action {
+    text: 'search'
+    shortcut: 'ctrl+f'
+    iconSource: 'qrc:/images/search.png'
+    onTriggered: App.currentLogView.searchAction()
+  }
+
+  property Action goTo:  Action {
+    text: 'goto'
+    iconSource: 'qrc:/images/locate.png'
+    onTriggered: App.currentView.gotoAction()
+  }
+
+  property Action clearTimeLine:  Action {
+    text: 'clear timeline'
+    onTriggered: App.currentSession.timeline.clear()
+  }
+
+  property Action shotTimeLine: Action {
+    text: 'shot timeline'
+    onTriggered: App.currentSession.timeline.screenShot()
+  }
+
+  property Action goBack: Action {
+    text: 'go back'
+    enabled: false
+    iconSource: 'qrc:/images/left.png'
+    shortcut: 'ctrl+['
+    onTriggered: App.currentLogView.goBack()
+  }
+
+  property Action goForward: Action {
+    id: goForwardAction
+    text: 'go forward'
+    enabled: false
+    iconSource: 'qrc:/images/right.png'
+    shortcut: 'ctrl+]'
+    onTriggered: App.currentLogView.goForward()
+  }
+}

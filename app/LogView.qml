@@ -3,15 +3,16 @@ import QtQuick.Controls 2.15
 import "./coredef.js" as CoreDef
 import "./QuickPromise/promise.js" as Q
 import "./app.js" as App
-import './navigate.js' as Navigate
 import './util.js' as Util
+import QtQml 2.15
 
 Item {
   id: root
 
+  property Navigate navigate: Navigate{}
+
   property bool checked: false
   property var exclusiveGroup: null
-
   property int curIndex: -1
   property var core: null
   property int logId: 0
@@ -33,37 +34,33 @@ Item {
   //for continue search
   property var _lastSearchPos: ({fromLine: 0, fromChar: 0, len: 0})
 
-  Shortcut {
-    sequence: 'Ctrl+F'
-    enabled: checked
-    onActivated: searchBar.visible = true
-  }
-
-  Shortcut {
-    sequence: 'Ctrl+D'
-    enabled: checked
-    onActivated: filterDialog.visible = true
-  }
-
-  Shortcut {
-    sequence: 'Ctrl+]'
-    enabled: checked
-    onActivated: goForward()
-  }
-
-  Shortcut {
-    sequence: 'Ctrl+['
-    enabled: checked
-    onActivated: goBack()
-  }
-
   onExclusiveGroupChanged: {
     if (exclusiveGroup)
       exclusiveGroup.bindCheckable(root)
   }
 
   onCheckedChanged: {
-    console.log('check', logId, checked)
+    if (checked) {
+      App.setCurrentView(this)
+      App.actions.goBack.enabled = navigate.canGoBack
+      App.actions.goForward.enabled = navigate.canGoForward
+    }
+  }
+
+  Connections {
+    enabled: checked
+    target: navigate
+    function onCanGoBackChanged(){
+      if (!App.isCurrentSession(session))
+        return
+      App.actions.goBack.enabled = navigate.canGoBack
+    }
+    function onCanGoForwardChanged() {
+      console.log('nav1', navigate.canGoForward)
+      if (!App.isCurrentSession(session))
+        return
+      App.actions.goForward.enabled = navigate.canGoForward
+    }
   }
 
   LogViewContextMenu {
@@ -358,7 +355,7 @@ Item {
        return Q.resolved()
 
      if (remember)
-       Navigate.addPos({index, placeAt})
+       navigate.addPos({index, placeAt})
 
     const {begin, end} = _getShowRange(index, placeAt)
     if (logModel.inCache(begin, end)) {
@@ -406,7 +403,7 @@ Item {
     if (_isInView(index)) {
       curFocusIndex = index
       if (param.remember) {
-        Navigate.addPos({index: curFocusIndex, placeAt: param.placeAt})
+        navigate.addPos({index: curFocusIndex, placeAt: param.placeAt})
       }
 
       return Q.resolved()
@@ -457,12 +454,12 @@ Item {
   }
 
   function goForward() {
-    if (!Navigate.canGoForward())
+    if (!navigate.canGoForward)
         return
 
-    let pos = Navigate.goForward()
+    let pos = navigate.goForward()
     while (pos && pos.index === curFocusIndex) {
-      pos = Navigate.goForward()
+      pos = navigate.goForward()
     }
     if (!pos)
       return
@@ -473,12 +470,12 @@ Item {
   }
 
   function goBack() {
-    if (!Navigate.canGoBack())
+    if (!navigate.canGoBack)
       return
 
-    let pos = Navigate.goBack()
+    let pos = navigate.goBack()
     while (pos && pos.index === curFocusIndex) {
-      pos = Navigate.goBack()
+      pos = navigate.goBack()
     }
     if (!pos)
       return
