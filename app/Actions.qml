@@ -53,11 +53,13 @@ Item {
 
   property Action clearTimeLine:  Action {
     text: 'clear timeline'
+    iconSource: 'qrc:/images/clear.png'
     onTriggered: App.currentSession.timeline.clear()
   }
 
   property Action shotTimeLine: Action {
     text: 'shot timeline'
+    iconSource: 'qrc:/images/screenshot.png'
     onTriggered: App.currentSession.timeline.screenShot()
   }
 

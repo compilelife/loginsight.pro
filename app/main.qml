@@ -42,27 +42,33 @@ ApplicationWindow {
   }
 
   toolBar: ToolBar {
-    ToolButton{action: actions.search}
-    ToolButton{action: actions.filter}
-    ToolButton{action: actions.goTo}
-    ToolButton{action: actions.goBack}
-    ToolButton{action: actions.goForward}
-    ToolSeparator{}
-    ToolButton{action: actions.clearTimeLine}
-    ToolButton{action: actions.shotTimeLine}
+    height: toolbtns.height
+    RowLayout {
+      id: toolbtns
+      width: parent.width
+      TabBar {
+        contentHeight: 30
+        currentIndex: -1
+        id: tabBar
+      }
+      Row {
+        Layout.alignment: Qt.AlignRight
+        ToolButton{action: actions.search}
+        ToolButton{action: actions.filter}
+        ToolButton{action: actions.goTo}
+        ToolButton{action: actions.goBack}
+        ToolButton{action: actions.goForward}
+        ToolSeparator{}
+        ToolButton{action: actions.clearTimeLine}
+        ToolButton{action: actions.shotTimeLine}
+      }
+    }
   }
 
-  TabBar {
-    contentHeight: 26
-    currentIndex: -1
-    id: tabBar
-  }
   StackLayout {
     id: sessions
     currentIndex: tabBar.currentIndex
-    anchors.top: tabBar.bottom
-    width: parent.width
-    height: parent.height - tabBar.height
+    anchors.fill: parent
     onCountChanged: {
       if (currentIndex >= 0) {
         App.setCurrentSession(currentSession())
