@@ -10,6 +10,11 @@ Item {
     property bool empty: nodes.count == 0
     signal doubleClickNode(int line)
 
+    Rectangle{
+      anchors.fill: parent
+      color: 'white'
+    }
+
     ColorIndicator {
         id: currentColor
         color: 'blue'
@@ -122,16 +127,17 @@ Item {
         nodes.clear()
     }
 
-    property int currentIndex: -1
-    function beginScreenShot() {
-        currentColor.visible = false
-        currentIndex = timeline.currentIndex
-        timeline.currentIndex = -1
-    }
+    function screenShot() {
+      const savedIndex = timeline.currentIndex
+      timeline.currentIndex = -1
+      currentColor.visible = false
 
-    function endScreenShot() {
+      root.grabToImage(function(result){
         currentColor.visible = true
-        timeline.currentIndex = currentIndex
+        timeline.currentIndex = savedIndex
+
+        NativeHelper.clipboardSetImage(result.image)
+      })
     }
 
 //    Row {//调试按钮

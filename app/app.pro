@@ -7,7 +7,8 @@ QT += quick websockets widgets network
 SOURCES += \
         coreboot.cpp \
         linehighlighter.cpp \
-        main.cpp
+        main.cpp \
+        nativehelper.cpp
 
 RESOURCES += qml.qrc
 
@@ -27,4 +28,5 @@ DISTFILES += \
 
 HEADERS += \
     coreboot.h \
-    linehighlighter.h
+    linehighlighter.h \
+    nativehelper.h
