@@ -11,6 +11,8 @@ Item {
   property bool isViewChecked: false
   property bool isFocusLine: false
 
+  property var cols: []
+
   id: root
   width: parent.width
   height: model === null ? 0 : loader.height
@@ -78,9 +80,9 @@ Item {
         }
         LineHighlighter {
           id: highlighter
-          segColors: session.segColors
+          segColors: session.segConfig
           highlights: session.highlights
-          segs: model.segs
+          segs: model.segs || []
           searchResult: model.searchResult || {}
         }
         Component.onCompleted: {

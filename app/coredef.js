@@ -16,12 +16,15 @@ const CmdSyncLogs = 'syncLogs'
 const CmdSetLineSegment = 'setLineSegment'
 const CmdSearch = 'search'
 const CmdMapLine = 'mapLine'
+const CmdTestSyntax = 'testSyntax'
 const ServerCmdRangeChanged = 'rangeChanged'
 
 const SegTypeDate = 0;
 const SegTypeLogLevel = 1;
 const SegTypeNum = 2;
 const SegTypeStr = 3;
+
+const SegTypeNames = ['date', 'loglevel', 'number', 'string']
 
 const LogLevelDebug = 0;
 const LogLevelInfo = 1;

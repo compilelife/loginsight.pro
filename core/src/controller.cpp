@@ -652,3 +652,35 @@ ImplCmdHandler(syncLogs) {
 
     return p;
 }
+
+ImplCmdHandler(testSyntax) {
+    auto pattern = msg["pattern"].asString();
+    auto lines = msg["lines"];
+
+    LineSegment executor;
+    executor.setPattern(regex(pattern));
+
+    Json::Value result;
+    result.resize(0);
+    for (Json::Value::ArrayIndex i = 0; i < lines.size(); i++) {
+        auto line = lines[i].asString();
+        auto segs = executor.formatLine(line);
+
+        Json::Value segJson;
+        segJson.resize(0);
+        for (auto&& seg : segs) {
+            Json::Value v;
+            v["offset"] = seg.offset;
+            v["length"] = seg.length;
+            segJson.append(v);
+        }
+        result.append(segJson);
+    }
+
+    auto reply = ack(msg, ReplyState::Ok);
+    reply["segs"] = result;
+
+    send(reply);
+
+    return Promise::resolved(true);
+}

@@ -11,8 +11,7 @@ Item {
   id: root
   signal coreReady()
 
-    Core {
-        id: core
+  property Core core: Core {
         onReady: {
             core.serverCmdHandlers[CoreDef.ServerCmdRangeChanged] = handleLogRangeChanged
           coreReady()
@@ -27,7 +26,7 @@ Item {
     property var highlightBar: highlightBarImpl
 
     property var highlights: []
-    property var segColors: ["blue","green","red","yellow"]
+    property var segConfig: []
 
     property var logExclusive : null
     Component.onCompleted: {
@@ -61,7 +60,7 @@ Item {
 
             LogView {
                 id: rootLogView
-                core:core
+                core:root.core
                 width: parent.width
                 SplitView.fillHeight: true
                 SplitView.minimumHeight: 200

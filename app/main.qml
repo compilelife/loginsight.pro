@@ -101,15 +101,20 @@ ApplicationWindow {
     App.setActions(actions)
     App.setMain(this)
     showMaximized()
+    actions.updateSessionActions(false)
+
     const url = '/home/chenyong/my/loginsight/core/test/assets/sample.log'
     const name = url.substring(url.lastIndexOf('/'))
     const session = addSession(name)
-    //TODO: check if log or prj
     session.coreReady.connect(function () {
       session.openFile(url).then(null, function () {
         delSession(session)
       })
     })
+  }
+
+  SetSyntaxDlg{
+    visible: true
   }
 
 //  Session{}

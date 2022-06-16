@@ -83,6 +83,7 @@ private:
     DeclarCmdHandler(mapLine, EventType::Read);
     DeclarCmdHandler(setLineSegment, EventType::Write);
     DeclarCmdHandler(syncLogs, EventType::Write);
+    DeclarCmdHandler(testSyntax, EventType::Immediate);
 
 private:
     Json::Value ack(JsonMsg msg, ReplyState state);

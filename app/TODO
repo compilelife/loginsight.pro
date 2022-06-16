@@ -23,7 +23,7 @@ Project:
 
 Pro Feature:
 - syntax
-- file bigger than 200M
+- file bigger than 100M
 - run on server
 
 How to test ?
@@ -42,3 +42,10 @@ timeline menu ui seems for touch op, not consistent to other menus
 dynamic log: 运行一段时间的dynamice file log会自动退出core: promisex.cpp:23 ~Promise crash
 color not beautiful
 promise trace
+
+next:
+syntax manager
+syntax for each session
+syntax auto probe (base on max match count)
+syntax caseSense
+refresh logview
