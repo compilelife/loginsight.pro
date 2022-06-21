@@ -106,14 +106,15 @@ pair<FindLineIter, FindLineIter> findNewLine(FindLineIter from, FindLineIter end
     if (next > end)
         next = end;
 
-    if (newline != end && newline != from && *(newline - 1) == '\r') {
+    //删除\r\n或者\r\r\n中的\r，确保行末整洁
+    while (newline != end && newline != from && *(newline - 1) == '\r') {
         --newline;
     }
 
     return {newline, next};
 }
 
-struct StringIncase {
+struct StringCase {
     string pattern;
     bool operator() (string_view text) {
         return text.find(pattern) != string_view::npos;
@@ -129,7 +130,7 @@ struct RegexMatch {
 
 FilterFunction createFilter(string_view pattern, bool caseSensitive) {
     if (caseSensitive) {
-        return StringIncase {pattern.data()};
+        return StringCase {pattern.data()};
     }
     return RegexMatch{regex(pattern.data(), regex::icase)};
 }
@@ -138,7 +139,7 @@ FilterFunction createFilter(regex r) {
     return RegexMatch{r};
 }
 
-struct StringIncaseFind {
+struct StringCaseFind {
     string pattern;
     FindRet operator () (string_view text) {
         auto pos = text.find(pattern);
@@ -149,7 +150,7 @@ struct StringIncaseFind {
     }
 };
 
-struct StringIncaseReverseFind {
+struct StringCaseReverseFind {
     string pattern;
     FindRet operator () (string_view text) {
         auto pos = text.rfind(pattern);
@@ -194,9 +195,9 @@ struct RegexMatchReverseFind {
 FindFunction createFind(string_view pattern, bool caseSensitive, bool reverse) {
     if (caseSensitive) {
         if (reverse)
-            return StringIncaseReverseFind{pattern.data()};
+            return StringCaseReverseFind{pattern.data()};
         else
-            return StringIncaseFind{pattern.data()};
+            return StringCaseFind{pattern.data()};
     }
     
     regex r{pattern.data(), regex::icase};
