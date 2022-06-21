@@ -57,7 +57,7 @@ Item {
       TextEdit {
         id: content
         focus:true
-        textFormat: TextEdit.RichText
+        textFormat: TextEdit.PlainText
 //        readOnly: true
         selectByMouse: true
         width: root.width - indicator.width
