@@ -22,7 +22,7 @@ Item {
       if (running) {
         createChannel()
       } else {
-        coreErrDlg.showError('core disconnected, please reboot')
+        coreErrDlg.showError('websocketd disconnected, please relaunch')
       }
     }
   }
@@ -93,6 +93,7 @@ Item {
 
     onRejected: {
       sendMessage(CoreDef.CmdCancelPromise)
+      enabled = false
     }
 
     function startWait(id) {
@@ -215,6 +216,7 @@ Item {
         ready()
       } else if (status === WebSocket.Error) {
         console.log(channel.errorString)
+        coreErrDlg.showError('core disconnected, please relaunch')
       }
     })
     channel.url = boot.url

@@ -59,3 +59,5 @@ void LineHighlighter::highlightBlock(const QString &text)
     }
 }
 
+
+

@@ -140,16 +140,6 @@ Item {
             .then(msg=>{
                 rootLogView.initLogModel(msg.logId, msg.range)
                 _onLogAdded(msg.logId, rootLogView)
-                core.sendMessage(CoreDef.CmdSetLineSegment, {
-                                   pattern:'(\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{3}) (\\w)/([a-zA-Z. _-]+)\\(( *\\d+)\\)',
-                                   caseSense: false,
-                                   segs: [
-                                     {type: CoreDef.SegTypeDate, name: 'time'},
-                                     {type: CoreDef.SegTypeLogLevel, name: 'level'},
-                                     {type: CoreDef.SegTypeStr, name: 'process'},
-                                     {type: CoreDef.SegTypeNum, name: 'pid'}
-                                   ]
-                                 })
             })
     }
 
@@ -231,5 +221,11 @@ Item {
           }
           timeline.highlightNode(line)
         })
+    }
+
+    function onSyntaxChanged() {
+      for (const key in logMap) {
+        logMap[key].onSyntaxChanged()
+      }
     }
 }

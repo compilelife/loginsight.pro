@@ -103,7 +103,7 @@ ApplicationWindow {
     showMaximized()
     actions.updateSessionActions(false)
 
-    const url = '/home/chenyong/my/loginsight/core/test/assets/sample.log'
+    const url = '/home/chenyong/work/ijk/hls/v3/ijk2.log'
     const name = url.substring(url.lastIndexOf('/'))
     const session = addSession(name)
     session.coreReady.connect(function () {
@@ -111,10 +111,6 @@ ApplicationWindow {
         delSession(session)
       })
     })
-  }
-
-  SetSyntaxDlg{
-    visible: true
   }
 
 //  Session{}

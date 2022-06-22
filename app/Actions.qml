@@ -48,7 +48,7 @@ Item {
   property Action goTo:  Action {
     text: 'goto'
     iconSource: 'qrc:/images/locate.png'
-    onTriggered: App.currentView.gotoAction()
+    onTriggered: App.currentLogView.gotoAction()
   }
 
   property Action clearTimeLine:  Action {

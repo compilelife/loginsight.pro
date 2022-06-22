@@ -22,6 +22,7 @@ Item {
   signal emphasisLine(int line)
 
   property TextEdit _content: null
+  property LineHighlighter _highlighter: null
 
   //act as vue v-if
   Loader {
@@ -57,8 +58,8 @@ Item {
       TextEdit {
         id: content
         focus:true
-        textFormat: TextEdit.PlainText
-//        readOnly: true
+        textFormat: TextEdit.PlainText //highlighter set offset on rich text has strange offset
+//        readOnly: true //comment this line to show cursor
         selectByMouse: true
         width: root.width - indicator.width
         text: model.content
@@ -66,6 +67,7 @@ Item {
         font {
           family: App.settings.logView.font.family
           pixelSize: App.settings.logView.font.size
+          underline: isFocusLine
         }
 
         MouseArea{
@@ -88,13 +90,22 @@ Item {
         Component.onCompleted: {
           highlighter.setup(content.textDocument)
           _content = content
+          _highlighter = highlighter
         }
         onActiveFocusChanged: {
           if (activeFocus)
             focusLine(model.index)
         }
+        onTextChanged: {//emulate readonly
+          undo()
+        }
       }
     }
+  }
+
+  function invalidate() {
+    _content.append('1')
+    _content.undo()
   }
 
   function hasActiveFocus() {

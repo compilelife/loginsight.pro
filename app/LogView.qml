@@ -219,6 +219,9 @@ Item {
     range: logModel.range
     onAccepted: {
       show(index, {placeAt: 'middle', remember: true})
+        .then(function(){
+          curFocusIndex = index
+        })
     }
   }
 
@@ -333,18 +336,24 @@ Item {
     return _limitRange(prefer)
   }
 
+  function onSyntaxChanged() {
+    logModel.cache = [] //drop cache
+    show(curIndex)
+  }
+
   //if curIndex not changed, repeater won't react, that's why we need force
-  //However if we call _forceRefresh once, then we should call it every time logModel changes
-  function _forceRefresh(index) {
+  //However, once you call forceRefresh, then you should call it whenever something changed
+  function forceRefresh(index) {
     for (let i = 0; i < content.model; i++) {
       const item = content.itemAt(i)
       item.model = logModel.dataAt(i + index)
+      item.invalidate()
     }
   }
 
   function _show(index) {
     curIndex = index
-    _forceRefresh(index)
+    forceRefresh(index)
   }
 
   //async
@@ -435,7 +444,7 @@ Item {
           } else {
             cacheLine.searchResult = null
           }
-          _forceRefresh(curIndex)//to make searchResult highlight
+          forceRefresh(curIndex)
         }
       })
   }
