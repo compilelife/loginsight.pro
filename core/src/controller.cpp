@@ -558,7 +558,7 @@ ImplCmdHandler(setLineSegment) {
     auto caseSense = msg["caseSense"].asBool();
 
     auto flag = regex_constants::ECMAScript;
-    if (caseSense)
+    if (!caseSense)
         flag |= regex_constants::icase;
     regex r(pattern, flag);
 
@@ -585,12 +585,11 @@ ImplCmdHandler(setLineSegment) {
         segs.push_back(item);
     }
 
-    if (mLineSegment.hasPatternSet()) {
-        auto view = mLogTree.root()->view();
-        while (!view->end()) {
-            view->current().line->segs.reset();
-            view->next();
-        }
+    auto view = mLogTree.root()->view();
+    while (!view->end())
+    {
+        view->current().line->segs.reset();
+        view->next();
     }
 
     mLineSegment.setPattern(r);

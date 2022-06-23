@@ -493,4 +493,9 @@ Item {
     show(index, {placeAt, remember:false})
     curFocusIndex = index
   }
+
+  function getTopLines(n) {
+    const startIndexInCache = curIndex - logModel.cache[0].index
+    return logModel.cache.slice(startIndexInCache, n)
+  }
 }

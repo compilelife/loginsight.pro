@@ -9,7 +9,8 @@ Item {
     search,
     goTo,
     clearTimeLine,
-    shotTimeLine
+    shotTimeLine,
+    setSyntax
   ]
 
   function updateSessionActions(hasSession) {
@@ -48,6 +49,7 @@ Item {
   property Action goTo:  Action {
     text: 'goto'
     iconSource: 'qrc:/images/locate.png'
+    shortcut: 'ctrl + g'
     onTriggered: App.currentLogView.gotoAction()
   }
 
@@ -72,11 +74,15 @@ Item {
   }
 
   property Action goForward: Action {
-    id: goForwardAction
     text: 'go forward'
     enabled: false
     iconSource: 'qrc:/images/right.png'
     shortcut: 'ctrl+]'
     onTriggered: App.currentLogView.goForward()
+  }
+
+  property Action setSyntax: Action {
+    text: 'set syntax'
+     onTriggered: App.currentSession.showSyntaxDlg()
   }
 }

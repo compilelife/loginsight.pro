@@ -26,7 +26,7 @@ Item {
     property var highlightBar: highlightBarImpl
 
     property var highlights: []
-    property var segConfig: []
+    property alias syntaxSegConfig: setSyntax.segs
 
     property var logExclusive : null
     Component.onCompleted: {
@@ -120,6 +120,38 @@ Item {
       errTip.text = detail
       errTip.visible = true
     }
+  }
+
+  Dialog {
+    id: setSyntaxDlg
+    title: 'setting syntax'
+    standardButtons: StandardButton.Ok | StandardButton.Cancel
+    width: 800
+    height: 500
+    SetSyntax {
+      id: setSyntax
+      width: parent.width
+    }
+
+    function show() {
+      setSyntax.lines.init(rootLogView.getTopLines(30))
+      visible = true
+    }
+
+    onAccepted: {
+      core.sendMessage(CoreDef.CmdSetLineSegment, {
+                                                pattern: setSyntax.pattern,
+                                                segs: setSyntax.segs,
+                                                caseSense: true
+                                              })
+            .then(function() {
+              onSyntaxChanged()
+            })
+       }
+   }
+
+  function showSyntaxDlg() {
+    setSyntaxDlg.show()
   }
 
     function _onLogAdded(logId, logView) {

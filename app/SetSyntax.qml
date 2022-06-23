@@ -11,8 +11,12 @@ ColumnLayout {
   id: root
   spacing: 10
   property alias pattern: patternBox.editText
-  property alias segs: syntaxSegs
+  property var segs: getSegConfig()
   property alias lines: previewLines
+
+  onSegsChanged: {
+    console.log(JSON.stringify(segs))
+  }
 
   RowLayout {
     ComboBox {
@@ -50,20 +54,11 @@ ColumnLayout {
         model: previewLines.get(index)
         lineNumWidth: 30
         isViewChecked: true
-        session: ({segConfig: getSegColors(), highlights:[]})
+        session: ({syntaxSegConfig: getSegConfig(), highlights:[]})
         isFocusLine: viewRoot.currentIndex === index
         onFocusLine: viewRoot.currentIndex = lineIndex
       }
     }
-  }
-
-  function getSegColors() {
-    const result = []
-    for (let i = 0; i < syntaxSegs.model.count; i++) {
-      result.push(syntaxSegs.model.get(i).color)
-    }
-    console.log('getSegColors', syntaxSegs.model.count, result)
-    return result
   }
 
   ListModel {
@@ -73,7 +68,7 @@ ColumnLayout {
       clear()
       let index = 0
       for (const line of lines) {
-        append({index: index++, content: line, segs: null})
+        append({index: index++, content: line.content, segs: null})
       }
     }
   }
@@ -93,5 +88,14 @@ ColumnLayout {
         viewRoot.model = null
         viewRoot.model = previewLines
       })
+  }
+
+  function getSegConfig() {
+    const model = syntaxSegs.model
+    const ret = []
+    for (let i = 0; i < model.count; i++) {
+      ret.push(model.get(i))
+    }
+    return ret
   }
 }

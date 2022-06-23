@@ -82,10 +82,18 @@ Item {
         }
         LineHighlighter {
           id: highlighter
-          segColors: session.segConfig
+          segColors: getSegColors()
           highlights: session.highlights
           segs: model.segs || []
           searchResult: model.searchResult || {}
+
+          function getSegColors() {
+            const colors = []
+            for (const seg of session.syntaxSegConfig) {
+              colors.push(seg.color)
+            }
+            return colors
+          }
         }
         Component.onCompleted: {
           highlighter.setup(content.textDocument)

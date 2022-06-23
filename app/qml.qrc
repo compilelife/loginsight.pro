@@ -37,6 +37,5 @@
         <file>images/clear.png</file>
         <file>SetSyntax.qml</file>
         <file>SyntaxSegments.qml</file>
-        <file>SetSyntaxDlg.qml</file>
     </qresource>
 </RCC>

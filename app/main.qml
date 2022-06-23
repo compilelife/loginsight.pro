@@ -30,9 +30,12 @@ ApplicationWindow {
       title: "Insight"
       MenuItem {action: actions.filter}
       MenuItem {action: actions.search}
+      MenuSeparator{}
       MenuItem {action: actions.goTo}
       MenuItem {action: actions.goBack}
       MenuItem {action: actions.goForward}
+      MenuSeparator{}
+      MenuItem {action: actions.setSyntax}
     }
     Menu {
       title: "TimeLine"
@@ -103,7 +106,7 @@ ApplicationWindow {
     showMaximized()
     actions.updateSessionActions(false)
 
-    const url = '/home/chenyong/work/ijk/hls/v3/ijk2.log'
+    const url = '/home/chenyong/my/loginsight/core/test/assets/sample.log'
     const name = url.substring(url.lastIndexOf('/'))
     const session = addSession(name)
     session.coreReady.connect(function () {
@@ -112,8 +115,6 @@ ApplicationWindow {
       })
     })
   }
-
-//  Session{}
 
   function openFileOrPrj() {
     openDlg.visible = true

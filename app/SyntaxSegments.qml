@@ -9,16 +9,18 @@ import './QuickPromise/promise.js' as Q
 import QtQuick.Layouts 1.15
 
 ListView {
+  id: root
   spacing: 10
   height: childrenRect.height
   width: 250
+  //{color:string, type:int, name: string}
   model: ListModel{}
-  delegate: RowLayout {
+  delegate: Row {
     spacing: 5
     TextField {
+      width: 100
       Layout.alignment: Qt.AlignVCenter
       text: name
-      Layout.preferredWidth: 60
     }
     Rectangle {
       width: height
@@ -36,9 +38,25 @@ ListView {
     }
     ComboBox {
       id: typeText
-      Layout.fillWidth: true
+      width: 100
       model: CoreDef.SegTypeNames
       currentIndex: type
+    }
+  }
+
+  footer: Component {
+    Item {
+      height: addBtn.height + 8
+      width: root.width
+      Button {
+        id: addBtn
+        anchors.centerIn: parent
+        width: root.width
+        text: 'add field'
+        onClicked: {
+          model.append({color: String(GenColor.next()), type: CoreDef.SegTypeStr, name: 'field'})
+        }
+      }
     }
   }
 
@@ -59,13 +77,6 @@ ListView {
     onRejected: {
       if (curAction)
         curAction.reject()
-    }
-  }
-
-  function reset(count) {
-    model.clear()
-    for (let i = 0; i < count; i++) {
-      model.append({color: String(GenColor.next()), type: CoreDef.SegTypeStr, name: `field ${i+1}`})
     }
   }
 
