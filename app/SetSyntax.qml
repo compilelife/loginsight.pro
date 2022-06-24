@@ -10,7 +10,7 @@ import './coredef.js' as CoreDef
 ColumnLayout {
   id: root
   spacing: 10
-  property alias pattern: patternBox.editText
+  property alias pattern: patternBox.text
   property var segs: getSegConfig()
   property alias lines: previewLines
 
@@ -19,10 +19,9 @@ ColumnLayout {
   }
 
   RowLayout {
-    ComboBox {
+    TextField {
       id: patternBox
       Layout.fillWidth: true
-      editable: true
     }
     Button {
       text: 'preview'

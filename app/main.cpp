@@ -29,6 +29,10 @@ static void myMessageHandler(QtMsgType type, const QMessageLogContext& context, 
     gLogFile.flush();
 }
 
+void prepareMyDir() {
+    QDir::home().mkdir(".loginsight");
+}
+
 int main(int argc, char *argv[])
 {
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -49,6 +53,8 @@ int main(int argc, char *argv[])
     } else {
         qWarning()<<"can't not open "<<logPath;
     }
+
+    prepareMyDir();
 
     QQmlApplicationEngine engine;
     qmlRegisterType<CoreBoot>("com.cy.CoreBoot", 1, 0, "CoreBoot");

@@ -42,6 +42,10 @@ ApplicationWindow {
       MenuItem {action: actions.clearTimeLine}
       MenuItem {action: actions.shotTimeLine}
     }
+    Menu {
+      title: "others"
+      MenuItem {action: actions.settings}
+    }
   }
 
   toolBar: ToolBar {
@@ -91,7 +95,7 @@ ApplicationWindow {
       const url = openDlg.fileUrl.toString().substring(7) //drop file://
       const name = url.substring(url.lastIndexOf('/'))
       const session = addSession(name)
-      //TODO: check if log or prj
+      //TODO: check if it is log or prj
       session.coreReady.connect(function () {
         session.openFile(url).then(null, function () {
           delSession(session)
@@ -100,9 +104,15 @@ ApplicationWindow {
     }
   }
 
+  Settings {
+    id: settings
+  }
+
   Component.onCompleted: {
     App.setActions(actions)
     App.setMain(this)
+    App.setSettings(settings.settings)
+
     showMaximized()
     actions.updateSessionActions(false)
 
@@ -114,6 +124,8 @@ ApplicationWindow {
         delSession(session)
       })
     })
+
+    showSettings()
   }
 
   function openFileOrPrj() {
@@ -149,5 +161,9 @@ ApplicationWindow {
   function delSession(session) {
     session.meta.tabBtn.destroy()
     session.destroy()
+  }
+
+  function showSettings() {
+    settings.visible = true
   }
 }

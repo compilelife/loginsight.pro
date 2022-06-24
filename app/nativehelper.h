@@ -10,6 +10,11 @@ class NativeHelper : public QObject
 public:
     explicit NativeHelper(QObject *parent = nullptr);
     Q_INVOKABLE void clipboardSetImage(const QImage img);
+    Q_INVOKABLE void relaunch();
+    Q_INVOKABLE bool writeToFile(QString path, QString txt);
+    Q_INVOKABLE QString readFile(QString path);
+    Q_INVOKABLE QString settingsPath();
+
 signals:
 
 };

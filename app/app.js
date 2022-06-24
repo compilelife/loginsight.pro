@@ -1,13 +1,10 @@
 .pragma library
+.import './util.js' as Util
 
-const settings = {
-  logView: {
-    font: {
-      size: 14,
-      family: 'monospace'
-    },
-    lineSpacing: 5
-  }
+let settings = null
+
+function setSettings(v) {
+  settings = v
 }
 
 //js in qml can't directly set global property

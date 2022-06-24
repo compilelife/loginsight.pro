@@ -85,4 +85,9 @@ Item {
     text: 'set syntax'
      onTriggered: App.currentSession.showSyntaxDlg()
   }
+
+  property Action settings: Action {
+    text: 'settings'
+    onTriggered: App.main.showSettings()
+  }
 }

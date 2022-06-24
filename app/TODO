@@ -1,8 +1,4 @@
 main:
-    syntax
-        manage dialog
-            default syntax(or null)
-            select syntax for session
     settings
     follow dynamic log
     toast:
@@ -26,7 +22,7 @@ Pro Feature:
 - file bigger than 100M
 - run on server
 
-How to test ?
+How to unit test ?
 
 BUG:
 clear search highlight if searchbox dispear
