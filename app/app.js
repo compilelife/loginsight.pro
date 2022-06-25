@@ -21,3 +21,7 @@ function isCurrentSession(o) {return currentSession === o}
 
 let currentLogView = null
 function setCurrentView(o){currentLogView = o}
+
+function showToast(txt, duration=2000) {
+  main.toast.show(txt, duration)
+}

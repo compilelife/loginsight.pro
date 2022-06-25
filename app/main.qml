@@ -15,6 +15,8 @@ ApplicationWindow {
   visible: true
   title: qsTr("LogInsight")
 
+  property alias toast: _toast
+
   Actions{
     id: actions
   }
@@ -108,6 +110,11 @@ ApplicationWindow {
     id: settings
   }
 
+  Toast {
+    id: _toast
+    visible: false
+  }
+
   Component.onCompleted: {
     App.setActions(actions)
     App.setMain(this)
@@ -124,8 +131,6 @@ ApplicationWindow {
         delSession(session)
       })
     })
-
-    showSettings()
   }
 
   function openFileOrPrj() {

@@ -3,6 +3,7 @@ import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.5
 import QtQml.Models 2.12
 import QtQuick.Controls.Styles 1.4
+import './app.js' as App
 
 Item {
     id: root
@@ -137,6 +138,8 @@ Item {
         timeline.currentIndex = savedIndex
 
         NativeHelper.clipboardSetImage(result.image)
+
+        App.showToast('copied to clipboard')
       })
     }
 

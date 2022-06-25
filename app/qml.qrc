@@ -38,5 +38,7 @@
         <file>SetSyntax.qml</file>
         <file>SyntaxSegments.qml</file>
         <file>Settings.qml</file>
+        <file>Toast.qml</file>
+        <file>SettingItem.qml</file>
     </qresource>
 </RCC>

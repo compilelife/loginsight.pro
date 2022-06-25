@@ -7,6 +7,7 @@ import './util.js' as Util
 
 Dialogs.Dialog {
   title: 'setting'
+  width: 300
   standardButtons: Dialogs.StandardButton.Apply | Dialogs.StandardButton.Cancel
   property var settings: ({//FIXME: can not react ?
                             logView: {
@@ -17,23 +18,30 @@ Dialogs.Dialog {
                               lineSpacing: 5
                             }
                           })
-
   GroupBox {//logview
     title: 'log view'
     width: parent.width
-    RowLayout {
-      Button {
-        id: fontBtn
-        text: `${settings.logView.font.family}  ${settings.logView.font.size}`
-        onClicked: fontDlg.visible = true
+    ColumnLayout {
+      SettingItem {
+        hint: 'font:'
+        Button {
+          id: fontBtn
+          Layout.alignment: Qt.AlignRight
+          text: `${settings.logView.font.family}  ${settings.logView.font.size}`
+          onClicked: fontDlg.visible = true
+        }
       }
-      SpinBox {
-        id: spacingSpin
-        from: 0
-        to: 20
-        value: settings.logView.lineSpacing
-        onValueChanged: {
-          settings.logView.lineSpacing = value
+
+      SettingItem {
+        hint: 'line spacing:'
+        SpinBox {
+          id: spacingSpin
+          from: 0
+          to: 20
+          value: settings.logView.lineSpacing
+          onValueChanged: {
+            settings.logView.lineSpacing = value
+          }
         }
       }
     }

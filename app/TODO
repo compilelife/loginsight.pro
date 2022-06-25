@@ -1,5 +1,4 @@
 main:
-    settings
     follow dynamic log
     toast:
         already copy to clipbord
