@@ -1,7 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Window 2.15
 import QtWebSockets 1.15
-import QtQuick.Controls 2.15
+import QtQuick.Controls 2.15 as QC2
 import QtQuick.Layouts 1.15
 import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
@@ -55,19 +55,21 @@ ApplicationWindow {
     RowLayout {
       id: toolbtns
       width: parent.width
-      TabBar {
+      QC2.TabBar {
         contentHeight: 30
         currentIndex: -1
         id: tabBar
       }
       Row {
         Layout.alignment: Qt.AlignRight
+        ToolButton{action: actions.followLog}
+        QC2.ToolSeparator{}
         ToolButton{action: actions.search}
         ToolButton{action: actions.filter}
         ToolButton{action: actions.goTo}
         ToolButton{action: actions.goBack}
         ToolButton{action: actions.goForward}
-        ToolSeparator{}
+        QC2.ToolSeparator{}
         ToolButton{action: actions.clearTimeLine}
         ToolButton{action: actions.shotTimeLine}
       }
@@ -79,6 +81,15 @@ ApplicationWindow {
     currentIndex: tabBar.currentIndex
     anchors.fill: parent
     onCountChanged: {
+      handleCurrentItemChanged()
+    }
+    onCurrentIndexChanged: {
+      if (currentSession()) {
+        handleCurrentItemChanged()
+      }
+    }
+
+    function handleCurrentItemChanged() {
       if (currentIndex >= 0) {
         App.setCurrentSession(currentSession())
       } else {
@@ -86,6 +97,7 @@ ApplicationWindow {
         App.setCurrentView(null)
       }
       actions.updateSessionActions(currentIndex >= 0)
+      currentSession().setAsCurrent()
     }
   }
 
@@ -127,7 +139,7 @@ ApplicationWindow {
     const name = url.substring(url.lastIndexOf('/'))
     const session = addSession(name)
     session.coreReady.connect(function () {
-      session.openFile(url).then(null, function () {
+      session.openProcess('while true;do echo `date`;sleep 1;done').then(null, function () {
         delSession(session)
       })
     })

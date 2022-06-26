@@ -10,7 +10,8 @@ Item {
     goTo,
     clearTimeLine,
     shotTimeLine,
-    setSyntax
+    setSyntax,
+    followLog
   ]
 
   function updateSessionActions(hasSession) {
@@ -24,6 +25,11 @@ Item {
     text: 'open'
     shortcut: 'ctrl+o'
     onTriggered: App.main.openFileOrPrj()
+  }
+
+  property Action openProcess: Action {
+    text: 'open process'
+    onTriggered: App.main.openProcess()
   }
 
   property Action close:   Action {
@@ -89,5 +95,19 @@ Item {
   property Action settings: Action {
     text: 'settings'
     onTriggered: App.main.showSettings()
+  }
+
+  property Action followLog: Action {
+    text: 'followLog'
+    checkable: true
+    checked: true
+    iconSource: 'qrc:/images/pause.png'
+    onCheckedChanged: {
+      if (checked)
+        iconSource = 'qrc:/images/pause.png'
+      else
+        iconSource = 'qrc:/images/play.png'
+      App.currentSession.setFollowLog(checked)
+    }
   }
 }

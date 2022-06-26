@@ -97,6 +97,7 @@ function _instanceOfSignal(object) {
 
 QPromise.prototype.then = function(onFulfilled,onRejected) {
     var thenPromise = new QPromise();
+  var trace = new Error()
 
     this._onFulfilled.push(function(value) {
         if (typeof onFulfilled === "function" ) {
@@ -105,7 +106,7 @@ QPromise.prototype.then = function(onFulfilled,onRejected) {
                 thenPromise.resolve(x);
             } catch (e) {
                 console.error(e);
-                console.trace();
+                console.log(trace.stack)
                 thenPromise.reject(e);
             }
 

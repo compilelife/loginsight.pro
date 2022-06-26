@@ -74,6 +74,10 @@ Item {
     visible: false
     width: parent.width - 8 - indicatorMeasure.width
     wrapMode: Text.WrapAnywhere
+    font {
+      family: App.settings.logView.font.family
+      pixelSize: App.settings.logView.font.size
+    }
   }
 
   TextMetrics {
@@ -274,7 +278,7 @@ Item {
     logModel.count = r.end - r.begin + 1
     indicatorMeasure.text = r.end
 
-    show(r.end, 'bottom')
+    show(r.end, {placeAt:'bottom', remember: false})
   }
 
   function _limitRange(r) {
@@ -296,7 +300,7 @@ Item {
         let height = 0
         for (let i = prefer.end; i >= prefer.begin; i--) {
           contentMeasure.text = logModel.dataAt(i).content
-          height += contentMeasure.height
+          height += contentMeasure.height + App.settings.logView.lineSpacing
           if (height > contentHolder.height) {
             prefer.begin = Math.min(i + 1, prefer.end)
             break
@@ -339,6 +343,10 @@ Item {
   function onSyntaxChanged() {
     logModel.cache = [] //drop cache
     show(curIndex)
+  }
+
+  function invalidate() {
+    forceRefresh(curIndex)
   }
 
   //if curIndex not changed, repeater won't react, that's why we need force
@@ -497,5 +505,13 @@ Item {
   function getTopLines(n) {
     const startIndexInCache = curIndex - logModel.cache[0].index
     return logModel.cache.slice(startIndexInCache, n)
+  }
+
+  function moveToBottom() {
+    session.core.sendMessage(CoreDef.CmdGetRange, {logId})
+      .then(function(reply){
+        logModel.range = reply.range
+        show(logModel.range.end, {placeAt: 'bottom'})
+      })
   }
 }

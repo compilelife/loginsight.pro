@@ -6,6 +6,7 @@ import QtQml.Models 2.15
 import QtQml 2.15
 import QtQuick.Dialogs 1.3
 import './util.js' as Util
+import './app.js' as App
 
 Item {
   id: root
@@ -29,6 +30,9 @@ Item {
     property alias syntaxSegConfig: setSyntax.segs
 
     property var logExclusive : null
+
+  property bool followLog: true
+
     Component.onCompleted: {
       logExclusive = Qt.createQmlObject('import QtQuick.Controls 1.4; ExclusiveGroup{}', root, 'logExclusive')
     }
@@ -38,7 +42,7 @@ Item {
       width: parent.width
       onChanged: {
         highlights = getHighlights()
-        //TODO: force refresh all logview here
+        invalidate()
       }
       onFilter: {
         root.filter({pattern: keyword})
@@ -223,6 +227,9 @@ Item {
     }
 
     function handleLogRangeChanged(msg) {
+      if (!followLog)
+        return
+
         core.sendMessage(CoreDef.CmdSyncLogs)
             .then(function(msg){
                 for (const r of msg.ranges) {
@@ -258,6 +265,32 @@ Item {
     function onSyntaxChanged() {
       for (const key in logMap) {
         logMap[key].onSyntaxChanged()
+      }
+    }
+
+    function invalidate() {
+      for (const key in logMap) {
+        logMap[key].invalidate()
+      }
+    }
+
+    function setAsCurrent() {
+      updateActions()
+      App.setCurrentView(currentLogView())
+    }
+
+    function updateActions() {
+      App.actions.followLog.checked = followLog
+    }
+
+    function setFollowLog(v) {
+      const shouldMoveToBottom = v && !followLog
+      followLog = v
+
+      if (shouldMoveToBottom) {
+        for (const key in logMap) {
+          logMap[key].moveToBottom()
+        }
       }
     }
 }

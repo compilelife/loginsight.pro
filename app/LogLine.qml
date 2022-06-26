@@ -61,7 +61,7 @@ Item {
         textFormat: TextEdit.PlainText //highlighter set offset on rich text has strange offset
 //        readOnly: true //comment this line to show cursor
         selectByMouse: true
-        width: root.width - indicator.width
+        width: root.width - indicator.width - parent.spacing
         text: model.content
         wrapMode: Text.WrapAnywhere
         font {
@@ -112,6 +112,8 @@ Item {
   }
 
   function invalidate() {
+    if (!_content)
+        return
     _content.append('1')
     _content.undo()
   }

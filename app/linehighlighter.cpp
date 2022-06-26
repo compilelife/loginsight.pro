@@ -51,7 +51,6 @@ void LineHighlighter::highlightBlock(const QString &text)
     if (!searchResult.empty()) {
         auto offset = searchResult["offset"].toUInt();
         auto length = searchResult["len"].toUInt();
-        qDebug()<<text;
         QTextCharFormat fmt;
         fmt.clearBackground();
         fmt.setBackground(QColor(0,200,200));

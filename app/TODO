@@ -1,7 +1,5 @@
 main:
     follow dynamic log
-    toast:
-        already copy to clipbord
 
 enhance:
     page up/down

@@ -17,6 +17,7 @@ const CmdSetLineSegment = 'setLineSegment'
 const CmdSearch = 'search'
 const CmdMapLine = 'mapLine'
 const CmdTestSyntax = 'testSyntax'
+const CmdGetRange = 'getRange'
 const ServerCmdRangeChanged = 'rangeChanged'
 
 const SegTypeDate = 0;

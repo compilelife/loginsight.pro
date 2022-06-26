@@ -40,5 +40,7 @@
         <file>Settings.qml</file>
         <file>Toast.qml</file>
         <file>SettingItem.qml</file>
+        <file>images/play.png</file>
+        <file>images/pause.png</file>
     </qresource>
 </RCC>
