@@ -180,7 +180,7 @@ Item {
     }
 
     function openProcess(process) {
-      core.sendMessage(CoreDef.CmdOpenProcess, {process})
+      return core.sendMessage(CoreDef.CmdOpenProcess, {process})
         .then(function(msg){
           rootLogView.initLogModel(msg.logId, msg.range)
           _onLogAdded(msg.logId, rootLogView)

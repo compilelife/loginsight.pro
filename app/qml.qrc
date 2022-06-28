@@ -42,5 +42,7 @@
         <file>SettingItem.qml</file>
         <file>images/play.png</file>
         <file>images/pause.png</file>
+        <file>ProcessManager.qml</file>
+        <file>PaperText.qml</file>
     </qresource>
 </RCC>

@@ -26,6 +26,7 @@ ApplicationWindow {
     Menu {
       title: "File"
       MenuItem {action: actions.open}
+      MenuItem {action: actions.openProcess}
       MenuItem {action: actions.close}
     }
     Menu {
@@ -127,6 +128,32 @@ ApplicationWindow {
     visible: false
   }
 
+  Dialog {
+    id: pmDlg
+    width: 500
+    height: 400
+    ProcessManager{
+      id: pm
+    }
+    onAccepted: {
+      const args = pm.getUserSelect()
+      if (args.process.length === 0) {
+        _toast.show('process not specific')
+        return
+      }
+
+      const process = args.process
+      const session = addSession("process")
+      //TODO: support set cache
+      //TODO: support stderr
+      session.coreReady.connect(function () {
+        session.openProcess(process).then(null, function () {
+          delSession(session)
+        })
+      })
+    }
+  }
+
   Component.onCompleted: {
     App.setActions(actions)
     App.setMain(this)
@@ -135,18 +162,24 @@ ApplicationWindow {
     showMaximized()
     actions.updateSessionActions(false)
 
-    const url = '/home/chenyong/my/loginsight/core/test/assets/sample.log'
-    const name = url.substring(url.lastIndexOf('/'))
-    const session = addSession(name)
-    session.coreReady.connect(function () {
-      session.openProcess('while true;do echo `date`;sleep 1;done').then(null, function () {
-        delSession(session)
-      })
-    })
+    pm.initRecords()
+
+//    const url = '/home/chenyong/my/loginsight/core/test/assets/sample.log'
+//    const name = url.substring(url.lastIndexOf('/'))
+//    const session = addSession(name)
+//    session.coreReady.connect(function () {
+//      session.openProcess('while true;do echo `date`;sleep 1;done').then(null, function () {
+//        delSession(session)
+//      })
+//    })
   }
 
   function openFileOrPrj() {
     openDlg.visible = true
+  }
+
+  function openProcess() {
+    pmDlg.visible = true
   }
 
   function currentLogView() {

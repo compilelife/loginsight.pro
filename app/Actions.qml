@@ -101,6 +101,7 @@ Item {
     text: 'followLog'
     checkable: true
     checked: true
+    shortcut: 'ctrl+m'
     iconSource: 'qrc:/images/pause.png'
     onCheckedChanged: {
       if (checked)

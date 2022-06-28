@@ -16,6 +16,9 @@ Dialogs.Dialog {
                                 family: 'monospace'
                               },
                               lineSpacing: 5
+                            },
+                            processManager: {
+                              records: []
                             }
                           })
   GroupBox {//logview

@@ -1,9 +1,7 @@
 main:
-    follow dynamic log
-
-enhance:
+    open clipboard
     page up/down
-
+    search focus
 
 features:
     filter

@@ -22,6 +22,7 @@ struct ProcessInfo
 {
     any priv;
     int stdoutFd{-1};
+    int stderrFd{-1};
 };
 
 ProcessInfo openProcess(string_view cmdline);
