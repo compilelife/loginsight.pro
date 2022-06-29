@@ -9,6 +9,11 @@ Row {
 
   spacing: 10
 
+  onVisibleChanged: {
+    if(visible)
+      keywordBox.forceActiveFocus()
+  }
+
   ComboBox {
     id: keywordBox
     focus: true
