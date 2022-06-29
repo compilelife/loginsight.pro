@@ -157,6 +157,8 @@ ApplicationWindow {
     actions.updateSessionActions(false)
 
     pm.initRecords()
+
+    doOpenFileOrPrj('/home/chenyong/my/loginsight/core/test/assets/sample.log')
   }
 
   function doOpenFileOrPrj(url, name) {

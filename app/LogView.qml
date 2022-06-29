@@ -229,6 +229,33 @@ Item {
     }
   }
 
+  Keys.onPressed: {
+    if (event.key === Qt.Key_PageDown) {
+      const index = getVisibleLastLineIndex()
+      show(index, {placeAt:'top'})
+    } else if (event.key === Qt.Key_PageUp) {
+      const index = getVisibleFirstLineIndex()
+      show(index, {placeAt:'bottom'})
+    }
+  }
+
+  function getVisibleFirstLineIndex() {
+    return curIndex
+  }
+
+  function getVisibleLastLineIndex() {
+    let height = 0
+    for (let i = 0; i < content.model; i++) {
+      height += content.itemAt(i).height
+      if (height > contentHolder.height) {
+        return Math.max(curIndex, curIndex + i - 1)
+      } else if (height === contentHolder.height) {
+        return curIndex + i
+      }
+    }
+    return curIndex + content.model - 1
+  }
+
     //since vbar scroll range is 0 - 1.0
     //and log index range is range.begin - range.end
     //seems map [0,1.0] <=> [range.begin, range.end] is quite right
