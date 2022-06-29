@@ -5,6 +5,7 @@
 #include <QApplication>
 #include <QDir>
 #include <QFile>
+#include <QDebug>
 
 NativeHelper::NativeHelper(QObject *parent)
     : QObject{parent}
@@ -15,6 +16,28 @@ NativeHelper::NativeHelper(QObject *parent)
 void NativeHelper::clipboardSetImage(const QImage img)
 {
     qApp->clipboard()->setImage(img);
+}
+
+QString NativeHelper::writeClipboardToTemp()
+{
+    auto content = qApp->clipboard()->text();
+    if (content.isEmpty()) {
+        qDebug()<<"clipboard text is empty";
+        return "";
+    }
+
+    auto path = QDir::temp().filePath("loginsight-clipboard.txt");
+
+    QFile f(path);
+    if (!f.open(QIODevice::WriteOnly)) {
+        qDebug()<<"failed to open "<<path;
+        return "";
+    }
+
+    f.write(content.toLocal8Bit());
+    f.close();
+
+    return path;
 }
 
 void NativeHelper::relaunch()

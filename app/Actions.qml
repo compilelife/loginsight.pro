@@ -111,4 +111,9 @@ Item {
       App.currentSession.setFollowLog(checked)
     }
   }
+
+  property Action openClipboard: Action {
+    text: 'open clipboard'
+    onTriggered: App.main.openClipboard()
+  }
 }

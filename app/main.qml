@@ -27,6 +27,7 @@ ApplicationWindow {
       title: "File"
       MenuItem {action: actions.open}
       MenuItem {action: actions.openProcess}
+      MenuItem {action: actions.openClipboard}
       MenuItem {action: actions.close}
     }
     Menu {
@@ -108,14 +109,7 @@ ApplicationWindow {
     folder: shortcuts.home
     onAccepted: {
       const url = openDlg.fileUrl.toString().substring(7) //drop file://
-      const name = url.substring(url.lastIndexOf('/'))
-      const session = addSession(name)
-      //TODO: check if it is log or prj
-      session.coreReady.connect(function () {
-        session.openFile(url).then(null, function () {
-          delSession(session)
-        })
-      })
+      doOpenFileOrPrj(url)
     }
   }
 
@@ -163,15 +157,18 @@ ApplicationWindow {
     actions.updateSessionActions(false)
 
     pm.initRecords()
+  }
 
-//    const url = '/home/chenyong/my/loginsight/core/test/assets/sample.log'
-//    const name = url.substring(url.lastIndexOf('/'))
-//    const session = addSession(name)
-//    session.coreReady.connect(function () {
-//      session.openProcess('while true;do echo `date`;sleep 1;done').then(null, function () {
-//        delSession(session)
-//      })
-//    })
+  function doOpenFileOrPrj(url, name) {
+    if (!name)
+      name = url.substring(url.lastIndexOf('/'))
+    const session = addSession(name)
+    //TODO: check if it is log or prj
+    session.coreReady.connect(function () {
+      session.openFile(url).then(null, function () {
+        delSession(session)
+      })
+    })
   }
 
   function openFileOrPrj() {
@@ -180,6 +177,11 @@ ApplicationWindow {
 
   function openProcess() {
     pmDlg.visible = true
+  }
+
+  function openClipboard() {
+    const path = NativeHelper.writeClipboardToTemp();
+    doOpenFileOrPrj(path)
   }
 
   function currentLogView() {

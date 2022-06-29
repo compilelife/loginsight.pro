@@ -1,16 +1,7 @@
 main:
-    open clipboard
     page up/down
     search focus
-
-features:
-    filter
-        by seg, for example: filter log level above warn
-    ctrl + k like qt
-    filter preview
-    show log line in subview
-
-Project:
+    project
 
 Pro Feature:
 - syntax
