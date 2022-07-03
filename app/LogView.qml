@@ -204,6 +204,9 @@ Item {
     }
     onVisibleChanged: {
       _lastSearchPos = null
+      if (!visible) {
+        clearSearchResult()
+      }
     }
   }
 
@@ -479,9 +482,16 @@ Item {
           } else {
             cacheLine.searchResult = null
           }
-          forceRefresh(curIndex)
         }
+        forceRefresh(curIndex)
       })
+  }
+
+  function clearSearchResult() {
+    for (const cacheLine of logModel.cache) {
+      cacheLine.searchResult = null
+    }
+    forceRefresh(curIndex)
   }
 
   function filterAction() {

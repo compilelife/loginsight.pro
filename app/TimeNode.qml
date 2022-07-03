@@ -3,6 +3,7 @@ import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
 import QtQuick.Controls 2.12
 import QtQuick.Dialogs 1.2
+import QtQuick.Controls 1.4 as QC1
 
 /*
   交互效果：
@@ -48,17 +49,17 @@ Item {
         }
     }
 
-    Menu {
+    QC1.Menu {
         id: optionMenu
 
-        MenuItem {
+        QC1.MenuItem {
             text: '删除'
-            onClicked: requestDelete()
+            onTriggered: requestDelete()
         }
 
-        MenuItem {
+        QC1.MenuItem {
             text: '选择颜色'
-            onClicked: {
+            onTriggered: {
                 selectColorDialog.open()
             }
         }

@@ -163,8 +163,8 @@ ApplicationWindow {
 
     pm.initRecords()
 
-//    _doOpenFileOrPrj('/home/chenyong/my/loginsight/core/test/assets/sample.log')
-    _doOpenProcess('while true;do echo `date`;sleep 1;done')
+    _doOpenFileOrPrj('/home/chenyong/my/loginsight/core/test/assets/sample.log')
+//    _doOpenProcess('while true;do echo `date`;sleep 1;done')
   }
 
   function _doOpenFileOrPrj(url, name) {

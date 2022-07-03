@@ -20,6 +20,10 @@ Item {
     _lastReverse = false
   }
 
+  Keys.onEscapePressed: {
+    visible = false
+  }
+
   Rectangle {
     id: background
     anchors.fill: root

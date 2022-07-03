@@ -6,19 +6,8 @@ Pro Feature:
 How to unit test ?
 
 BUG:
-clear search highlight if searchbox dispear
-patternbox focus issue
-press esc to hide searchbar
-filter OsdDisplayReceiver, first 3 line not highlight?like first cache(50 lines) has no segs info
-current line highlight effect
 all todos
-readonly no cursor
-update highlight and segs require refreshing all logview
-timeline screen shot issue
-timeline menu ui seems for touch op, not consistent to other menus
 dynamic log: 运行一段时间的dynamice file log会自动退出core: promisex.cpp:23 ~Promise crash
-color not beautiful
-promise trace
 
 next:
 syntax manager
