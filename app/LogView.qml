@@ -541,4 +541,20 @@ Item {
         show(logModel.range.end, {placeAt: 'bottom'})
       })
   }
+
+  function onSave() {
+    return {
+      checked,
+      curIndex,
+      curFocusIndex,
+      navigate: navigate.onSave()
+    }
+  }
+
+  function onLoad(cfg) {
+    checked = cfg.checked
+    curFocusIndex = cfg.curFocusIndex
+    show(cfg.curIndex)
+    navigate.onLoad(cfg.navigate)
+  }
 }

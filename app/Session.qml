@@ -10,8 +10,8 @@ import './app.js' as App
 
 Item {
   id: root
+  property string name: ''
   signal coreReady()
-
   property Core core: Core {
         onReady: {
             core.serverCmdHandlers[CoreDef.ServerCmdRangeChanged] = handleLogRangeChanged
@@ -32,6 +32,12 @@ Item {
     property var logExclusive : null
 
   property bool followLog: true
+
+  property var openArg: ({})
+
+  onNameChanged: {
+    core.tag = name
+  }
 
     Component.onCompleted: {
       logExclusive = Qt.createQmlObject('import QtQuick.Controls 1.4; ExclusiveGroup{}', root, 'logExclusive')
@@ -94,10 +100,13 @@ Item {
                     subLog.initLogModel(id, range)
                     _onLogAdded(id, subLog)
 
+                  const filterArgIndex = filterArgs.length - 1
+
                     tabBarButton.closed.connect(function(){
                         tabBarButton.destroy()
                         _onLogRemoved(subLog.logId)
                         subLog.destroy()
+                      filterArgs.splice(filterArgIndex, 1)
                     })
 
                   tabBar.currentIndex = tabBar.count - 1
@@ -172,6 +181,7 @@ Item {
     }
 
     function openFile(path) {
+      openArg = {action: 'open', arg: path}
         return core.sendModalMessage(CoreDef.CmdOpenFile, {path})
             .then(msg=>{
                 rootLogView.initLogModel(msg.logId, msg.range)
@@ -180,6 +190,7 @@ Item {
     }
 
     function openProcess(process) {
+      openArg = {action: 'openProcess', arg: process}
       return core.sendMessage(CoreDef.CmdOpenProcess, {process})
         .then(function(msg){
           rootLogView.initLogModel(msg.logId, msg.range)
@@ -292,5 +303,32 @@ Item {
           logMap[key].moveToBottom()
         }
       }
+    }
+
+    function onSave() {
+      const ret = {}
+      ret.openArg = openArg
+      //TODO: support save sub logs(consider that some sub log(as other's parent) may already be closed)
+      ret.highlights = highlights
+      ret.timeline = timeline.onSave()
+      ret.syntax = {pattern: setSyntax.pattern, segs: setSyntax.segs}
+      ret.rootLogView = rootLogView.onSave()
+      return ret
+    }
+
+    function onLoad(cfg) {
+      highlights = cfg.highlights
+      highlightBar.load(cfg.highlights)
+      timeline.onLoad(cfg.timeline)
+      setSyntax.pattern = cfg.syntax.pattern
+      setSyntax.setSegConfig(cfg.syntax.segs)
+      if (setSyntax.pattern.length > 0) {
+        core.sendMessage(CoreDef.CmdSetLineSegment, {
+                                                  pattern: setSyntax.pattern,
+                                                  segs: setSyntax.segs,
+                                                  caseSense: true
+                                                })
+      }
+      rootLogView.onLoad(cfg.rootLogView)
     }
 }

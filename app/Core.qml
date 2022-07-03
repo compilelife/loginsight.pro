@@ -12,13 +12,14 @@ Item {
   property var serverCmdHandlers: ({})
   property WebSocket channel: null
   property int idGen: 0
+  property string tag: ''
 
-  signal ready
+  signal ready()
 
   CoreBoot {
     id: boot
     onStateChanged: function (running) {
-      console.log('state changed to ', running)
+      console.log(`[${tag}]`,'state changed to ', running)
       if (running) {
         createChannel()
       } else {
@@ -80,10 +81,10 @@ Item {
         repeat: true
         running: longOpDlg.enabled
         onTriggered: {
-          console.log('timer sent')
+          console.log(`[${tag}]`,'timer sent')
           sendMessage(CoreDef.CmdQueryPromise, {pid: longOpDlg.waitPromiseId})
             .then(function(msg){
-              console.log('timer', longOpDlg.waitId)
+              console.log(`[${tag}]`,'timer', longOpDlg.waitId)
               progressBar.value = msg.progress
               longOpDlg.visible = true
             })
@@ -127,7 +128,7 @@ Item {
     })
 
     const msg = JSON.stringify(packed)
-    console.log('send', msg)
+    console.log(`[${tag}]`,'send', msg)
     channel.sendTextMessage(msg)
 
     return ret
@@ -146,7 +147,7 @@ Item {
     }
 
     const content = JSON.stringify(packed)
-    console.log('reply', content)
+    console.log(`[${tag}]`,'reply', content)
     channel.sendTextMessage(content)
   }
 
@@ -168,7 +169,8 @@ Item {
     }
 
     const cmd = msgObj.cmd
-    console.log('recv', msg)
+    if (!(cmd === CoreDef.CmdReply && msgObj.origin === CoreDef.CmdGetLines))
+      console.log(`[${tag}]`,'recv', msg)
     if (cmd === CoreDef.CmdReply) {
       if (msgObj.state === CoreDef.StateOk
           || msgObj.state === CoreDef.StateCancel) {
@@ -211,11 +213,11 @@ Item {
                                  'coreChannel')
     channel.textMessageReceived.connect(_onTextMsg)
     channel.statusChanged.connect(function (status) {
-      console.log("websocket connect status:", status)
+      console.log(`[${tag}]`,"websocket connect status:", status)
       if (status === WebSocket.Open) {
         ready()
       } else if (status === WebSocket.Error) {
-        console.log(channel.errorString)
+        console.log(`[${tag}]`,channel.errorString)
         coreErrDlg.showError('core disconnected, please relaunch')
       }
     })

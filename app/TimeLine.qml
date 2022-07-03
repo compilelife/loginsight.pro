@@ -78,17 +78,16 @@ Item {
         highlightMoveDuration: 300
     }
 
-    function saveToJson() {
+    function onSave() {
         var allNodes = []
         for (var i = 0; i < nodes.count; i++) {
             allNodes.push(nodes.get(i))
         }
 
-        return JSON.stringify(allNodes)
+        return allNodes
     }
 
-    function loadFromJson(json) {
-        var allNodes = JSON.parse(json)
+    function onLoad(allNodes) {
         allNodes.forEach(node=>nodes.append(node))
     }
 

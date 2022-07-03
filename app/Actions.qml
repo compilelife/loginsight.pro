@@ -11,7 +11,8 @@ Item {
     clearTimeLine,
     shotTimeLine,
     setSyntax,
-    followLog
+    followLog,
+    saveProject
   ]
 
   function updateSessionActions(hasSession) {
@@ -22,7 +23,7 @@ Item {
   }
 
   property Action open:   Action {
-    text: 'open'
+    text: 'open file or project'
     shortcut: 'ctrl+o'
     onTriggered: App.main.openFileOrPrj()
   }
@@ -115,5 +116,10 @@ Item {
   property Action openClipboard: Action {
     text: 'open clipboard'
     onTriggered: App.main.openClipboard()
+  }
+
+  property Action saveProject: Action {
+    text: 'save project'
+    onTriggered: App.main.saveProject()
   }
 }

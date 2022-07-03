@@ -14,10 +14,6 @@ ColumnLayout {
   property var segs: getSegConfig()
   property alias lines: previewLines
 
-  onSegsChanged: {
-    console.log(JSON.stringify(segs))
-  }
-
   RowLayout {
     TextField {
       id: patternBox
@@ -96,5 +92,9 @@ ColumnLayout {
       ret.push(model.get(i))
     }
     return ret
+  }
+
+  function setSegConfig(cfg) {
+    syntaxSegs.load(cfg)
   }
 }

@@ -109,9 +109,7 @@ Item {
     highlights.clear()
   }
 
-  //for debug
-//  Component.onCompleted: {
-//    add('km')
-//    add('IJKMEDIA')
-//  }
+  function load(arr) {
+    arr.forEach(a=>highlights.append(a))
+  }
 }

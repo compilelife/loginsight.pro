@@ -31,4 +31,15 @@ Item {
     return history[++currentIndex]
   }
 
+  function onSave() {
+    return {
+      history,
+      currentIndex
+    }
+  }
+
+  function onLoad(cfg) {
+    history = cfg.history
+    currentIndex = cfg.currentIndex
+  }
 }
