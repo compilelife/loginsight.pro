@@ -281,6 +281,7 @@ ImplCmdHandler(openFile) {
 
 ImplCmdHandler(openProcess) {
     auto cmd = msg["process"].asString();
+    auto cache = msg["cache"].asInt();
 
     auto log = make_shared<MonitorLog>();
     auto ret = log->open(cmd, EventLoop::instance().base());
@@ -289,6 +290,9 @@ ImplCmdHandler(openProcess) {
         send(failedAck(msg, "命令运行失败"));
         return Promise::resolved(false);
     }
+
+    if (cache > 0)
+        log->setMaxBlockCount(cache);
     
     send(onRootLogReady(msg, log));
     return Promise::resolved(true);

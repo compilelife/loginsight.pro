@@ -79,7 +79,7 @@ ColumnLayout {
         for (let i = 0; i < previewLines.count; i++) {
           previewLines.setProperty(i, 'segs', reply.segs[i])
         }
-        //refresh, FIXME
+        //FIXME: 上面的setProperty后，界面没刷新，下面两行起到“刷新”的作用
         viewRoot.model = null
         viewRoot.model = previewLines
       })

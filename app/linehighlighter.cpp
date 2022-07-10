@@ -37,7 +37,7 @@ void LineHighlighter::highlightBlock(const QString &text)
         auto index = -1;
 
         QTextCharFormat fmt;
-        fmt.clearForeground();//FIXME: keep foreground if possible
+        fmt.clearForeground();//TODO：能否在设置背景的时候 ，根据背景色或保留前景色，或自动选择恰当反色？
         fmt.setBackground(QColor(color));
 
         do {

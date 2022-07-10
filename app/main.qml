@@ -148,8 +148,7 @@ ApplicationWindow {
         return
       }
 
-      const process = args.process
-      _doOpenProcess(process)
+      _doOpenProcess(args)
     }
   }
 
@@ -194,14 +193,12 @@ ApplicationWindow {
 //    openDlg.requestOpenFile('open file or project', _doOpenFileOrPrj)
   }
 
-  function _doOpenProcess(process) {
+  function _doOpenProcess({process, cache}) {
     const session = addSession("process")
     session.name = 'process'
-    //TODO: support set cache
-    //TODO: support stderr
     return Q.promise(function(resolve,reject){
       session.coreReady.connect(function () {
-        session.openProcess(process).then(function(){
+        session.openProcess(process, cache).then(function(){
           resolve()
         }, function () {
           delSession(session)
@@ -288,7 +285,7 @@ ApplicationWindow {
       return Q.resolved()
 
     const sessionCfg = root.sessions[index]
-    //FIXME: main should not know session's implementation
+    //FIXME: 这里main依赖了sessionCfg的具体实现，需要重构
     const {action, arg} = sessionCfg.openArg
 
     let ret = null
@@ -296,7 +293,6 @@ ApplicationWindow {
       ret = _doOpenFileOrPrj(arg)
 //    else if (action === 'openProcess') //restore open process has no meanings
 //      ret = _doOpenProcess(arg)
-    //TODO: support restore clipboard
     else
       toast.show('unknown session', action, arg)
 

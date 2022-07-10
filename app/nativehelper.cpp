@@ -42,7 +42,8 @@ QString NativeHelper::writeClipboardToTemp()
 
 void NativeHelper::relaunch()
 {
-    //FIXME: with next line uncommented, old window won't exit
+    //FIXME: 本意是要实现relaunch，即启动一个新的进程，然后退出当前进程
+    //然而实际效果却是新的进程起来了，但是旧的进程也没退出
     //QProcess::startDetached(qApp->applicationFilePath(), QStringList());
     qApp->quit();
 }

@@ -9,7 +9,7 @@ Dialogs.Dialog {
   title: 'setting'
   width: 300
   standardButtons: Dialogs.StandardButton.Apply | Dialogs.StandardButton.Cancel
-  property var settings: ({//FIXME: can not react ?
+  property var settings: ({//FIXME: 为什么这样的写法没有响应式的效果？
                             logView: {
                               font: {
                                 size: 14,

@@ -189,9 +189,9 @@ Item {
             })
     }
 
-    function openProcess(process) {
-      openArg = {action: 'openProcess', arg: process}
-      return core.sendMessage(CoreDef.CmdOpenProcess, {process})
+    function openProcess(process, cache) {
+      openArg = {action: 'openProcess', arg: {process, cache}}
+      return core.sendMessage(CoreDef.CmdOpenProcess, {process, cache})
         .then(function(msg){
           rootLogView.initLogModel(msg.logId, msg.range)
           _onLogAdded(msg.logId, rootLogView)
@@ -231,8 +231,11 @@ Item {
           if (msg.found) {
             curLog.showSearchResult(msg)
           } else {
-            //TODO: more specific log, such as 'search down to bottom not found'
-            errTip.display('search error', searchArg.pattern + ' not found')
+            if (searchArg.reverse) {
+              App.showToast('查找到顶部，未找到'+searchArg.pattern)
+            } else {
+              App.showToast('查找到底部，未找到'+searchArg.pattern)
+            }
           }
         })
     }
