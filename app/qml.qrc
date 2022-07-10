@@ -44,5 +44,6 @@
         <file>images/pause.png</file>
         <file>ProcessManager.qml</file>
         <file>PaperText.qml</file>
+        <file>images/delete.png</file>
     </qresource>
 </RCC>

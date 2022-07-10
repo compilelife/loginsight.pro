@@ -12,13 +12,18 @@ ListView {
   id: root
   spacing: 10
   height: childrenRect.height
-  width: 250
+  width: 260
   //{color:string, type:int, name: string}
   model: ListModel{}
   delegate: Row {
     spacing: 5
+    IconButton {
+      size: 32
+      source: 'qrc:/images/delete.png'
+      onClicked: root.model.remove(index)
+    }
     TextField {
-      width: 100
+      width: 90
       Layout.alignment: Qt.AlignVCenter
       text: name
     }
@@ -38,7 +43,7 @@ ListView {
     }
     ComboBox {
       id: typeText
-      width: 100
+      width: 90
       model: CoreDef.SegTypeNames
       currentIndex: type
     }

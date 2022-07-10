@@ -149,6 +149,8 @@ Item {
     }
 
     onAccepted: {
+      if (setSyntax.pattern.length === 0)
+        return
       core.sendMessage(CoreDef.CmdSetLineSegment, {
                                                 pattern: setSyntax.pattern,
                                                 segs: setSyntax.segs,

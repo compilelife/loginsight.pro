@@ -274,7 +274,11 @@ ApplicationWindow {
     openDlg.requestSaveFile('选择要保存的工程文件路径', ['*.liprj'], function(path){
       if (!path.endsWith('.liprj'))
         path += '.liprj'
-      NativeHelper.writeToFile(path, JSON.stringify(ret))
+      if (NativeHelper.writeToFile(path, JSON.stringify(ret))) {
+        App.showToast('工程文件保存成功')
+      }else {
+        App.showToast('工程文件保存失败！')
+      }
     })
 
   }

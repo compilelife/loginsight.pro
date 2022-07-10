@@ -25,6 +25,7 @@ ColumnLayout {
     }
     Button {
       text: '管理'
+      onClicked: App.showToast('功能开发中……')
     }
   }
 
@@ -69,6 +70,16 @@ ColumnLayout {
   }
 
   function previewSyntax() {
+    if (syntaxSegs.model.count === 0) {
+      App.showToast('请点击“添加字段”添加与正则表达式捕获相同数量的字段')
+      return
+    }
+
+    if (pattern.length === 0) {
+      App.showToast('请输入格式语法的正则表达式')
+      return
+    }
+
     const lines = []
     for (let i = 0; i < previewLines.count; i++) {
       lines.push(previewLines.get(i).content)
