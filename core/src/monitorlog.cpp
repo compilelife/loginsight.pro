@@ -55,8 +55,12 @@ shared_ptr<LogView> MonitorLog::view(LogLineI from, LogLineI to) const{
 
     shared_ptr<LogView> view(new BlockLogView(move(refs)));
 
-    if (from == 0 && to == InvalidLogLine)
+    auto curRange = range();
+    if (curRange == Range(from, to))
         return view;
+
+    from -= curRange.begin;
+    to -= curRange.begin;
 
     return view->subview(from, to - from + 1);
 }
