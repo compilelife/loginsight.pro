@@ -110,8 +110,9 @@ ApplicationWindow {
 
   FileDialog {
     id: openDlg
-    title: '选择要打开的文件/工程'
+    title: '选择文件/工程路径'
     folder: shortcuts.home
+    selectMultiple: false
     property var handler: null
     onAccepted: {
       const url = openDlg.fileUrl.toString().substring(7) //drop file://
@@ -121,6 +122,15 @@ ApplicationWindow {
     function requestOpenFile(hint, func) {
       handler = func
       title = hint
+      selectExisting = true
+      nameFilters = ['*']
+      open()
+    }
+    function requestSaveFile(hint, filter, func) {
+      handler = func
+      title = hint
+      selectExisting = false
+      nameFilters = filter
       open()
     }
   }
@@ -189,8 +199,7 @@ ApplicationWindow {
   }
 
   function openFileOrPrj() {
-    _doOpenFileOrPrj('/tmp/1.liprj')
-//    openDlg.requestOpenFile('open file or project', _doOpenFileOrPrj)
+    openDlg.requestOpenFile('选择要打开的日志文件或工程', _doOpenFileOrPrj)
   }
 
   function _doOpenProcess({process, cache}) {
@@ -261,7 +270,13 @@ ApplicationWindow {
     }
 
     ret.currentIndex = sessions.currentIndex
-    NativeHelper.writeToFile('/tmp/1.liprj', JSON.stringify(ret))
+
+    openDlg.requestSaveFile('选择要保存的工程文件路径', ['*.liprj'], function(path){
+      if (!path.endsWith('.liprj'))
+        path += '.liprj'
+      NativeHelper.writeToFile(path, JSON.stringify(ret))
+    })
+
   }
 
   function _doLoadProject(path) {
