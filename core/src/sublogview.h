@@ -6,8 +6,8 @@ class SubLog;
 
 struct SubLogPos
 {
-    size_t blockIndex;
-    size_t lineIndex;
+    int blockIndex;
+    int lineIndex;
 };
 
 class SubLogView : public LogView {

@@ -172,7 +172,7 @@ ApplicationWindow {
 
     pm.initRecords()
 
-    _doOpenFileOrPrj('/home/chenyong/my/loginsight/core/test/assets/sample.log')
+    _doOpenFileOrPrj('/home/chenyong/work/ijk/hls/v4/ijk.log')
 //    _doOpenProcess('while true;do echo `date`;sleep 1;done')
   }
 

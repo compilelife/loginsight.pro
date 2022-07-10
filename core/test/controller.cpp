@@ -91,10 +91,10 @@ TEST_F(ControllerTest, boot) {
 }
 
 TEST_F(ControllerTest, find) {
-    controller->mockInput(R"({"cmd":"openFile","id":"ui-1","path":"./sample.log"})");
+    controller->mockInput(R"({"cmd":"openFile","id":"ui-1","path":"/home/chenyong/work/ijk/hls/v4/ijk.log"})");
     this_thread::sleep_for(5s);
 
-    controller->mockInput(R"({"cmd":"search", "id":"ui-2", "logId":1, "fromLine": 1, "fromChar":90, "reverse": true, "regex": false, "pattern": "chro", "caseSense": true})");
+    controller->mockInput(R"({"id":"ui-10","cmd":"search","logId":1,"fromLine":4769,"fromChar":82,"pattern":"seekTo","caseSense":false,"reverse":true,"regex":false})");
     this_thread::sleep_for(500ms);
 
     auto reply = lastReply();

@@ -16,8 +16,8 @@ private:
     BlockLineI mFirstLineInBlock;
     BlockLineI mFinalLineInBlock;
     
-    BlockLineI mLineIndexInBlock;
-    size_t mBlockIndex;
+    int mLineIndexInBlock;
+    int mBlockIndex;
 
     /**
      * reverse的实现方式如下：
