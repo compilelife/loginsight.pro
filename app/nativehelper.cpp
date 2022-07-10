@@ -18,6 +18,11 @@ void NativeHelper::clipboardSetImage(const QImage img)
     qApp->clipboard()->setImage(img);
 }
 
+void NativeHelper::clipboardSetText(const QString &txt)
+{
+    qApp->clipboard()->setText(txt);
+}
+
 QString NativeHelper::writeClipboardToTemp()
 {
     auto content = qApp->clipboard()->text();

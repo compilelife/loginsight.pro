@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 1.4
 
+// 文本输入区 | 大小写敏感 | 正则表达式
 Row {
   property alias isRegex: regexBox.checked
   property alias isCaseSense: caseSenseBox.checked
@@ -35,12 +36,12 @@ Row {
 
     CheckBox {
       id: caseSenseBox
-      text: 'case sense'
+      text: '大小写敏感'
     }
 
     CheckBox {
       id: regexBox
-      text: 'is regex'
+      text: '正则表达式'
     }
 
     function addCurToCompleter() {

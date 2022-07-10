@@ -23,7 +23,7 @@ Item {
       if (running) {
         createChannel()
       } else {
-        coreErrDlg.showError('websocketd disconnected, please relaunch')
+        coreErrDlg.showError('websocketd异常中断, 请重启')
       }
     }
   }
@@ -40,7 +40,7 @@ Item {
     id: coreErrDlg
     visible: false
     standardButtons: StandardButton.Ok
-    title: 'core error'
+    title: '引擎异常'
 
     property var then: null
     function showError(content) {
@@ -55,7 +55,7 @@ Item {
     }
   }
 
-  //shown when op take more than 200ms
+  //耗时操作超200ms后显示
   Dialog {
     id: longOpDlg
     property string waitId: ''
@@ -63,7 +63,7 @@ Item {
     property string hint: ''
     property bool enabled: false
 
-    title: 'proceeding long op'
+    title: '执行耗时操作中'
     standardButtons: StandardButton.Cancel
     Column {
       Text {
@@ -218,7 +218,7 @@ Item {
         ready()
       } else if (status === WebSocket.Error) {
         console.log(`[${tag}]`,channel.errorString)
-        coreErrDlg.showError('core disconnected, please relaunch')
+        coreErrDlg.showError('引擎异常断开，请重启')
       }
     })
     channel.url = boot.url

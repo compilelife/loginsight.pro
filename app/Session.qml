@@ -91,22 +91,19 @@ Item {
                     currentIndex: tabBar.currentIndex
                 }
 
-                function append(id, range) {
+                function append(id, range, name) {
                     const tabBarButton = Qt.createComponent('qrc:/ClosableTabButton.qml')
-                                            .createObject(tabBar, {title: 'tab'})
+                                            .createObject(tabBar, {title: name})
                     const subLog = Qt.createComponent('qrc:/LogView.qml')
                                       .createObject(holder, {core})
 
                     subLog.initLogModel(id, range)
                     _onLogAdded(id, subLog)
 
-                  const filterArgIndex = filterArgs.length - 1
-
                     tabBarButton.closed.connect(function(){
                         tabBarButton.destroy()
                         _onLogRemoved(subLog.logId)
                         subLog.destroy()
-                      filterArgs.splice(filterArgIndex, 1)
                     })
 
                   tabBar.currentIndex = tabBar.count - 1
@@ -137,7 +134,7 @@ Item {
 
   Dialog {
     id: setSyntaxDlg
-    title: 'setting syntax'
+    title: '格式语法'
     standardButtons: StandardButton.Ok | StandardButton.Cancel
     width: 800
     height: 500
@@ -208,7 +205,7 @@ Item {
                                    }, param)
         core.sendModalMessage(CoreDef.CmdFilter, filterArg)
             .then(msg=>{
-                subLogs.append(msg.logId, msg.range)
+                subLogs.append(msg.logId, msg.range, filterArg.pattern)
             })
     }
 

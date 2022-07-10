@@ -1,5 +1,6 @@
 import QtQuick 2.0
 
+//能指定背景色的文本
 Rectangle {
   id: root
 

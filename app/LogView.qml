@@ -6,7 +6,7 @@ import "./app.js" as App
 import './util.js' as Util
 import QtQml 2.15
 
-Item {
+Rectangle {
   id: root
 
   property Navigate navigate: Navigate{}
@@ -221,7 +221,6 @@ Item {
 
   GotoDialog {
     id: gotoDialog
-    anchors.centerIn: parent
     visible: false
     range: logModel.range
     onAccepted: {
@@ -259,13 +258,10 @@ Item {
     return curIndex + content.model - 1
   }
 
-    //since vbar scroll range is 0 - 1.0
-    //and log index range is range.begin - range.end
-    //seems map [0,1.0] <=> [range.begin, range.end] is quite right
-    //but, in fact, vbar can only drag from 0 - (1.0 - size)
-    //(which means size represents how many lines already be shown)
-    //A convenient approach is just map [0, 1-vbar.size] to [range.begin, range.end]
-    //These are what exactly _positionToLineIndex and _lineIndexToPosition do
+    //因为vbar的滚动范围是0-1.0，而log的index范围是range.begin-range.end，直觉是建立0-1.0与range.begin-range.end间的映射
+    //但并不是，实际上滚动条滚动到最低的时候，对应的日志最后一行减去可视区行数
+    //不过计算最后可视区的行数有点麻烦，偷懒的方式是映射[0, 1-vbar.size] 到 [range.begin, range.end]
+    //也就是下面两个函数做的事情了
     function _positionToLineIndex(position) {
       return Math.floor(
             position / (1 - vbar.size) * (logModel.count - 1)) + logModel.range.begin
@@ -379,8 +375,6 @@ Item {
     forceRefresh(curIndex)
   }
 
-  //if curIndex not changed, repeater won't react, that's why we need force
-  //However, once you call forceRefresh, then you should call it whenever something changed
   function forceRefresh(index) {
     for (let i = 0; i < content.model; i++) {
       const item = content.itemAt(i)

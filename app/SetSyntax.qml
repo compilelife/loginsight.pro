@@ -20,11 +20,11 @@ ColumnLayout {
       Layout.fillWidth: true
     }
     Button {
-      text: 'preview'
+      text: '预览'
       onClicked: previewSyntax()
     }
     Button {
-      text: 'manage'
+      text: '管理'
     }
   }
 

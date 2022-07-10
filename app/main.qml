@@ -25,7 +25,7 @@ ApplicationWindow {
   menuBar: MenuBar {
     id: menubar
     Menu {
-      title: "File"
+      title: "文件"
       MenuItem {action: actions.open}
       MenuItem {action: actions.openProcess}
       MenuItem {action: actions.openClipboard}
@@ -36,7 +36,7 @@ ApplicationWindow {
       MenuSeparator{}
     }
     Menu {
-      title: "Insight"
+      title: "检视"
       MenuItem {action: actions.filter}
       MenuItem {action: actions.search}
       MenuSeparator{}
@@ -47,12 +47,12 @@ ApplicationWindow {
       MenuItem {action: actions.setSyntax}
     }
     Menu {
-      title: "TimeLine"
+      title: "时间线"
       MenuItem {action: actions.clearTimeLine}
       MenuItem {action: actions.shotTimeLine}
     }
     Menu {
-      title: "others"
+      title: "其它"
       MenuItem {action: actions.settings}
     }
   }
@@ -110,7 +110,7 @@ ApplicationWindow {
 
   FileDialog {
     id: openDlg
-    title: 'please choose log or project file to open'
+    title: '选择要打开的文件/工程'
     folder: shortcuts.home
     property var handler: null
     onAccepted: {
@@ -144,7 +144,7 @@ ApplicationWindow {
     onAccepted: {
       const args = pm.getUserSelect()
       if (args.process.length === 0) {
-        _toast.show('process not specific')
+        _toast.show('未指定要打开的程序')
         return
       }
 
@@ -168,7 +168,7 @@ ApplicationWindow {
 
   function _doOpenFileOrPrj(url, name) {
     if (!name)
-      name = url.substring(url.lastIndexOf('/'))
+      name = url.substring(url.lastIndexOf('/')+1)
     if (name.endsWith(".liprj")) {
       return _doLoadProject(url)
     }
@@ -195,7 +195,7 @@ ApplicationWindow {
 
   function _doOpenProcess({process, cache}) {
     const session = addSession("process")
-    session.name = 'process'
+    session.name = 'process'//TODO: 这里应该给什么TAB名字呢？
     return Q.promise(function(resolve,reject){
       session.coreReady.connect(function () {
         session.openProcess(process, cache).then(function(){
@@ -267,7 +267,7 @@ ApplicationWindow {
   function _doLoadProject(path) {
     const prjContent = NativeHelper.readFile(path)
     if (prjContent.length === 0) {
-      toast.show('project file is invalid')
+      toast.show('非法的工程文件')
       return Q.rejected()
     }
 
@@ -294,7 +294,7 @@ ApplicationWindow {
 //    else if (action === 'openProcess') //restore open process has no meanings
 //      ret = _doOpenProcess(arg)
     else
-      toast.show('unknown session', action, arg)
+      toast.show('未知的会话', action, arg)
 
     if (ret) {
       return ret.then(function(){
@@ -303,6 +303,6 @@ ApplicationWindow {
       })
     }
 
-    return Q.rejected('some session not load')
+    return Q.rejected('一些会话无法还原')
   }
 }

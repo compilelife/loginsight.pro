@@ -11,12 +11,12 @@ ColumnLayout {
     id: processText
     Layout.preferredWidth: root.width
 //    width: 1000//parent.width
-    placeholderText: 'process needs absolute path; multi arguments can be split by space'
+    placeholderText: '请输入要启动的程序名称（全路径），多个参数已空格分割'
   }
   RowLayout {
     spacing: 10
     Text {
-      text: 'cache limit'
+      text: '缓存上限'
     }
     SpinBox {
       id: cacheSpin
@@ -25,7 +25,7 @@ ColumnLayout {
       value: 100
     }
     Text {
-      text: 'block (one block = 200k)'
+      text: '块 (一个块200k)'
     }
   }
   RowLayout{
@@ -44,12 +44,12 @@ ColumnLayout {
         PaperText {
             Layout.fillWidth: true
             bgColor: 'lightgrey'
-            text: 'process'
+            text: '程序'
         }
         PaperText {
           Layout.preferredWidth: 150
           bgColor: 'lightgrey'
-          text: 'cache size in blocks'
+          text: '缓存（单位块）'
         }
       }
       delegate: Item {

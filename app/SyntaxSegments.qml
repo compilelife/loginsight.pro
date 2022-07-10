@@ -52,7 +52,7 @@ ListView {
         id: addBtn
         anchors.centerIn: parent
         width: root.width
-        text: 'add field'
+        text: '添加字段'
         onClicked: {
           model.append({color: String(GenColor.next()), type: CoreDef.SegTypeStr, name: 'field'})
         }

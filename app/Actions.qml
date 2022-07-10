@@ -23,57 +23,57 @@ Item {
   }
 
   property Action open:   Action {
-    text: 'open file or project'
+    text: '打开文件/项目'
     shortcut: 'ctrl+o'
     onTriggered: App.main.openFileOrPrj()
   }
 
   property Action openProcess: Action {
-    text: 'open process'
+    text: '打开外部程序'
     onTriggered: App.main.openProcess()
   }
 
   property Action close:   Action {
-    text: 'close tab'
+    text: '关闭当前标签页'
     shortcut: 'ctrl+w'
     onTriggered: App.main.delSession(App.currentSession)
   }
 
   property Action filter:   Action {
-    text: 'filter'
+    text: '过滤'
     shortcut: 'ctrl+d'
     iconSource: 'qrc:/images/filter.png'
     onTriggered: App.currentLogView.filterAction()
   }
 
   property Action search:   Action {
-    text: 'search'
+    text: '查找'
     shortcut: 'ctrl+f'
     iconSource: 'qrc:/images/search.png'
     onTriggered: App.currentLogView.searchAction()
   }
 
   property Action goTo:  Action {
-    text: 'goto'
+    text: '跳转'
     iconSource: 'qrc:/images/locate.png'
     shortcut: 'ctrl + g'
     onTriggered: App.currentLogView.gotoAction()
   }
 
   property Action clearTimeLine:  Action {
-    text: 'clear timeline'
+    text: '清空时间线'
     iconSource: 'qrc:/images/clear.png'
     onTriggered: App.currentSession.timeline.clear()
   }
 
   property Action shotTimeLine: Action {
-    text: 'shot timeline'
+    text: '截图时间线到剪贴板'
     iconSource: 'qrc:/images/screenshot.png'
     onTriggered: App.currentSession.timeline.screenShot()
   }
 
   property Action goBack: Action {
-    text: 'go back'
+    text: '后退'
     enabled: false
     iconSource: 'qrc:/images/left.png'
     shortcut: 'ctrl+['
@@ -81,7 +81,7 @@ Item {
   }
 
   property Action goForward: Action {
-    text: 'go forward'
+    text: '前进'
     enabled: false
     iconSource: 'qrc:/images/right.png'
     shortcut: 'ctrl+]'
@@ -89,17 +89,17 @@ Item {
   }
 
   property Action setSyntax: Action {
-    text: 'set syntax'
+    text: '格式语法'
      onTriggered: App.currentSession.showSyntaxDlg()
   }
 
   property Action settings: Action {
-    text: 'settings'
+    text: '设置'
     onTriggered: App.main.showSettings()
   }
 
   property Action followLog: Action {
-    text: 'followLog'
+    text: '跟随模式'
     checkable: true
     checked: true
     shortcut: 'ctrl+m'
@@ -114,12 +114,12 @@ Item {
   }
 
   property Action openClipboard: Action {
-    text: 'open clipboard'
+    text: '打开剪贴板文本'
     onTriggered: App.main.openClipboard()
   }
 
   property Action saveProject: Action {
-    text: 'save project'
+    text: '保存工程'
     onTriggered: App.main.saveProject()
   }
 }

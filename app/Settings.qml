@@ -6,7 +6,7 @@ import QtQuick.Layouts 1.15
 import './util.js' as Util
 
 Dialogs.Dialog {
-  title: 'setting'
+  title: '设置'
   width: 300
   standardButtons: Dialogs.StandardButton.Apply | Dialogs.StandardButton.Cancel
   property var settings: ({//FIXME: 为什么这样的写法没有响应式的效果？
@@ -22,11 +22,11 @@ Dialogs.Dialog {
                             }
                           })
   GroupBox {//logview
-    title: 'log view'
+    title: '日志文本框'
     width: parent.width
     ColumnLayout {
       SettingItem {
-        hint: 'font:'
+        hint: '字体:'
         Button {
           id: fontBtn
           Layout.alignment: Qt.AlignRight
@@ -36,7 +36,7 @@ Dialogs.Dialog {
       }
 
       SettingItem {
-        hint: 'line spacing:'
+        hint: '行间距:'
         SpinBox {
           id: spacingSpin
           from: 0
@@ -68,15 +68,14 @@ Dialogs.Dialog {
 
   Dialogs.MessageDialog {
     id: confirmRelauch
-    title: 'set success'
-    text: 'set saved, need reluanch'
+    title: '保存重构'
+    text: '设置已保存，重启后生效；点击重启（目前有bug，需要用户手动重启）'
     onAccepted: {
       NativeHelper.relaunch()
     }
   }
 
   Component.onCompleted: {
-    //load from settings.json
     const s = NativeHelper.readFile(NativeHelper.settingsPath());
     Util.merge(settings, JSON.parse(s))
 

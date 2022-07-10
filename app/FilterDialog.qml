@@ -8,7 +8,7 @@ Dialog {
   focus: true
 
   standardButtons: Dialog.Ok | Dialog.Cancel
-  title: 'filter'
+  title: '过滤'
   contentItem: PatternBox {
     id: patternBox
   }

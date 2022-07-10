@@ -22,7 +22,7 @@ Item {
   Menu {
     id: barMenu
     MenuItem {
-      text: 'clear'
+      text: '清空'
       onTriggered: clear()
     }
   }
@@ -79,20 +79,20 @@ Item {
   Menu {
     id: contextMenu
     MenuItem{
-      text: 'delete'
+      text: '删除'
       onTriggered: highlights.remove(bar.currentIndex, 1)
     }
     MenuItem{
-      text: 'set color'
+      text: '颜色'
       onTriggered: selectColorDialog.visible = true
     }
     MenuSeparator{}
     MenuItem{
-      text: 'search'
+      text: '查找'
       onTriggered: search(currentItem().keyword)
     }
     MenuItem{
-      text: 'filter'
+      text: '过滤'
       onTriggered: filter(currentItem().keyword)
     }
   }

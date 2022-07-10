@@ -10,35 +10,33 @@ Menu {
   readonly property bool hasSeletion: selectText.length > 0
 
   MenuItem {
-    text: 'add to timeline'
+    text: '添加到时间线'
     onTriggered: session.addToTimeLine(lineModel)
   }
   MenuItem {
-    text: 'track this line'
+    text: '追踪该行'
     onTriggered: session.emphasisLine(lineModel.line)
   }
 
   MenuItem {
-    text: 'clear highlight'
+    text: '清除高亮'
     onTriggered: session.highlightBar.clear()
   }
   MenuSeparator{}
   MenuItem {
     visible: hasSeletion
-    text: 'copy'
-  }
-  MenuItem {
-    visible: hasSeletion
-    text: 'highlight'
+    text: '高亮'
     onTriggered: session.highlightBar.add(selectText)
   }
   MenuItem {
     visible: hasSeletion
-    text: 'filter'
+    text: '过滤'
     onTriggered: session.filter({pattern: selectText})
   }
+  MenuSeparator{}
   MenuItem {
     visible: hasSeletion
-    text: 'revert filter'
+    text: '拷贝'
+    onTriggered: NativeHelper.clipboardSetText(selectText)
   }
 }
