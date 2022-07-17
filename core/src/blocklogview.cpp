@@ -105,6 +105,8 @@ shared_ptr<LogView> BlockLogView::subview(LogLineI from, LogLineI n) const {
         auto fromIt = mBlocks.begin() + toBlock;
         std::copy_n(fromIt, fromBlock - toBlock + 1, back_inserter(ret->mBlocks));
         ret->mFinalLineInBlock = fromBlockLine;
+        ret->mBlockIndex = LastIndex(ret->mBlocks);
+        ret->mLineIndexInBlock = fromBlockLine;
         ret->mFirstLineInBlock = toBlockLine;
         ret->reverse();
     } else {
