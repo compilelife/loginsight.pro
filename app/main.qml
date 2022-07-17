@@ -54,6 +54,7 @@ ApplicationWindow {
     Menu {
       title: "其它"
       MenuItem {action: actions.settings}
+      MenuItem {action: actions.about}
     }
   }
 
@@ -162,9 +163,8 @@ ApplicationWindow {
     }
   }
 
-  Updater {
-    id: updater
-  }
+  property AboutDlg aboutDlg: AboutDlg {}
+  property Updater updater: Updater{}
 
   Component.onCompleted: {
     App.setActions(actions)
@@ -177,7 +177,11 @@ ApplicationWindow {
     pm.initRecords()
 
     if (App.settings.updater.autocheck)
-      updater.checkNewVersion()
+      updater.checkNewVersion().then(function(hasNewVersion){
+        if (hasNewVersion) {
+          updater.goDownloadDlg.open()
+        }
+      })
 //    _doOpenFileOrPrj('/home/chenyong/work/ijk/hls/v2/ijk.log')
 //    _doOpenProcess('while true;do echo `date`;sleep 1;done')
   }

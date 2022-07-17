@@ -47,5 +47,6 @@
         <file>images/delete.png</file>
         <file>constants.js</file>
         <file>Updater.qml</file>
+        <file>AboutDlg.qml</file>
     </qresource>
 </RCC>

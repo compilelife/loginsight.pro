@@ -122,4 +122,9 @@ Item {
     text: '保存工程'
     onTriggered: App.main.saveProject()
   }
+
+  property Action about: Action {
+    text: '关于'
+    onTriggered: App.main.aboutDlg.open()
+  }
 }
