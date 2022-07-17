@@ -162,6 +162,10 @@ ApplicationWindow {
     }
   }
 
+  Updater {
+    id: updater
+  }
+
   Component.onCompleted: {
     App.setActions(actions)
     App.setMain(this)
@@ -172,7 +176,9 @@ ApplicationWindow {
 
     pm.initRecords()
 
-    _doOpenFileOrPrj('/home/chenyong/work/ijk/hls/v4/ijk.log')
+    if (App.settings.updater.autocheck)
+      updater.checkNewVersion()
+//    _doOpenFileOrPrj('/home/chenyong/work/ijk/hls/v2/ijk.log')
 //    _doOpenProcess('while true;do echo `date`;sleep 1;done')
   }
 

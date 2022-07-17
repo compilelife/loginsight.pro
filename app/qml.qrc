@@ -45,5 +45,7 @@
         <file>ProcessManager.qml</file>
         <file>PaperText.qml</file>
         <file>images/delete.png</file>
+        <file>constants.js</file>
+        <file>Updater.qml</file>
     </qresource>
 </RCC>

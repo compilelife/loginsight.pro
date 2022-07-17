@@ -1,0 +1,39 @@
+import QtQuick 2.0
+import './constants.js' as C
+import './QuickPromise/promise.js' as Q
+import QtQuick.Dialogs 1.3
+
+Item {
+  property string lastestVersion: C.VERSION
+
+  Dialog {
+    id: goDownloadDlg
+    standardButtons: StandardButton.Ok |StandardButton.Cancel
+    Text {
+      text: `下载地址: <a href="${C.WEB_DOWNLOAD_URL}">${C.WEB_DOWNLOAD_URL}</a>，现在前往？`
+      onLinkActivated: {
+        Qt.openUrlExternally(C.WEB_DOWNLOAD_URL)
+      }
+    }
+    onAccepted: {
+      Qt.openUrlExternally(C.WEB_DOWNLOAD_URL)
+    }
+  }
+
+  function checkNewVersion() {
+    const xhr = new XMLHttpRequest
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState == 4 && xhr.status == 200) {
+        const info = JSON.parse(xhr.responseText)
+        lastestVersion = info.version
+
+        console.info(`当前版本: ${C.VERSION},远程版本：${info.version}`)
+        if (C.isVersionBigger(info.version, C.VERSION)) {
+          goDownloadDlg.open()
+        }
+      }
+    }
+    xhr.open('GET', C.WEB_GET_VERSION_URL)
+    xhr.send(null)
+  }
+}

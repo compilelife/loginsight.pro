@@ -6,6 +6,7 @@ import QtQuick.Layouts 1.15
 import './util.js' as Util
 
 Dialogs.Dialog {
+  id:root
   title: '设置'
   width: 300
   standardButtons: Dialogs.StandardButton.Apply | Dialogs.StandardButton.Cancel
@@ -19,36 +20,56 @@ Dialogs.Dialog {
                             },
                             processManager: {
                               records: []
+                            },
+                            updater: {
+                              autocheck: true
                             }
                           })
-  GroupBox {//logview
-    title: '日志文本框'
-    width: parent.width
-    ColumnLayout {
-      SettingItem {
-        hint: '字体:'
-        Button {
-          id: fontBtn
-          Layout.alignment: Qt.AlignRight
-          text: `${settings.logView.font.family}  ${settings.logView.font.size}`
-          onClicked: fontDlg.visible = true
-        }
-      }
 
-      SettingItem {
-        hint: '行间距:'
-        SpinBox {
-          id: spacingSpin
-          from: 0
-          to: 20
-          value: settings.logView.lineSpacing
-          onValueChanged: {
-            settings.logView.lineSpacing = value
+  Column {
+    GroupBox {//logview
+      title: '日志文本框'
+      width: root.width
+      ColumnLayout {
+        SettingItem {
+          hint: '字体:'
+          Button {
+            id: fontBtn
+            Layout.alignment: Qt.AlignRight
+            text: `${settings.logView.font.family}  ${settings.logView.font.size}`
+            onClicked: fontDlg.visible = true
+          }
+        }
+
+        SettingItem {
+          hint: '行间距:'
+          SpinBox {
+            id: spacingSpin
+            from: 0
+            to: 20
+            value: settings.logView.lineSpacing
+            onValueChanged: {
+              settings.logView.lineSpacing = value
+            }
           }
         }
       }
     }
+
+    GroupBox {
+      title: '更新'
+      width: root.width
+      CheckBox {
+        text: '启动时检查'
+        checked: settings.updater.autocheck
+        onCheckedChanged: {
+          settings.updater.autocheck = checked
+        }
+      }
+    }
   }
+
+
 
   Dialogs.FontDialog {
     id: fontDlg
