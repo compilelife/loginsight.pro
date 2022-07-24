@@ -11,6 +11,7 @@
 #include "calculation.h"
 #include "linesegment.h"
 #include "eventloop.h"
+#include "register.h"
 
 using JsonMsg = const Json::Value&;
 
@@ -84,6 +85,8 @@ private:
     DeclarCmdHandler(setLineSegment, EventType::Write);
     DeclarCmdHandler(syncLogs, EventType::Write);
     DeclarCmdHandler(testSyntax, EventType::Immediate);
+    DeclarCmdHandler(initRegister, EventType::Immediate);
+    DeclarCmdHandler(doRegister, EventType::Immediate);
 
 private:
     Json::Value ack(JsonMsg msg, ReplyState state);
@@ -105,4 +108,5 @@ private:
     void onRootLogFinalize();
     string nextId();
     Json::Value prepareMsg(string_view cmd);
+    Register mRegister;
 };

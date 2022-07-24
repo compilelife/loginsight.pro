@@ -687,3 +687,30 @@ ImplCmdHandler(testSyntax) {
 
     return Promise::resolved(true);
 }
+
+ImplCmdHandler(initRegister) {
+    auto myDir = msg["mydir"].asString();
+    auto uid = msg["uid"].asString();
+    mRegister.init(myDir, uid);
+
+    auto reply = ack(msg, ReplyState::Ok);
+    reply["state"] = mRegister.getState();
+    reply["left"] = mRegister.getLeftSeconds();
+
+    send(reply);
+
+    return Promise::resolved(true);
+}
+
+ImplCmdHandler(doRegister) {
+    auto orderId = msg["orderid"].asString();
+    auto [ok, info] = mRegister.doRegister(orderId);
+    
+    auto reply = ack(msg, ReplyState::Ok);
+    reply["ok"] = ok;
+    reply["info"] = info;
+
+    send(reply);
+
+    return Promise::resolved(true);
+}
