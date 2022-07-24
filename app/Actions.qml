@@ -127,4 +127,9 @@ Item {
     text: '关于'
     onTriggered: App.main.aboutDlg.open()
   }
+
+  property Action register: Action {
+    text: '注册'
+    onTriggered: App.main.buyDlg.open()
+  }
 }

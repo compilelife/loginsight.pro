@@ -694,7 +694,7 @@ ImplCmdHandler(initRegister) {
     mRegister.init(myDir, uid);
 
     auto reply = ack(msg, ReplyState::Ok);
-    reply["state"] = mRegister.getState();
+    reply["rstate"] = mRegister.getState();
     reply["left"] = mRegister.getLeftSeconds();
 
     send(reply);
@@ -703,7 +703,7 @@ ImplCmdHandler(initRegister) {
 }
 
 ImplCmdHandler(doRegister) {
-    auto orderId = msg["orderid"].asString();
+    auto orderId = msg["orderId"].asString();
     auto [ok, info] = mRegister.doRegister(orderId);
     
     auto reply = ack(msg, ReplyState::Ok);

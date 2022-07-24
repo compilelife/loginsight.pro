@@ -146,6 +146,7 @@ void Register::init(string mydir, string uniqueId) {
 
     if (token.empty()) {
         mState = eTry;
+        mLeftSeconds = TRY_LIMIT;
 
         auto now = duration_cast<seconds>(system_clock::now().time_since_epoch()).count();
         Json::Value root;

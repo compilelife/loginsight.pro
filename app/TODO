@@ -1,12 +1,3 @@
-注册
-1. core 添加 loadRegisterInfo(jsonFile, uniqueId) / register(uniqueId, orderid)
-2. core 添加 getRegisterState => enum:eRegistered, eTry, eTryEnd, eOpenSource
-3. app 添加工具栏，指示“试用期，剩余时间”
-4. app 添加注册菜单（如已购买，则显示已购买）、对话框
-开源core，始终返回eOpenSource
-注册信息也写入到.loginsight下
-根据.loginsight的创建日期，与当前日期时间差，判断已试用多久
-
 Pro Feature:
 - syntax
 - file bigger than 100M

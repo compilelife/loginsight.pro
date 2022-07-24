@@ -6,6 +6,7 @@
 #include <QDir>
 #include <QFile>
 #include <QDebug>
+#include <QSysInfo>
 
 NativeHelper::NativeHelper(QObject *parent)
     : QObject{parent}
@@ -78,4 +79,14 @@ QString NativeHelper::readFile(QString path)
 QString NativeHelper::settingsPath()
 {
     return QDir::home().filePath(".loginsight/settings.json");
+}
+
+QString NativeHelper::myDir()
+{
+    return QDir::home().filePath(".loginsight");
+}
+
+QString NativeHelper::uniqueId()
+{
+    return QSysInfo::machineUniqueId();
 }

@@ -48,5 +48,7 @@
         <file>constants.js</file>
         <file>Updater.qml</file>
         <file>AboutDlg.qml</file>
+        <file>BuyDlg.qml</file>
+        <file>TryCountDown.qml</file>
     </qresource>
 </RCC>

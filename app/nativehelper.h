@@ -16,6 +16,8 @@ public:
     Q_INVOKABLE bool writeToFile(QString path, QString txt);
     Q_INVOKABLE QString readFile(QString path);
     Q_INVOKABLE QString settingsPath();
+    Q_INVOKABLE QString myDir();
+    Q_INVOKABLE QString uniqueId();
 
 signals:
 

@@ -1,5 +1,8 @@
 .pragma library
 .import './util.js' as Util
+.import './coredef.js' as CoreDef
+
+//qml里的js不能直接设置全局变量，所以下面提供了各种set方法
 
 let settings = null
 
@@ -7,8 +10,14 @@ function setSettings(v) {
   settings = v
 }
 
-//js in qml can't directly set global property
-//so we provide setters here
+let registerState = -1
+let tryLeftSeconds = 0
+
+function setRegisterInfo(state, left) {
+  registerState = state
+  tryLeftSeconds = left
+}
+
 let actions = null
 function setActions(o){actions = o}
 

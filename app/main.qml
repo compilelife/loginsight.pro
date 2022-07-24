@@ -8,6 +8,7 @@ import QtQuick.Controls.Styles 1.4
 import QtQuick.Dialogs 1.3
 import './app.js' as App
 import './QuickPromise/promise.js' as Q
+import './coredef.js' as CoreDef
 
 ApplicationWindow {
   width: 1000
@@ -17,6 +18,10 @@ ApplicationWindow {
   title: qsTr("LogInsight")
 
   property alias toast: _toast
+
+  property Core core: Core {
+    onReady: initRegister()
+  }
 
   Actions{
     id: actions
@@ -53,6 +58,7 @@ ApplicationWindow {
     }
     Menu {
       title: "其它"
+      id: otherMenu
       MenuItem {action: actions.settings}
       MenuItem {action: actions.about}
     }
@@ -80,6 +86,8 @@ ApplicationWindow {
         QC2.ToolSeparator{}
         ToolButton{action: actions.clearTimeLine}
         ToolButton{action: actions.shotTimeLine}
+        QC2.ToolSeparator{}
+        TryCountDown{id: tryCountDown; visible: false}
       }
     }
   }
@@ -163,6 +171,9 @@ ApplicationWindow {
     }
   }
 
+  property BuyDlg buyDlg: BuyDlg {
+  }
+
   property AboutDlg aboutDlg: AboutDlg {}
   property Updater updater: Updater{}
 
@@ -184,6 +195,29 @@ ApplicationWindow {
       })
 //    _doOpenFileOrPrj('/home/chenyong/work/ijk/hls/v2/ijk.log')
 //    _doOpenProcess('while true;do echo `date`;sleep 1;done')
+  }
+
+  function initRegister() {
+    const arg = {
+      mydir: NativeHelper.myDir(),
+      uid: NativeHelper.uniqueId()
+    };
+    core.sendMessage(CoreDef.CmdInitRegister, arg)
+      .then(function(msg) {
+        App.setRegisterInfo(msg.rstate, msg.left)
+        if (msg.rstate === CoreDef.RSTry || msg.rstate === CoreDef.RSTryEnd) {
+          otherMenu.addItem('').action = actions.register
+          tryCountDown.visible = true
+          if (msg.rstate === CoreDef.RSTryEnd) {
+            registerFeedBackDlg.text = '试用结束，主要功能将受限或异常\n请尽快购买或使用开源版本'
+            registerFeedBackDlg.open()
+          }
+        } else if (msg.rstate === CoreDef.RSOpenSource) {
+          otherMenu.addItem('开源版本')
+        } else if (msg.rstate === CoreDef.RSRegistered) {
+          otherMenu.addItem('已购买!')
+        }
+      })
   }
 
   function _doOpenFileOrPrj(url, name) {
@@ -333,5 +367,21 @@ ApplicationWindow {
     }
 
     return Q.rejected('一些会话无法还原')
+  }
+
+  MessageDialog {
+    id: registerFeedBackDlg
+  }
+
+  function doRegister(orderId) {
+    core.sendMessage(CoreDef.CmdDoRegister, {orderId})
+      .then(function(msg){
+        if (msg.ok) {
+          registerFeedBackDlg.text = '注册成功，请重启程序'
+        } else {
+          registerFeedBackDlg.text = '注册失败：'+msg.info
+        }
+        registerFeedBackDlg.open()
+      })
   }
 }

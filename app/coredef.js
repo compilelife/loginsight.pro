@@ -18,6 +18,8 @@ const CmdSearch = 'search'
 const CmdMapLine = 'mapLine'
 const CmdTestSyntax = 'testSyntax'
 const CmdGetRange = 'getRange'
+const CmdInitRegister = 'initRegister'
+const CmdDoRegister = 'doRegister'
 const ServerCmdRangeChanged = 'rangeChanged'
 
 const SegTypeDate = 0;
@@ -32,3 +34,9 @@ const LogLevelInfo = 1;
 const LogLevelWarn = 2;
 const LogLevelError = 3;
 const LogLevelFatal = 4;
+
+const RSOpenSource = 0;
+const RSTry = 1;
+const RSTryEnd = 2;
+const RSRegistered = 3;
+
