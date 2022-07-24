@@ -75,6 +75,7 @@
         "*.inc": "cpp",
         "ranges": "cpp",
         "filesystem": "cpp",
-        "*.def": "cpp"
+        "*.def": "cpp",
+        "shared_mutex": "cpp"
     }
 }

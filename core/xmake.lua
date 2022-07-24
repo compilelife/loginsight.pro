@@ -5,11 +5,18 @@ add_requires("libevent", {system=false})
 add_requires("jsoncpp", {system=false})
 add_requires("gtest 1.11.0")
 add_requires("pthread", {system=true})
+add_requires("libcurl", {system=false})
 set_languages("c++17")
+
+option("opensource")
+    set_default(false)
+    set_showmenu(true)
+    add_defines("OPEN_SOURCE")
 
 --核心代码
 target("corelib") 
     set_kind("static")
+    set_options("opensource")
     add_files("src/*.cpp|main.cpp")
     if is_os("linux") then 
         add_files("src/unix/*.cpp")
@@ -18,15 +25,16 @@ target("corelib")
     elseif is_os("macosx") then
         add_files("src/unix/*.cpp")
     end
-    add_packages("libevent", "jsoncpp")
+    add_packages("libevent", "jsoncpp", "libcurl")
 
 --最终输出
 target("core")
     set_kind("binary")
+    set_options("opensource")
     add_files("src/main.cpp")
     add_deps("corelib")
     add_ldflags("-static-libstdc++")
-    add_packages("libevent", "jsoncpp", "pthread")
+    add_packages("libevent", "jsoncpp", "pthread", "libcurl")
 
 --单元测试
 target("utest")
@@ -34,7 +42,7 @@ target("utest")
     add_files("test/*.cpp")
     add_deps("corelib")
     add_includedirs("src")
-    add_packages("gtest","libevent", "jsoncpp")
+    add_packages("gtest","libevent", "jsoncpp", "libcurl")
     after_build(function(target)
         os.cp("test/assets/", "$(buildir)/")
     end)
