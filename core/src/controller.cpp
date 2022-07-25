@@ -260,6 +260,11 @@ void Controller::onRootLogFinalize() {
 
 //{"cmd":"openFile","id":"ui-1","path":"/tmp/1.log"}
 ImplCmdHandler(openFile) {
+    if (mRegister.getState() == eTryEnd) {
+        send(failedAck(msg, "试用期已结束。文件打开失败"));
+        return Promise::resolved(false);
+    }
+
     auto path = msg["path"].asString();
     
     auto log = make_shared<FileLog>();
@@ -280,6 +285,11 @@ ImplCmdHandler(openFile) {
 }
 
 ImplCmdHandler(openProcess) {
+    if (mRegister.getState() == eTryEnd) {
+        send(failedAck(msg, "试用期已结束。外部程序打开失败"));
+        return Promise::resolved(false);
+    }
+
     auto cmd = msg["process"].asString();
     auto cache = msg["cache"].asInt();
 
@@ -299,6 +309,11 @@ ImplCmdHandler(openProcess) {
 }
 
 ImplCmdHandler(openMultiFile) {
+    if (mRegister.getState() == eTryEnd) {
+        send(failedAck(msg, "试用期已结束。日志目录打卡失败"));
+        return Promise::resolved(false);
+    }
+
     auto files = msg["files"];
     vector<string_view> paths;
     for (auto i = 0; i < files.size(); i++) {
