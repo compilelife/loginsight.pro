@@ -1,3 +1,8 @@
+core区分opensource功能
+过一遍程序
+编写打包脚本
+上线
+
 Pro Feature:
 - syntax
 - file bigger than 100M
@@ -6,7 +11,6 @@ Pro Feature:
 How to unit test ?
 
 BUG:
-all todos
 dynamic log: 运行一段时间的dynamice file log会自动退出core: promisex.cpp:23 ~Promise crash
 
 next:
