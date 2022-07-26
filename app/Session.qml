@@ -14,8 +14,11 @@ Item {
   signal coreReady()
   property Core core: Core {
         onReady: {
-            core.serverCmdHandlers[CoreDef.ServerCmdRangeChanged] = handleLogRangeChanged
-          coreReady()
+          core.sendMessage(CoreDef.CmdInitRegister, {mydir: NativeHelper.myDir(), uid: NativeHelper.uniqueId()})
+            .then(function() {
+              core.serverCmdHandlers[CoreDef.ServerCmdRangeChanged] = handleLogRangeChanged
+              coreReady()
+            })
         }
     }
 
@@ -332,5 +335,22 @@ Item {
                                                 })
       }
       rootLogView.onLoad(cfg.rootLogView)
+    }
+
+    function exportLog() {
+      const curLog = currentLogView()
+      if (curLog === rootLogView) {
+        App.showToast("不支持导出原始日志，请选择一个过滤窗口来导出")
+        return
+      }
+
+      if (curLog){
+        App.main.userSaveFile('选择日志导出路径', ['*'], function(path){
+          core.sendModalMessage(CoreDef.CmdExportLog, {logId: curLog.logId, path})
+            .then(function(){
+              App.showToast('导出成功')
+            })
+        })
+      }
     }
 }

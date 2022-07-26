@@ -15,6 +15,11 @@ Item {
     saveProject
   ]
 
+  property var nonOpenSourceAction: [
+    openProcess,
+    setSyntax
+  ]
+
   function updateSessionActions(hasSession) {
     const enable = hasSession
     for (const action of sessionActions) {
@@ -131,5 +136,10 @@ Item {
   property Action register: Action {
     text: '注册'
     onTriggered: App.main.buyDlg.open()
+  }
+
+  property Action exportLog: Action {
+    text: '导出日志'
+    onTriggered: App.currentSession.exportLog()
   }
 }

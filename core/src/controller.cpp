@@ -8,6 +8,7 @@
 #include "sublog.h"
 #include "monitorlog.h"
 #include "multifilelog.h"
+#include <fstream>
 
 unordered_map<string,CmdHandlerWrap> gCmdHandlers;
 
@@ -274,6 +275,13 @@ ImplCmdHandler(openFile) {
         return Promise::resolved(false);
     }
 
+#ifdef OPEN_SOURCE
+    if (log->range().len() >= 100 * 1024 * 1024L) {
+        send(failedAck(msg, "开源版只能打开100M以下的文件"));
+        return Promise::resolved(false);
+    }
+#endif
+
     auto p = log->scheduleBuildBlocks();
     p->then([msg, log, this](shared_ptr<Promise> p){
         if (!handleCancelledPromise(p, msg)) {
@@ -285,6 +293,7 @@ ImplCmdHandler(openFile) {
 }
 
 ImplCmdHandler(openProcess) {
+#ifndef OPEN_SOURCE
     if (mRegister.getState() == eTryEnd) {
         send(failedAck(msg, "试用期已结束。外部程序打开失败"));
         return Promise::resolved(false);
@@ -306,6 +315,7 @@ ImplCmdHandler(openProcess) {
     
     send(onRootLogReady(msg, log));
     return Promise::resolved(true);
+#endif
 }
 
 ImplCmdHandler(openMultiFile) {
@@ -573,6 +583,7 @@ ImplCmdHandler(mapLine) {
 }
 
 ImplCmdHandler(setLineSegment) {
+#ifndef OPEN_SOURCE
     auto pattern = msg["pattern"].asString();
     auto caseSense = msg["caseSense"].asBool();
 
@@ -616,6 +627,7 @@ ImplCmdHandler(setLineSegment) {
 
     send(ack(msg, ReplyState::Ok));
     return Promise::resolved(true);
+#endif
 }
 
 string Controller::nextId() {
@@ -728,4 +740,40 @@ ImplCmdHandler(doRegister) {
     send(reply);
 
     return Promise::resolved(true);
+}
+
+ImplCmdHandler(exportLog) {
+#ifndef OPEN_SOURCE
+    auto log = getLog(msg);
+    if (!log) {
+        send(failedAck(msg, "logId not set"));
+        return Promise::resolved(false);
+    }
+
+    auto path = msg["path"].asString();
+
+    return Promise::from([log, path, this, msg](bool* cancel) {
+        ofstream o(path);
+        if (!o.is_open()) {
+            send(failedAck(msg, "输出文件打开失败"));
+            return false;
+        }
+        
+        auto view = log->view();
+        while (!*cancel && !view->end()) {
+            auto curLine = string(view->current().str());
+            o<<curLine<<endl;
+            view->next();
+        }
+
+        if (*cancel) {
+            send(ack(msg, ReplyState::Cancel));
+        } else {
+            send(ack(msg, ReplyState::Ok));
+        }
+
+        o.close();
+        return *cancel;
+    });
+#endif
 }

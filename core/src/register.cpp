@@ -169,23 +169,25 @@ void Register::init(string mydir, string uniqueId) {
             auto platform = xordecode(root["plf"], ordertime);
             if (machineId != uniqueId) {
                 LOGE("你的授权文件不是在该设备上注册的");
+                return;
             }
             if (platform != getPlatform()) {
                 LOGE("你的授权文件不能用于该操作系统，请购买对应操作系统的授权");
+                return;
             }
             mState = RegisterState::eRegistered;
-        }
-
-        if (root.isMember("tryfrom")) {
-            auto tryfrom = seconds(root["tryfrom"].asInt64());
-            auto passed = system_clock::now() - time_point<system_clock>(tryfrom);
-            auto left = seconds(TRY_LIMIT) - duration_cast<seconds>(passed);
-            mLeftSeconds = left.count();
-            if (mLeftSeconds < 0) {
-                mState = RegisterState::eTryEnd;
-                mLeftSeconds = 0;
-            } else {
-                mState = RegisterState::eTry;
+        } else {
+            if (root.isMember("tryfrom")) {
+                auto tryfrom = seconds(root["tryfrom"].asInt64());
+                auto passed = system_clock::now() - time_point<system_clock>(tryfrom);
+                auto left = seconds(TRY_LIMIT) - duration_cast<seconds>(passed);
+                mLeftSeconds = left.count();
+                if (mLeftSeconds < 0) {
+                    mState = RegisterState::eTryEnd;
+                    mLeftSeconds = 0;
+                } else {
+                    mState = RegisterState::eTry;
+                }
             }
         }
     } else {

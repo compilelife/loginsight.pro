@@ -81,10 +81,10 @@ Item {
         repeat: true
         running: longOpDlg.enabled
         onTriggered: {
-          console.log(`[${tag}]`,'timer sent')
+//          console.log(`[${tag}]`,'timer sent')
           sendMessage(CoreDef.CmdQueryPromise, {pid: longOpDlg.waitPromiseId})
             .then(function(msg){
-              console.log(`[${tag}]`,'timer', longOpDlg.waitId)
+//              console.log(`[${tag}]`,'timer', longOpDlg.waitId)
               progressBar.value = msg.progress
               longOpDlg.visible = true
             })

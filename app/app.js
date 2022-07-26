@@ -18,6 +18,12 @@ function setRegisterInfo(state, left) {
   tryLeftSeconds = left
 }
 
+function showMsgDlg(title, text) {
+  main.msgDlg.text = text
+  main.msgDlg.title = title;
+  main.msgDlg.open()
+}
+
 let actions = null
 function setActions(o){actions = o}
 

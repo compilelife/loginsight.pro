@@ -30,5 +30,5 @@ private:
 #endif
     string mMyDir;
     string mUniqueId;
-    int64_t mLeftSeconds;
+    int64_t mLeftSeconds{0};
 };

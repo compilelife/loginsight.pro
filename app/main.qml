@@ -36,6 +36,7 @@ ApplicationWindow {
       MenuItem {action: actions.openClipboard}
       MenuSeparator{}
       MenuItem {action: actions.saveProject}
+      MenuItem {action: actions.exportLog}
       MenuSeparator{}
       MenuItem {action: actions.close}
       MenuSeparator{}
@@ -144,6 +145,10 @@ ApplicationWindow {
     }
   }
 
+  function userSaveFile(hint, filter, func) {
+    openDlg.requestSaveFile(hint, filter, func)
+  }
+
   Settings {
     id: settings
   }
@@ -171,11 +176,10 @@ ApplicationWindow {
     }
   }
 
-  property BuyDlg buyDlg: BuyDlg {
-  }
-
+  property BuyDlg buyDlg: BuyDlg {}
   property AboutDlg aboutDlg: AboutDlg {}
   property Updater updater: Updater{}
+  property MessageDialog msgDlg: MessageDialog{}
 
   Component.onCompleted: {
     App.setActions(actions)
@@ -205,6 +209,7 @@ ApplicationWindow {
     core.sendMessage(CoreDef.CmdInitRegister, arg)
       .then(function(msg) {
         App.setRegisterInfo(msg.rstate, msg.left)
+        _updateActionsOnRegisterState(msg.rstate)
         if (msg.rstate === CoreDef.RSTry || msg.rstate === CoreDef.RSTryEnd) {
           otherMenu.addItem('').action = actions.register
           tryCountDown.visible = true
@@ -218,6 +223,14 @@ ApplicationWindow {
           otherMenu.addItem('已购买!')
         }
       })
+  }
+
+  function _updateActionsOnRegisterState(state) {
+    if (state === CoreDef.RSOpenSource) {
+      for (const action of actions.nonOpenSourceAction) {
+        action.enable = false
+      }
+    }
   }
 
   function _doOpenFileOrPrj(url, name) {

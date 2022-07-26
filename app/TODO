@@ -6,6 +6,8 @@ core区分opensource功能
 Pro Feature:
 - syntax
 - file bigger than 100M
+- open process
+- export filter result
 - run on server
 
 How to unit test ?

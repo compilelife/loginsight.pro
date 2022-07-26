@@ -87,6 +87,7 @@ private:
     DeclarCmdHandler(testSyntax, EventType::Immediate);
     DeclarCmdHandler(initRegister, EventType::Immediate);
     DeclarCmdHandler(doRegister, EventType::Immediate);
+    DeclarCmdHandler(exportLog, EventType::Read);
 
 private:
     Json::Value ack(JsonMsg msg, ReplyState state);
