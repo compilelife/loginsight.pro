@@ -228,7 +228,8 @@ ApplicationWindow {
   function _updateActionsOnRegisterState(state) {
     if (state === CoreDef.RSOpenSource) {
       for (const action of actions.nonOpenSourceAction) {
-        action.enable = false
+        action.enabled = false
+        action.text += '[专业版]'
       }
     }
   }

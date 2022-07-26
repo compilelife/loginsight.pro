@@ -98,7 +98,8 @@ Dialogs.Dialog {
 
   Component.onCompleted: {
     const s = NativeHelper.readFile(NativeHelper.settingsPath());
-    Util.merge(settings, JSON.parse(s))
+    if (s.length > 0)
+      Util.merge(settings, JSON.parse(s))
 
     fontBtn.text = `${settings.logView.font.family}  ${settings.logView.font.size}`
     spacingSpin.value = settings.logView.lineSpacing

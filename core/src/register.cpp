@@ -63,7 +63,7 @@ static size_t writeToString(void* content, size_t size, size_t count, void* user
 pair<bool, string> Register::doRegister(string orderid) {
 #ifdef OPEN_SOURCE
     LOGW("register on open source version");
-    return true;
+    return {true, ""};
 #else
     CURL* curl = curl_easy_init();
     if (!curl) {

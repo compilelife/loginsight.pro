@@ -9,6 +9,9 @@
 #include "monitorlog.h"
 #include "multifilelog.h"
 #include <fstream>
+#include <filesystem>
+
+using namespace std::filesystem;
 
 unordered_map<string,CmdHandlerWrap> gCmdHandlers;
 
@@ -267,6 +270,13 @@ ImplCmdHandler(openFile) {
     }
 
     auto path = msg["path"].asString();
+
+#ifdef OPEN_SOURCE
+    if (file_size(path) >= 100*1024*1024) {
+        send(failedAck(msg, "开源版只能打开100M以下的文件"));
+        return Promise::resolved(false);
+    }
+#endif
     
     auto log = make_shared<FileLog>();
 
@@ -274,13 +284,6 @@ ImplCmdHandler(openFile) {
         send(failedAck(msg, "文件打开失败"));
         return Promise::resolved(false);
     }
-
-#ifdef OPEN_SOURCE
-    if (log->range().len() >= 100 * 1024 * 1024L) {
-        send(failedAck(msg, "开源版只能打开100M以下的文件"));
-        return Promise::resolved(false);
-    }
-#endif
 
     auto p = log->scheduleBuildBlocks();
     p->then([msg, log, this](shared_ptr<Promise> p){
