@@ -27,3 +27,14 @@ HEADERS += \
     coreboot.h \
     linehighlighter.h \
     nativehelper.h
+
+copy_files.files = $$files($$PWD/bin/*)
+copy_files.path = $$OUT_PWD
+COPIES += copy_files
+
+linux {
+    QMAKE_POST_LINK="chmod +x $$OUT_PWD/*.linux"
+}
+macos {
+    QMAKE_POST_LINK="chmod +x $$OUT_PWD/*.macos"
+}

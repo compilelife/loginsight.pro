@@ -18,7 +18,9 @@ public:
     Q_INVOKABLE QString settingsPath();
     Q_INVOKABLE QString myDir();
     Q_INVOKABLE QString uniqueId();
-
+public:
+    QString getBinDir();
+    QString exeNativeName(QString name);
 signals:
 
 };

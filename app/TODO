@@ -1,16 +1,11 @@
-core区分opensource功能
-websocket core相对路径
-
+编码
 过一遍程序
 编写打包脚本
+    写在core模块
+    拉取APP代码
+    xmake install opensouce; upload core; pack
+    xmake install pro; pack
 上线
-
-Pro Feature:
-- syntax
-- file bigger than 100M
-- open process
-- export filter result
-- run on server
 
 How to unit test ?
 

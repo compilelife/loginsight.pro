@@ -1,6 +1,7 @@
  #include "coreboot.h"
 #include <QDebug>
 #include <QTcpServer>
+#include "nativehelper.h"
 
 CoreBoot::CoreBoot(QObject *parent)
     : QObject{parent}
@@ -27,10 +28,12 @@ void CoreBoot::startLocal() {
         return;
     }
 
-    mProcess.setProgram("/home/chenyong/my/loginsight/core/third/websocketd.linux");
+    NativeHelper native;
+
+    mProcess.setProgram(native.getBinDir()+"/"+native.exeNativeName("websocketd"));
     QStringList args;
     args<<"-port"<<QString::number(port);
-    args<<"/home/chenyong/my/loginsight/core/build/linux/x86_64/debug/core";
+    args<<(native.getBinDir()+"/"+native.exeNativeName("core"));
     mProcess.setArguments(args);
     mProcess.start();
 
