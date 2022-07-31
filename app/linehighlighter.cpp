@@ -1,5 +1,6 @@
 #include "linehighlighter.h"
 #include <QDebug>
+#include "textcodec.h"
 
 LineHighlighter::LineHighlighter(QSyntaxHighlighter *parent)
     : QSyntaxHighlighter{parent}
@@ -51,10 +52,19 @@ void LineHighlighter::highlightBlock(const QString &text)
     if (!searchResult.empty()) {
         auto offset = searchResult["offset"].toUInt();
         auto length = searchResult["len"].toUInt();
+
+        //因为返回结果是基于原始编码的，所以不能直接设置给fmt
+        //需要将原始编码的字符数组位置映射到text上
+        auto logBytes = TextCodec::instance().toLog(text);
+        auto keyword = TextCodec::instance().toVisual(logBytes.mid(offset, length));
+        auto keywordLength = keyword.length();
+        auto suffix = TextCodec::instance().toVisual(logBytes.mid(offset));
+        auto index = text.lastIndexOf(suffix);
+
         QTextCharFormat fmt;
         fmt.clearBackground();
         fmt.setBackground(QColor(0,200,200));
-        setFormat(offset, length, fmt);
+        setFormat(index, keywordLength, fmt);
     }
 }
 

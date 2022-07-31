@@ -10,10 +10,31 @@
 #include "multifilelog.h"
 #include <fstream>
 #include <filesystem>
+#include "turbobase64/turbob64.h"
 
 using namespace std::filesystem;
 
 unordered_map<string,CmdHandlerWrap> gCmdHandlers;
+
+
+static string base64Encode(string txt) {
+    unsigned char buf[tb64enclen(txt.size())+1] = {0};
+    auto len = tb64enc((unsigned char*)txt.data(), txt.size(), buf);
+    return string((char*)buf, len);
+}
+
+static string base64Decode(string txt) {
+    auto inBuf = (unsigned char*)txt.data();
+    auto inLen = txt.size();
+
+    unsigned char buf[tb64declen(inBuf, inLen)+1] = {0};
+    auto len = tb64dec(inBuf, inLen, buf);
+    return string((char*)buf, len);
+}
+
+static string decodeJsonStr(const Json::Value& v) {
+    return base64Decode(v.asString());
+}
 
 Controller::Controller() {
     auto& evloop = EventLoop::instance();
@@ -269,7 +290,9 @@ ImplCmdHandler(openFile) {
         return Promise::resolved(false);
     }
 
-    auto path = msg["path"].asString();
+    auto path = decodeJsonStr(msg["path"]);
+
+    LOGI("path=%s", path.c_str());
 
 #ifdef OPEN_SOURCE
     if (file_size(path) >= 100*1024*1024) {
@@ -434,7 +457,8 @@ ImplCmdHandler(getLines) {
             Json::Value retLine;
             retLine["line"] = cur.index();
             retLine["index"] = index++;
-            retLine["content"] = str;//TODO: iconv to utf-8
+            retLine["content"] = base64Encode(str);
+            
             retLine["segs"].resize(0);//如果没有segs，则返回空数组
             for (auto&& seg : cur.line->segs.value_or(vector<LineSeg>())) {
                 Json::Value v;
@@ -476,7 +500,7 @@ ImplCmdHandler(filter) {
     }
 
     auto isRegex = msg["regex"].asBool();
-    auto pattern = msg["pattern"].asString();
+    auto pattern = decodeJsonStr(msg["pattern"]);
     auto caseSense = msg["caseSense"].asBool();
     FilterFunction filter;
     if (isRegex) {
@@ -511,7 +535,7 @@ ImplCmdHandler(search) {
     auto fromChar = msg["fromChar"].asUInt();
     auto reverse = msg["reverse"].asBool();
     auto isRegex = msg["regex"].asBool();
-    auto pattern = msg["pattern"].asString();
+    auto pattern = decodeJsonStr(msg["pattern"]);
     auto caseSense = msg["caseSense"].asBool();
 
     FindFunction f;
@@ -546,7 +570,7 @@ ImplCmdHandler(listFiles) {
     auto pattern = msg["pattern"].asString();
     auto caseSense = msg["caseSense"].asBool();
     auto compareNum = msg["compareNum"].asBool();
-    auto path = msg["path"].asString();
+    auto path = base64Encode(msg["path"].asString());
 
     regex r{pattern, caseSense ? regex_constants::ECMAScript : regex_constants::icase};
 
@@ -587,7 +611,7 @@ ImplCmdHandler(mapLine) {
 
 ImplCmdHandler(setLineSegment) {
 #ifndef OPEN_SOURCE
-    auto pattern = msg["pattern"].asString();
+    auto pattern = decodeJsonStr(msg["pattern"]);
     auto caseSense = msg["caseSense"].asBool();
 
     auto flag = regex_constants::ECMAScript;
@@ -687,7 +711,7 @@ ImplCmdHandler(syncLogs) {
 }
 
 ImplCmdHandler(testSyntax) {
-    auto pattern = msg["pattern"].asString();
+    auto pattern = decodeJsonStr(msg["pattern"]);
     auto lines = msg["lines"];
 
     LineSegment executor;
@@ -696,7 +720,7 @@ ImplCmdHandler(testSyntax) {
     Json::Value result;
     result.resize(0);
     for (Json::Value::ArrayIndex i = 0; i < lines.size(); i++) {
-        auto line = lines[i].asString();
+        auto line = decodeJsonStr(lines[i]);
         auto segs = executor.formatLine(line);
 
         Json::Value segJson;
@@ -719,7 +743,7 @@ ImplCmdHandler(testSyntax) {
 }
 
 ImplCmdHandler(initRegister) {
-    auto myDir = msg["mydir"].asString();
+    auto myDir = decodeJsonStr(msg["mydir"]);
     auto uid = msg["uid"].asString();
     mRegister.init(myDir, uid);
 
@@ -753,7 +777,7 @@ ImplCmdHandler(exportLog) {
         return Promise::resolved(false);
     }
 
-    auto path = msg["path"].asString();
+    auto path = decodeJsonStr(msg["path"]);
 
     return Promise::from([log, path, this, msg](bool* cancel) {
         ofstream o(path);

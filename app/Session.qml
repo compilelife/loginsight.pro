@@ -184,7 +184,8 @@ Item {
 
     function openFile(path) {
       openArg = {action: 'open', arg: path}
-        return core.sendModalMessage(CoreDef.CmdOpenFile, {path})
+        return core.sendModalMessage(CoreDef.CmdOpenFile,
+                                     {path: NativeHelper.encodePath(path)})
             .then(msg=>{
                 rootLogView.initLogModel(msg.logId, msg.range)
                 _onLogAdded(msg.logId, rootLogView)
@@ -193,7 +194,9 @@ Item {
 
     function openProcess(process, cache) {
       openArg = {action: 'openProcess', arg: {process, cache}}
-      return core.sendMessage(CoreDef.CmdOpenProcess, {process, cache})
+      return core.sendMessage(CoreDef.CmdOpenProcess,
+                              {process: NativeHelper.encodePath(process),
+                                cache})
         .then(function(msg){
           rootLogView.initLogModel(msg.logId, msg.range)
           _onLogAdded(msg.logId, rootLogView)
@@ -203,6 +206,9 @@ Item {
     //param: {pattern, caseSense, regex}
     function filter(param) {
       const curLog = currentLogView()
+      if (param.pattern) {
+        param.pattern = TextCodec.toLogByte(param.pattern)
+      }
       const filterArg = Util.merge({
                                      logId: curLog.logId,
                                      caseSense: true,
@@ -218,6 +224,10 @@ Item {
     function search(param, searchPos = null) {
       const curLog = currentLogView()
       const {fromLine,fromChar} = searchPos ? searchPos : curLog.getSearchPos()
+      const patternToHint = param.pattern
+      if (param.pattern) {
+        param.pattern = TextCodec.toLogByte(param.pattern)
+      }
       const searchArg = Util.merge({
         logId: curLog.logId,
         fromLine,
@@ -234,9 +244,9 @@ Item {
             curLog.showSearchResult(msg)
           } else {
             if (searchArg.reverse) {
-              App.showToast('查找到顶部，未找到'+searchArg.pattern)
+              App.showToast('查找到顶部，未找到'+patternToHint)
             } else {
-              App.showToast('查找到底部，未找到'+searchArg.pattern)
+              App.showToast('查找到底部，未找到'+patternToHint)
             }
           }
         })

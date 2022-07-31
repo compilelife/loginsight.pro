@@ -91,6 +91,11 @@ QString NativeHelper::uniqueId()
     return QSysInfo::machineUniqueId();
 }
 
+QString NativeHelper::encodePath(QString path)
+{
+    return path.toLocal8Bit().toBase64();
+}
+
 QString NativeHelper::getBinDir()
 {
     return qApp->applicationDirPath();

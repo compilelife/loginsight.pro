@@ -181,12 +181,11 @@ struct RegexMatchReverseFind {
     FindRet operator () (string_view text) {
         smatch results;
         string s(text);
-        auto ok = regex_search(s, results, p);
-        FindRet ret {0,0};
-        if (ok) {
-            auto last = results.size() - 1;
-            ret.offset = results.position(last),
-            ret.len = results.length(last);
+        auto it = regex_iterator<string_view::iterator>(text.begin(), text.end(), p);
+        FindRet ret;
+        for (decltype(it) last; it != last; ++it) {
+            ret.offset = it->position(0);
+            ret.len = it->length(0);
         }
         return ret;
     }

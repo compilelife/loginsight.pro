@@ -68,3 +68,10 @@ TEST(Calculation, findByRegex) {
     auto r3 = createFind(regex{"l.g", regex_constants::icase}, true)(foo);
     ASSERT_EQ((FindRet{35,3}), r1);
 }
+
+TEST(Calculation, reverseFind) {
+    auto f = createFind("a", false, true);
+    auto ret = f("aaabbbaabb");
+    ASSERT_EQ(1, ret.len);
+    ASSERT_EQ(7, ret.offset);
+}

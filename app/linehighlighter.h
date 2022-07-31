@@ -13,10 +13,10 @@ public:
 
     Q_INVOKABLE void setup(QQuickTextDocument* document);
 
-    Q_PROPERTY(QVector<QString> segColors MEMBER segColors);
-    Q_PROPERTY(QVector<QVariantMap> highlights MEMBER highlights);
-    Q_PROPERTY(QVector<QVariantMap> segs MEMBER segs);
-    Q_PROPERTY(QVariantMap searchResult MEMBER searchResult);
+    Q_PROPERTY(QVector<QString> segColors MEMBER segColors)
+    Q_PROPERTY(QVector<QVariantMap> highlights MEMBER highlights)
+    Q_PROPERTY(QVector<QVariantMap> segs MEMBER segs)
+    Q_PROPERTY(QVariantMap searchResult MEMBER searchResult)
 
 private:
     QVector<QVariantMap> segs;

@@ -194,9 +194,7 @@ Rectangle {
     onSearch: {
       let searchPos = _lastSearchPos
       if (isContinue && _lastSearchPos) {
-        if (reverse)
-          searchPos.fromChar -= searchPos.len
-        else
+        if (!reverse)
           searchPos.fromChar += searchPos.len
       }
 
@@ -411,6 +409,7 @@ Rectangle {
                      })
       .then(function(msg){
          logModel.cache = msg.lines
+        logModel.cache.forEach(l=>l.content = TextCodec.toVisualByte(l.content))
 
          if (placeAt === 'bottom') {
            _show(_getShowRange(index, placeAt).begin)

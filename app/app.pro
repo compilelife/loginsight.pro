@@ -8,7 +8,8 @@ SOURCES += \
         coreboot.cpp \
         linehighlighter.cpp \
         main.cpp \
-        nativehelper.cpp
+        nativehelper.cpp \
+        textcodec.cpp
 
 RESOURCES += qml.qrc
 
@@ -26,7 +27,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     coreboot.h \
     linehighlighter.h \
-    nativehelper.h
+    nativehelper.h \
+    textcodec.h
 
 copy_files.files = $$files($$PWD/bin/*)
 copy_files.path = $$OUT_PWD

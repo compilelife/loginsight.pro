@@ -40,6 +40,24 @@ ApplicationWindow {
       MenuSeparator{}
       MenuItem {action: actions.close}
       MenuSeparator{}
+      Menu {
+        title: '编码'
+        ExclusiveGroup{
+          id: eg
+        }
+        Component.onCompleted: {
+          for (const codec of TextCodec.supportCodecs()) {
+            const action = addItem(codec)
+            action.checkable = true
+            action.checked = TextCodec.name === codec
+            action.triggered.connect(function(){
+              TextCodec.name = codec
+              //TODO refresh logviews of all sessions
+            })
+            eg.bindCheckable(action)
+          }
+        }
+      }
     }
     Menu {
       title: "检视"
@@ -191,13 +209,15 @@ ApplicationWindow {
 
     pm.initRecords()
 
+
+
     if (App.settings.updater.autocheck)
       updater.checkNewVersion().then(function(hasNewVersion){
         if (hasNewVersion) {
           updater.goDownloadDlg.open()
         }
       })
-//    _doOpenFileOrPrj('/home/chenyong/work/ijk/hls/v2/ijk.log')
+//    _doOpenFileOrPrj('/tmp/test.log')
 //    _doOpenProcess('while true;do echo `date`;sleep 1;done')
   }
 

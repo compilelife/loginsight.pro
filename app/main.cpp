@@ -8,6 +8,7 @@
 #include "linehighlighter.h"
 #include <QQmlContext>
 #include "nativehelper.h"
+#include "textcodec.h"
 
 QFile gLogFile;
 static const QString gLevels[] = {"Debg", "Warn", "Err-", "Err+", "Info", "Syst"};
@@ -59,6 +60,7 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
     qmlRegisterType<CoreBoot>("com.cy.CoreBoot", 1, 0, "CoreBoot");
     qmlRegisterType<LineHighlighter>("com.cy.LineHighlighter", 1, 0, "LineHighlighter");
+    engine.rootContext()->setContextProperty("TextCodec", &TextCodec::instance());
     engine.rootContext()->setContextProperty("NativeHelper", new NativeHelper);
 
     const QUrl url(QStringLiteral("qrc:/main.qml"));
