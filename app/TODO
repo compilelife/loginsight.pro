@@ -1,5 +1,4 @@
 编码
-	搜索时index没有按local bit
 	中途改变编码，刷新界面
 	UTF-16le
 过一遍程序

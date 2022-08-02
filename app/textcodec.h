@@ -23,6 +23,7 @@ public:
     //将日志里的文本，按指定编码，转为界面上可读的文本（顺带解码base64）
     Q_INVOKABLE QString toVisualByte(QString encodeStr);
     Q_INVOKABLE QVector<QString> supportCodecs();
+    Q_INVOKABLE int toLogOffset(QString str, int offset);
 public:
     void setName(QString name);
     QString getName();

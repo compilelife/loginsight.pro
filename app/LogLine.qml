@@ -123,6 +123,7 @@ Item {
   }
 
   function getSearchPos() {
-    return {fromLine: model.index, fromChar: _content.cursorPosition}
+    const fromChar = TextCodec.toLogOffset(_content.text, _content.cursorPosition)
+    return {fromLine: model.index, fromChar}
   }
 }

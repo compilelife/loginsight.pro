@@ -45,6 +45,11 @@ QVector<QString> TextCodec::supportCodecs()
     return list;
 }
 
+int TextCodec::toLogOffset(QString str, int offset)
+{
+    return mCodec->fromUnicode(str.mid(0, offset)).length();
+}
+
 void TextCodec::setName(QString name)
 {
     mCodec = QTextCodec::codecForName(name.toLocal8Bit());
