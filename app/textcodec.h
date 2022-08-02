@@ -7,11 +7,9 @@
 class TextCodec : public QObject
 {
     Q_OBJECT
-private:
-    TextCodec();
 
 public:
-    static TextCodec& instance();
+    TextCodec();
     QByteArray toLog(QString text);
     QString toVisual(QByteArray arr);
 
@@ -22,7 +20,6 @@ public:
     Q_INVOKABLE QString toLogByte(QString text);
     //将日志里的文本，按指定编码，转为界面上可读的文本（顺带解码base64）
     Q_INVOKABLE QString toVisualByte(QString encodeStr);
-    Q_INVOKABLE QVector<QString> supportCodecs();
     Q_INVOKABLE int toLogOffset(QString str, int offset);
 public:
     void setName(QString name);

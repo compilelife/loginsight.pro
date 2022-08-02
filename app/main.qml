@@ -46,13 +46,14 @@ ApplicationWindow {
           id: eg
         }
         Component.onCompleted: {
-          for (const codec of TextCodec.supportCodecs()) {
+          for (const codec of NativeHelper.supportCodecs()) {
             const action = addItem(codec)
-            action.checkable = true
-            action.checked = TextCodec.name === codec
             action.triggered.connect(function(){
-              TextCodec.name = codec
-              //TODO refresh logviews of all sessions
+              const session = currentSession()
+              if (!session)
+                return
+              session.textCodec.name = codec
+              session.invalidate(true)
             })
             eg.bindCheckable(action)
           }

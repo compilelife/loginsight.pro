@@ -4,6 +4,11 @@
 #include <QObject>
 #include <QSyntaxHighlighter>
 #include <QQuickTextDocument>
+#include "textcodec.h"
+#include <utility>
+
+using namespace std;
+
 
 class LineHighlighter : public QSyntaxHighlighter
 {
@@ -17,12 +22,17 @@ public:
     Q_PROPERTY(QVector<QVariantMap> highlights MEMBER highlights)
     Q_PROPERTY(QVector<QVariantMap> segs MEMBER segs)
     Q_PROPERTY(QVariantMap searchResult MEMBER searchResult)
+    Q_PROPERTY(TextCodec* textCodec MEMBER textCodec)
+
+private:
+    pair<int,int> fromLogOffsetLen(const QString &text, int offset, int length);
 
 private:
     QVector<QVariantMap> segs;
     QVector<QString> segColors;
     QVector<QVariantMap> highlights;
     QVariantMap searchResult;
+    TextCodec* textCodec;
 
 protected:
     void highlightBlock(const QString &text) override;

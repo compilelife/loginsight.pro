@@ -86,6 +86,7 @@ Item {
           highlights: session.highlights
           segs: model.segs || []
           searchResult: model.searchResult || {}
+          textCodec: session.textCodec
 
           function getSegColors() {
             const colors = []
@@ -123,7 +124,7 @@ Item {
   }
 
   function getSearchPos() {
-    const fromChar = TextCodec.toLogOffset(_content.text, _content.cursorPosition)
+    const fromChar = session.textCodec.toLogOffset(_content.text, _content.cursorPosition)
     return {fromLine: model.index, fromChar}
   }
 }

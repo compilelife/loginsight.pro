@@ -20,6 +20,7 @@ public:
     Q_INVOKABLE QString uniqueId();
     //将qt对话框选择的路径转为core上能使用的编码，顺带base64
     Q_INVOKABLE QString encodePath(QString path);
+    Q_INVOKABLE QVector<QString> supportCodecs();
 public:
     QString getBinDir();
     QString exeNativeName(QString name);

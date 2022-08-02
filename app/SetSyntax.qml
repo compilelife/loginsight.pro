@@ -13,6 +13,7 @@ ColumnLayout {
   property alias pattern: patternBox.text
   property var segs: getSegConfig()
   property alias lines: previewLines
+  property var textCodec: null
 
   RowLayout {
     TextField {
@@ -50,7 +51,7 @@ ColumnLayout {
         model: previewLines.get(index)
         lineNumWidth: 30
         isViewChecked: true
-        session: ({syntaxSegConfig: getSegConfig(), highlights:[]})
+        session: ({syntaxSegConfig: getSegConfig(), highlights:[], textCodec})
         isFocusLine: viewRoot.currentIndex === index
         onFocusLine: viewRoot.currentIndex = lineIndex
       }
@@ -82,10 +83,14 @@ ColumnLayout {
 
     const lines = []
     for (let i = 0; i < previewLines.count; i++) {
-      lines.push(previewLines.get(i).content)
+      lines.push(textCodec.toLogByte(previewLines.get(i).content))
     }
 
-    App.currentSession.core.sendMessage(CoreDef.CmdTestSyntax, {pattern, lines})
+    App.currentSession.core.sendMessage(CoreDef.CmdTestSyntax,
+                                        {
+                                          pattern: textCodec.toLogByte(pattern),
+                                          lines
+                                        })
       .then(function(reply){
         for (let i = 0; i < previewLines.count; i++) {
           previewLines.setProperty(i, 'segs', reply.segs[i])

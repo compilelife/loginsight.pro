@@ -7,6 +7,7 @@ import QtQml 2.15
 import QtQuick.Dialogs 1.3
 import './util.js' as Util
 import './app.js' as App
+import com.cy.TextCodec 1.0
 
 Item {
   id: root
@@ -33,6 +34,8 @@ Item {
     property alias syntaxSegConfig: setSyntax.segs
 
     property var logExclusive : null
+
+  readonly property TextCodec textCodec: TextCodec{}
 
   property bool followLog: true
 
@@ -144,6 +147,7 @@ Item {
     SetSyntax {
       id: setSyntax
       width: parent.width
+      textCodec: root.textCodec
     }
 
     function show() {
@@ -155,7 +159,7 @@ Item {
       if (setSyntax.pattern.length === 0)
         return
       core.sendMessage(CoreDef.CmdSetLineSegment, {
-                                                pattern: setSyntax.pattern,
+                                                pattern: textCodec.toLogByte(setSyntax.pattern),
                                                 segs: setSyntax.segs,
                                                 caseSense: true
                                               })
@@ -207,7 +211,7 @@ Item {
     function filter(param) {
       const curLog = currentLogView()
       if (param.pattern) {
-        param.pattern = TextCodec.toLogByte(param.pattern)
+        param.pattern = textCodec.toLogByte(param.pattern)
       }
       const filterArg = Util.merge({
                                      logId: curLog.logId,
@@ -226,7 +230,7 @@ Item {
       const {fromLine,fromChar} = searchPos ? searchPos : curLog.getSearchPos()
       const patternToHint = param.pattern
       if (param.pattern) {
-        param.pattern = TextCodec.toLogByte(param.pattern)
+        param.pattern = textCodec.toLogByte(param.pattern)
       }
       const searchArg = Util.merge({
         logId: curLog.logId,
@@ -294,9 +298,9 @@ Item {
       }
     }
 
-    function invalidate() {
+    function invalidate(reload) {
       for (const key in logMap) {
-        logMap[key].invalidate()
+        logMap[key].invalidate(reload)
       }
     }
 

@@ -369,8 +369,13 @@ Rectangle {
     show(curIndex)
   }
 
-  function invalidate() {
-    forceRefresh(curIndex)
+  function invalidate(reload) {
+    if (reload) {
+      logModel.cache = []
+      show(curIndex)
+    } else {
+      forceRefresh(curIndex)
+    }
   }
 
   function forceRefresh(index) {
@@ -409,7 +414,7 @@ Rectangle {
                      })
       .then(function(msg){
          logModel.cache = msg.lines
-        logModel.cache.forEach(l=>l.content = TextCodec.toVisualByte(l.content))
+        logModel.cache.forEach(l=>l.content = session.textCodec.toVisualByte(l.content))
 
          if (placeAt === 'bottom') {
            _show(_getShowRange(index, placeAt).begin)

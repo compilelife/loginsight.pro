@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
     qmlRegisterType<CoreBoot>("com.cy.CoreBoot", 1, 0, "CoreBoot");
     qmlRegisterType<LineHighlighter>("com.cy.LineHighlighter", 1, 0, "LineHighlighter");
-    engine.rootContext()->setContextProperty("TextCodec", &TextCodec::instance());
+    qmlRegisterType<TextCodec>("com.cy.TextCodec", 1, 0, "TextCodec");
     engine.rootContext()->setContextProperty("NativeHelper", new NativeHelper);
 
     const QUrl url(QStringLiteral("qrc:/main.qml"));

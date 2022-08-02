@@ -13,6 +13,15 @@ void LineHighlighter::setup(QQuickTextDocument *document)
     setDocument(document->textDocument());
 }
 
+pair<int,int> LineHighlighter::fromLogOffsetLen(const QString &text, int offset, int length) {
+    auto logBytes = textCodec->toLog(text);
+    auto keyword = textCodec->toVisual(logBytes.mid(offset, length));
+    auto keywordLength = keyword.length();
+    auto suffix = textCodec->toVisual(logBytes.mid(offset));
+    auto index = text.lastIndexOf(suffix);
+    return {index, keywordLength};
+}
+
 void LineHighlighter::highlightBlock(const QString &text)
 {
     if (text.isEmpty())
@@ -22,12 +31,11 @@ void LineHighlighter::highlightBlock(const QString &text)
     auto n = qMin(segs.size(), segColors.size());
     for (auto i = 0; i < n; i++) {
         auto& item = segs[i];
-        auto offset = item["offset"].toUInt();
-        auto length = item["length"].toUInt();
+        auto ret = fromLogOffsetLen(text, item["offset"].toInt(), item["length"].toInt());
 
         QTextCharFormat fmt;
         fmt.setForeground(QColor(segColors[i]));
-        setFormat(offset, length, fmt);
+        setFormat(ret.first, ret.second, fmt);
     }
 
     //highlights
@@ -50,21 +58,12 @@ void LineHighlighter::highlightBlock(const QString &text)
 
     //search result
     if (!searchResult.empty()) {
-        auto offset = searchResult["offset"].toUInt();
-        auto length = searchResult["len"].toUInt();
-
-        //因为返回结果是基于原始编码的，所以不能直接设置给fmt
-        //需要将原始编码的字符数组位置映射到text上
-        auto logBytes = TextCodec::instance().toLog(text);
-        auto keyword = TextCodec::instance().toVisual(logBytes.mid(offset, length));
-        auto keywordLength = keyword.length();
-        auto suffix = TextCodec::instance().toVisual(logBytes.mid(offset));
-        auto index = text.lastIndexOf(suffix);
+        auto ret = fromLogOffsetLen(text, searchResult["offset"].toInt(), searchResult["len"].toInt());
 
         QTextCharFormat fmt;
         fmt.clearBackground();
         fmt.setBackground(QColor(0,200,200));
-        setFormat(index, keywordLength, fmt);
+        setFormat(ret.first, ret.second, fmt);
     }
 }
 
