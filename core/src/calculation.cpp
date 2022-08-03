@@ -100,11 +100,13 @@ vector<shared_ptr<LogView>> Calculation::split(shared_ptr<LogView>& iter) {
     return ret;
 }
 
+//FIXME: utf16le会残留一个0到下一行导致乱码；不能单纯判断\n 0的情况，因为utf16be也是这个特征（0是下一个字符的）
 pair<FindLineIter, FindLineIter> findNewLine(FindLineIter from, FindLineIter end) {
     auto newline = find(from, end, '\n');
     auto next = newline + 1;
-    if (next > end)
+    if (next > end) {
         next = end;
+    }
 
     //删除\r\n或者\r\r\n中的\r，确保行末整洁
     while (newline != end && newline != from && *(newline - 1) == '\r') {
