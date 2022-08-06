@@ -4,12 +4,21 @@ import QtQuick.Controls 2.5
 import QtQml.Models 2.12
 import QtQuick.Controls.Styles 1.4
 import './app.js' as App
+import QtQuick.Controls 1.4 as QC1
 
 Item {
     id: root
 
     property bool empty: nodes.count == 0
     signal doubleClickNode(int line)
+
+    MouseArea {
+      anchors.fill: root
+      acceptedButtons: Qt.RightButton
+      onClicked: {
+        contextMenu.popup()
+      }
+    }
 
     Rectangle{
       anchors.fill: parent
@@ -78,6 +87,18 @@ Item {
         highlightMoveDuration: 300
     }
 
+    QC1.Menu {
+      id: contextMenu
+      QC1.MenuItem {
+        text: '清除'
+        onTriggered: clear()
+      }
+      QC1.MenuItem {
+        text: '截屏'
+        onTriggered: screenShot()
+      }
+    }
+
     function onSave() {
         var allNodes = []
         for (var i = 0; i < nodes.count; i++) {
@@ -138,7 +159,7 @@ Item {
 
         NativeHelper.clipboardSetImage(result.image)
 
-        App.showToast('copied to clipboard')
+        App.showToast('已复制时间线到剪贴板')
       })
     }
 

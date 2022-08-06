@@ -210,6 +210,7 @@ Item {
     //param: {pattern, caseSense, regex}
     function filter(param) {
       const curLog = currentLogView()
+      const tabName = param.pattern || '过滤结果'
       if (param.pattern) {
         param.pattern = textCodec.toLogByte(param.pattern)
       }
@@ -220,7 +221,7 @@ Item {
                                    }, param)
         core.sendModalMessage(CoreDef.CmdFilter, filterArg)
             .then(msg=>{
-                subLogs.append(msg.logId, msg.range, filterArg.pattern)
+                subLogs.append(msg.logId, msg.range, tabName)
             })
     }
 
@@ -353,14 +354,16 @@ Item {
 
     function exportLog() {
       const curLog = currentLogView()
-      if (curLog === rootLogView) {
-        App.showToast("不支持导出原始日志，请选择一个过滤窗口来导出")
-        return
-      }
+//      if (curLog === rootLogView) {
+//        App.showToast("不支持导出原始日志，请选择一个过滤窗口来导出")
+//        return
+//      }
 
       if (curLog){
         App.main.userSaveFile('选择日志导出路径', ['*'], function(path){
-          core.sendModalMessage(CoreDef.CmdExportLog, {logId: curLog.logId, path})
+          core.sendModalMessage(CoreDef.CmdExportLog, {
+                                  logId: curLog.logId,
+                                  path: NativeHelper.encodePath(path)})
             .then(function(){
               App.showToast('导出成功')
             })

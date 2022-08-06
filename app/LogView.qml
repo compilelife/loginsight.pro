@@ -539,7 +539,7 @@ Rectangle {
 
   function getTopLines(n) {
     const startIndexInCache = curIndex - logModel.cache[0].index
-    return logModel.cache.slice(startIndexInCache, n)
+    return logModel.cache.slice(startIndexInCache, startIndexInCache+n)
   }
 
   function moveToBottom() {

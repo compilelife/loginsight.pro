@@ -195,6 +195,25 @@ ApplicationWindow {
     }
   }
 
+  DropArea {
+    anchors.fill: parent
+    onDropped: {
+      if (drop.hasUrls) {
+        const urls = drop.urls.map(function(url) {
+          return url.toString().substring(7)
+        })
+        openUrls(urls, 0)
+      }
+    }
+
+    function openUrls(urls, index){
+      if (index >= urls.length)
+        return
+      _doOpenFileOrPrj(urls[index])
+        .then(function(){openUrls(urls, index+1)})
+    }
+  }
+
   property BuyDlg buyDlg: BuyDlg {}
   property AboutDlg aboutDlg: AboutDlg {}
   property Updater updater: Updater{}
@@ -302,7 +321,7 @@ ApplicationWindow {
 
   function openClipboard() {
     const path = NativeHelper.writeClipboardToTemp();
-    doOpenFileOrPrj(path)
+    _doOpenFileOrPrj(path, '粘贴板')
   }
 
   function currentLogView() {

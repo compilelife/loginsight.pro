@@ -50,7 +50,7 @@ Item {
         Text {
           width: parent.width
           horizontalAlignment: Text.AlignLeft
-          text: isFocusLine ? String(model.index + 1)+' >>' : String(model.index + 1)
+          text: String(model.index + 1)
           wrapMode: Text.NoWrap
           color: isFocusLine ? 'white' : 'black'
         }

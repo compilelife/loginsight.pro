@@ -325,7 +325,7 @@ ImplCmdHandler(openProcess) {
         return Promise::resolved(false);
     }
 
-    auto cmd = msg["process"].asString();
+    auto cmd = decodeJsonStr(msg["process"].asString());
     auto cache = msg["cache"].asInt();
 
     auto log = make_shared<MonitorLog>();

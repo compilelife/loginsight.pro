@@ -181,8 +181,8 @@ bool MonitorLog::readStdOutInto(MemBlock* curBlock) {
     
     //libevent告诉我们有数据可以读，但是read到0，说明进程已经退出了
     if (totalRead == 0) {
-        event_del(mListenEvent);
-        activateAttr(LOG_ATTR_MAY_DISCONNECT, true);
+        // event_del(mListenEvent);
+        // activateAttr(LOG_ATTR_MAY_DISCONNECT, true);
     }
 
     return totalRead > 0;

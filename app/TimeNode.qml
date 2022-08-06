@@ -51,17 +51,19 @@ Item {
 
     QC1.Menu {
         id: optionMenu
-
         QC1.MenuItem {
-            text: '删除'
-            onTriggered: requestDelete()
+          text: '追踪该行'
+          onTriggered: doubleClicked()
         }
-
         QC1.MenuItem {
             text: '选择颜色'
             onTriggered: {
                 selectColorDialog.open()
             }
+        }
+        QC1.MenuItem {
+            text: '删除'
+            onTriggered: requestDelete()
         }
     }
 
