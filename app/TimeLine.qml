@@ -55,10 +55,7 @@ Item {
             height: node.height+20
             TimeNode{
                 id: node
-                line: model.line+1
-                log: model.log
-                comment: model.comment
-                color: model.color
+                config: model
 
                 width: parent.width-20
                 anchors.margins: 10

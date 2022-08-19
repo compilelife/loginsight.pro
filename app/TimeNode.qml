@@ -5,19 +5,9 @@ import QtQuick.Controls 2.12
 import QtQuick.Dialogs 1.2
 import QtQuick.Controls 1.4 as QC1
 
-/*
-  交互效果：
-  日志和备注可以是多行的，而且根据宽度自动换行
-  当横向被拉宽的时候，高度会自动变矮
-
-  支持双击、单击
- */
 Item {
     id: root
-    property string color: 'red'
-    property int line: 1
-    property string log: ''
-    property string comment: ''
+    property var config: ({})
 
     signal clicked()
     signal doubleClicked()
@@ -45,7 +35,7 @@ Item {
     ColorDialog {
         id: selectColorDialog
         onAccepted: {
-            root.color = color
+            config.color = String(color)
         }
     }
 
@@ -81,8 +71,8 @@ Item {
         }
 
         Text {
-            text: root.line
-            color: root.color
+            text: config.line + 1
+            color: config.color
             horizontalAlignment: Text.AlignRight
             elide: Text.ElideRight
             wrapMode: Text.WrapAnywhere
@@ -95,7 +85,7 @@ Item {
             width: body.circleSize
             height: body.circleSize
             radius: body.circleSize/2
-            color: root.color
+            color: config.color
             Layout.leftMargin: body.circleMargin
             Layout.rightMargin: body.circleMargin
         }
@@ -123,7 +113,7 @@ Item {
             Rectangle {
                 id: barline
                 width: 3
-                color: root.color
+                color: config.color
                 //以下两行可以填满纵向
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
@@ -141,7 +131,7 @@ Item {
                 }
 
                 Text {
-                    text: root.log
+                    text: config.log
                     Layout.fillWidth: true
                     Layout.maximumHeight: 120
                     Layout.minimumHeight: 35
@@ -159,13 +149,13 @@ Item {
 
                 TextEdit {
                     id: commentEdit
-                    text: root.comment
+                    text: config.comment
                     wrapMode: TextInput.Wrap
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    color: root.color
+                    color: config.color
                     onTextChanged: {
-                        root.comment = text
+                        config.comment = text
                     }
                     onActiveFocusChanged: {
                         if (activeFocus) {
