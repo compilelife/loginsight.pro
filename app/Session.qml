@@ -95,6 +95,11 @@ Item {
                     id: holder
                     Layout.fillHeight: true
                     currentIndex: tabBar.currentIndex
+                    onCountChanged: {
+                      if (count <= 0) {//所有sub log都关闭了的话，就让root log view获得焦点
+                        rootLogView.checked = true
+                      }
+                    }
                 }
 
                 function append(id, range, name) {
