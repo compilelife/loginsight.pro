@@ -21,7 +21,7 @@ Dialog {
     return {
       regex: patternBox.isRegex,
       pattern: patternBox.curText,
-      caseSens: patternBox.isCaseSense
+      caseSense: patternBox.isCaseSense
     }
   }
 }

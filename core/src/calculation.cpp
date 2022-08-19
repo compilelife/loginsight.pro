@@ -146,8 +146,8 @@ struct StringCaseFind {
     FindRet operator () (string_view text) {
         auto pos = text.find(pattern);
         return {
-            pos,
-            pos == string::npos ? 0 : pattern.length()
+            (LineCharI)pos,
+            (LineCharI)(pos == string::npos ? 0 : pattern.length())
         };
     }
 };
@@ -157,8 +157,8 @@ struct StringCaseReverseFind {
     FindRet operator () (string_view text) {
         auto pos = text.rfind(pattern);
         return {
-            pos,
-            pos == string::npos ? 0 : pattern.length()
+            (LineCharI)pos,
+            (LineCharI)(pos == string::npos ? 0 : pattern.length())
         };
     }
 };

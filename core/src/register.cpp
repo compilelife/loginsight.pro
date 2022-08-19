@@ -15,7 +15,7 @@ static string getPlatform() {
 #if defined(__linux__)
     return "Linux";
 #elif defined(_WIN32)
-    return "Windows"
+    return "Windows";
 #else
     return "Mac";
 #endif
@@ -125,7 +125,9 @@ static string xordecode(const Json::Value& arr, int key) {
         key >>= 8;
     }
 
-    char decoded[arr.size()+1] = {0};
+    string ret;
+    ret.resize(arr.size());
+    auto decoded = ret.data();
     int j = 0;
     for (size_t i = 0; i < arr.size(); i++) {
         decoded[i] = arr[(Json::ArrayIndex)i].asInt() ^ keys[j++];
@@ -133,8 +135,7 @@ static string xordecode(const Json::Value& arr, int key) {
             j = 0;
     }
     
-
-    return decoded;    
+    return ret;    
 }
 
 void Register::init(string mydir, string uniqueId) {

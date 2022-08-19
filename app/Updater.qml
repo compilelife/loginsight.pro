@@ -27,7 +27,7 @@ Item {
           const info = JSON.parse(xhr.responseText)
           lastestVersion = info.version
 
-          console.info(`当前版本: ${C.VERSION},远程版本：${info.version}`)
+          console.info(`current version: ${C.VERSION}, remote version：${info.version}`)
           if (C.isVersionBigger(info.version, C.VERSION)) {
             resolve(true)
           }else {

@@ -52,7 +52,7 @@ LineRef BlockLogView::current() const {
     return {
         curBlockRef,
         &(curBlockRef.block->lines[mLineIndexInBlock]),
-        mLineIndexInBlock
+        (BlockLineI)mLineIndexInBlock
     };
 }
 

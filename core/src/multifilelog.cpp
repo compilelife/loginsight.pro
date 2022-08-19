@@ -104,7 +104,7 @@ vector<string> listFiles(string_view path, regex comparablePatten) {
             smatch result;
             auto matched = regex_match(filename, result, comparablePatten);
             if (matched) {
-                auto item = ListFileHelper<IsCompareNum>::createItem(result[1].str(), entry.path());
+                auto item = ListFileHelper<IsCompareNum>::createItem(result[1].str(), entry.path().string());
                 pq.q.push(item);
             }
         }

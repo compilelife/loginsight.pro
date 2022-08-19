@@ -6,7 +6,7 @@
 SubLogView::SubLogView(const SubLog* log)
     :mLog(const_cast<SubLog*>(log)) {
     mFrom = {0,0};
-    mTo = {LastIndex(log->mBlocks), LastIndex(LastItem(log->mBlocks).lines)};
+    mTo = {(int)(LastIndex(log->mBlocks)), (int)(LastIndex(LastItem(log->mBlocks).lines))};
     mCur = mFrom;
     mCount = log->mCount;
 }
@@ -91,7 +91,7 @@ SubLogPos SubLogView::locateLine(LogLineI line) const {
             lineIndex = mFrom.lineIndex;
         }
 
-        return {blockIndex, lineIndex};
+        return {(int)blockIndex, (int)lineIndex};
     } else {
         size_t blockIndex = 0;
         cur += mLog->mBlocks[mFrom.blockIndex].lines.size() - mFrom.lineIndex;
@@ -109,7 +109,7 @@ SubLogPos SubLogView::locateLine(LogLineI line) const {
             lineIndex = mTo.lineIndex;
         }
         
-        return {blockIndex, lineIndex};
+        return {(int)blockIndex, (int)lineIndex};
     }
 
     return {0, 0};

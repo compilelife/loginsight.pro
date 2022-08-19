@@ -137,9 +137,11 @@ void MonitorLog::splitLinesForNewContent(MemBlock* curBlock) {
             }
             break;
         } else {
+            auto offset = (int)(SV_CPP20_ITER(last) - pmem);
+            auto len = (int)(newline - last);
             curBlock->block.lines.push_back({
-                static_cast<BlockCharI>(last - pmem),
-                static_cast<LineCharI>(newline - last)
+                static_cast<BlockCharI>(offset),
+                static_cast<LineCharI>(len)
             });
             activateAttr(LOG_ATTR_DYNAMIC_RANGE, true);
             last = next;
@@ -147,12 +149,12 @@ void MonitorLog::splitLinesForNewContent(MemBlock* curBlock) {
             if (last < end && curBlock->block.lines.size() >= BLOCK_LINE_NUM) {//block里存放的行数超出了，开辟新的空间来存放；极低概率进这里，只有每行字符小于7个才有可能
                 //FIXME:这是最简单的处理方法，即把剩下的数据等下次有新的输入时在处理，但会引入一些延迟
                 mLastBlockTail = buf.substr(last - start);
-                curBlock->lastFind = last;
+                curBlock->lastFind = SV_CPP20_ITER(last);
                 return;
             }
         }
     }
-    curBlock->lastFind = last;
+    curBlock->lastFind = SV_CPP20_ITER(last);
 }
 
 bool MonitorLog::readStdOutInto(MemBlock* curBlock) {

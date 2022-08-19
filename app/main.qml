@@ -243,7 +243,7 @@ ApplicationWindow {
 
   function initRegister() {
     const arg = {
-      mydir: NativeHelper.myDir(),
+      mydir: NativeHelper.encodePath(NativeHelper.myDir()),
       uid: NativeHelper.uniqueId()
     };
     core.sendMessage(CoreDef.CmdInitRegister, arg)

@@ -82,7 +82,7 @@ TEST(FileLog, fileChanged) {
     thread loopThd([]{EventLoop::instance().start();});
 
     FileLog log;
-    ASSERT_TRUE(log.open(logpath.c_str()));
+    ASSERT_TRUE(log.open((const char*)logpath.c_str()));
     log.scheduleBuildBlocks()->wait();
     ASSERT_EQ(1, log.range().len());
 

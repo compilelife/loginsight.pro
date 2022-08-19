@@ -10,26 +10,20 @@
 #include "multifilelog.h"
 #include <fstream>
 #include <filesystem>
-#include "turbobase64/turbob64.h"
+#include "oatpp/encoding/Base64.hpp"
 
 using namespace std::filesystem;
+using namespace oatpp::encoding;
 
 unordered_map<string,CmdHandlerWrap> gCmdHandlers;
 
 
 static string base64Encode(string txt) {
-    unsigned char buf[tb64enclen(txt.size())+1] = {0};
-    auto len = tb64enc((unsigned char*)txt.data(), txt.size(), buf);
-    return string((char*)buf, len);
+    return Base64::encode(txt);
 }
 
 static string base64Decode(string txt) {
-    auto inBuf = (unsigned char*)txt.data();
-    auto inLen = txt.size();
-
-    unsigned char buf[tb64declen(inBuf, inLen)+1] = {0};
-    auto len = tb64dec(inBuf, inLen, buf);
-    return string((char*)buf, len);
+    return Base64::decode(txt);
 }
 
 static string decodeJsonStr(const Json::Value& v) {

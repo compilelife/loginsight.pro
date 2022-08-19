@@ -16,7 +16,7 @@ static BlockLogView prepareMockData() {
         {
             block->lineBegin = 5*i;
             block->lines.push_back({
-                j, 2
+                (BlockCharI)j, (LineCharI)2
             });
         }
         blocks.push_back(block);

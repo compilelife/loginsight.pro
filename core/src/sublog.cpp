@@ -124,12 +124,13 @@ LogLineI SubLog::mapToSource(LogLineI index) const {
 
 LogLineI SubLog::fromSource(LogLineI target) const {
     //第一次二分查找用来定位所在block
-    size_t low = 0;
-    size_t high = LastIndex(mBlocks);
-    size_t mid;
+    int low = 0;
+    int high = LastIndex(mBlocks);
+    LOGI("[%d,%d]", low, high);
+    int mid = 0;
     while (low <= high) {
         mid = (low + high) / 2;
-        auto b = mBlocks[mid];
+        auto& b = mBlocks[mid];
         auto range = b.sourceLineRange();
         if (range.contains(target)) {
             break;
@@ -140,16 +141,23 @@ LogLineI SubLog::fromSource(LogLineI target) const {
         }
     }
 
-    if (low > high) {
-        return 0;//如果没有在任意block的范围内，则直接返回失败的默认值0
-    }
+    LOGI("mid=%d, low >high? %d", mid, low>high);
 
-    LogLineI sum = 0;
-    for (size_t i = 0; i < mid; i++)
-        sum += mBlocks[i].lines.size();
+    LogLineI offset = 0;
+    for (int i = 0; i < mid; i++)
+        offset += mBlocks[i].lines.size();
 
     //第二次二分查找用来定位最接近的行
-    auto block = mBlocks[mid];
+    auto& block = mBlocks[mid];
+    if (low > high) {//没有一个block包含它
+        //看看距离左边界还是右边界更近？    
+        auto range = block.sourceLineRange();
+        if (target < range.begin)
+            return offset;
+        else//target > range.end
+            return offset + block.lines.size();
+    }
+
     low = 0;
     high = LastIndex(block.lines);
 
@@ -157,7 +165,7 @@ LogLineI SubLog::fromSource(LogLineI target) const {
         mid = (low + high) / 2;
         auto line = block.mapLineIndexToSource(mid);
         if (line == target) {
-            return mid + sum;
+            return mid + offset;
         } else if (target > line) {
             low = mid + 1;
         } else if (target < line) {
@@ -165,7 +173,7 @@ LogLineI SubLog::fromSource(LogLineI target) const {
         }
     }
     
-    return high + sum;//如果没有找到，返回high，也就是刚好低于target的那行
+    return mid + offset;//如果未找到，则返回最接近行
 }
 
 static pair<Range, Range> detectChange(Range old, Range now) {

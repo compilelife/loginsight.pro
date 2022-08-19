@@ -1,4 +1,5 @@
 #include "logtree.h"
+#include "stdout.h"
 
 LogId LogTree::setRoot(shared_ptr<IClosableLog> root) {
     if (mRootNode) {
@@ -71,7 +72,9 @@ void LogTree::delLog(LogId id) {
             return false;
         
         auto& child = (*it).second;
+        LOGI("del log: %u", child->id);
         node->children.erase(it);
+        return true;
     });
 }
 

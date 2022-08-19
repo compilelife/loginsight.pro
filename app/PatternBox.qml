@@ -6,7 +6,7 @@ Row {
   property alias isRegex: regexBox.checked
   property alias isCaseSense: caseSenseBox.checked
   property alias curText: keywordBox.editText
-  signal accept
+  signal accept()
 
   spacing: 10
 
@@ -36,6 +36,7 @@ Row {
 
     CheckBox {
       id: caseSenseBox
+      checked: false
       text: '大小写敏感'
     }
 

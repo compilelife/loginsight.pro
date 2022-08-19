@@ -17,7 +17,7 @@ void StdOut::send(constr str) {
     fflush(stdout);
 }
 
-void StdOut::debug(constr fmt, ...) {
+void StdOut::debug(string fmt, ...) {
     char buf[1024] = {0};
     va_list args;
     va_start(args, fmt);

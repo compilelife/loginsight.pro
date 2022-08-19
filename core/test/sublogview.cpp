@@ -16,7 +16,7 @@ static shared_ptr<LogView> prepareMockData() {
         {
             block->lineBegin = 10*i;
             block->lines.push_back({
-                j, 2
+                (BlockCharI)j, (LineCharI)2
             });
         }
         blocks.push_back({

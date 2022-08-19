@@ -23,7 +23,7 @@ private:
         bool isBackendFull() {return writePos >= backend.capacity() || block.lines.size() >= BLOCK_LINE_NUM;}
         //上一次new line查找完成的位置+1，即这一次应该开始查找的位置
         //不等于writePos，因为可能上次的数据不是以\n结束的
-        string_view::iterator lastFind{nullptr};
+        const char* lastFind{nullptr}; //string_view::iterator
     };
     
     size_t mMaxBlockCount{100};//约20M

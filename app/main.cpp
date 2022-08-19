@@ -9,6 +9,7 @@
 #include <QQmlContext>
 #include "nativehelper.h"
 #include "textcodec.h"
+#include <QIcon>
 
 QFile gLogFile;
 static const QString gLevels[] = {"Debg", "Warn", "Err-", "Err+", "Info", "Syst"};
@@ -45,6 +46,8 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationName("compilelife");
     QCoreApplication::setOrganizationDomain("compilelife.com");
     QCoreApplication::setApplicationName("loginsight");
+
+    app.setWindowIcon(QIcon(":/images/logo.png"));
 
     auto logPath = QDir::tempPath()+QDir::separator()+"loginsight.log";
     gLogFile.setFileName(logPath);

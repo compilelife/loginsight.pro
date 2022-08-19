@@ -39,4 +39,14 @@ linux {
 }
 macos {
     QMAKE_POST_LINK="chmod +x $$OUT_PWD/*.macos"
+ICON = Icon.icns
+QMAKE_INFO_PLIST = Info.plist
+}
+
+win32 {
+RC_ICONS = logo.ico
+}
+msvc {
+    QMAKE_CFLAGS += /utf-8
+    QMAKE_CXXFLAGS += /utf-8
 }

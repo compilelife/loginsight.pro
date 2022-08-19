@@ -15,7 +15,7 @@ Item {
   signal coreReady()
   property Core core: Core {
         onReady: {
-          core.sendMessage(CoreDef.CmdInitRegister, {mydir: NativeHelper.myDir(), uid: NativeHelper.uniqueId()})
+          core.sendMessage(CoreDef.CmdInitRegister, {mydir: NativeHelper.encodePath(NativeHelper.myDir()), uid: NativeHelper.uniqueId()})
             .then(function() {
               core.serverCmdHandlers[CoreDef.ServerCmdRangeChanged] = handleLogRangeChanged
               coreReady()
@@ -183,6 +183,7 @@ Item {
         return logMap[logId]
     }
     function _onLogRemoved(logId) {
+      core.sendMessage(CoreDef.CmdCloseLog, {logId})
         delete logMap[logId]
     }
 

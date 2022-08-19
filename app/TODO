@@ -1,3 +1,4 @@
+图标
 测试windows
 测试mac
 编写打包脚本
@@ -5,6 +6,7 @@
     拉取APP代码
     xmake install opensouce; upload core; pack
     xmake install pro; pack
+为开源版本增加专业版购买入口
 上线
 
 How to unit test ?

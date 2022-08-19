@@ -62,15 +62,20 @@ shared_ptr<Promise> FileLog::scheduleBuildBlocks() {
 
     while (memEnd - mem > 0) {
         auto taskMemEnd = mem + step;//预期结束位置
+        if (taskMemEnd >= mem) {
+            tasks.push_back({mem, static_cast<size_t>(memEnd - mem)});
+            break;
+        }
+
         string_view right{taskMemEnd, static_cast<size_t>(memEnd - taskMemEnd)};//预期位置后面的buf
-        auto newLine = std::find(right.begin(), right.end(), '\n');//找到第一个换行
+        auto newLinePos = right.find('\n');
         //根据newLine切出合适的task
-        if (newLine == right.end()) {
+        if (newLinePos == string_view::npos) {
             tasks.push_back({mem, static_cast<size_t>(memEnd - mem)});
             break;
         } else {
-            tasks.push_back({mem, static_cast<size_t>(newLine - mem + 1)});
-            mem = newLine + 1;
+            tasks.push_back({mem, newLinePos + 1});
+            mem += (newLinePos + 1);
         }
     }
     
@@ -106,13 +111,13 @@ any FileLog::buildBlock(bool* cancel, string_view buf, const char* veryBegin) {
     {
         if (lineIndex >= BLOCK_LINE_NUM) {
             lineIndex = 0;
-            curBlock = createBlock(last);
+            curBlock = createBlock(SV_CPP20_ITER(last));
         }
 
         auto [newline, next] = findNewLine(last, end);
 
         curBlock->lines.push_back({
-            static_cast<BlockCharI>(last - (veryBegin + curBlock->offset)),
+            static_cast<BlockCharI>(SV_CPP20_ITER(last) - (veryBegin + curBlock->offset)),
             static_cast<LineCharI>(newline - last)
         });
 

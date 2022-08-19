@@ -13,7 +13,7 @@ using namespace std;
  * @brief 整个文件里的行号、行数量
  */
 using LogLineI = uint64_t;
-constexpr LogLineI InvalidLogLine = numeric_limits<LogLineI>::max();
+constexpr LogLineI InvalidLogLine = 18446744073709551615;// numeric_limits<LogLineI>::max();
 
 /**
  * @brief Block里的行序号、行数量
@@ -49,3 +49,9 @@ inline vector<R> mapVec(vector<T>& vec, function<R(T&)>&& converter) {
     }
     return ret;
 }
+
+#ifdef _WIN32//c++20后windows里的string_view iterator才是const char* 
+#define SV_CPP20_ITER(iter) (iter._Unwrapped())
+#else
+#define SV_CPP20_ITER(iter) (iter)
+#endif

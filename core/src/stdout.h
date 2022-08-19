@@ -18,7 +18,7 @@ public:
     static StdOut& instance();
 public:
     void send(constr str);
-    void debug(constr fmt, ...);
+    void debug(string fmt, ...);
     constr lastLine();
 };
 

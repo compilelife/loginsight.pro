@@ -21,6 +21,7 @@ const CmdGetRange = 'getRange'
 const CmdInitRegister = 'initRegister'
 const CmdDoRegister = 'doRegister'
 const CmdExportLog = 'exportLog'
+const CmdCloseLog = 'closeLog'
 const ServerCmdRangeChanged = 'rangeChanged'
 
 const SegTypeDate = 0;
