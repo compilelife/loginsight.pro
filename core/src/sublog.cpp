@@ -126,7 +126,10 @@ LogLineI SubLog::fromSource(LogLineI target) const {
     //第一次二分查找用来定位所在block
     int low = 0;
     int high = LastIndex(mBlocks);
-    LOGI("[%d,%d]", low, high);
+    if (low > high) {
+        return InvalidLogLine;
+    }
+    
     int mid = 0;
     while (low <= high) {
         mid = (low + high) / 2;
@@ -140,8 +143,6 @@ LogLineI SubLog::fromSource(LogLineI target) const {
             high = mid - 1;
         }
     }
-
-    LOGI("mid=%d, low >high? %d", mid, low>high);
 
     LogLineI offset = 0;
     for (int i = 0; i < mid; i++)

@@ -85,7 +85,9 @@ map<LogId, LogLineI> LogTree::mapLine(LogLineI srcLine) {
     ret[mRootNode->id] = srcLine;
 
     travel([&ret, srcLine](Node* node){
-        ret[node->id] = node->log->fromSource(srcLine);
+        auto line = node->log->fromSource(srcLine);
+        if (line != InvalidLogLine)
+            ret[node->id] = line;
         return false;
     });
 
