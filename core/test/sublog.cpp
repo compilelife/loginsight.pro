@@ -49,7 +49,7 @@ TEST(SubLog, mapLine) {
     ASSERT_EQ(19687, firstSub->mapToSource(3567));
     ASSERT_EQ(3567, firstSub->fromSource(19687));
     //firstSub中不存在19683源行，应找到其就近行
-    ASSERT_EQ(3563, firstSub->fromSource(19683));
+    ASSERT_EQ(3564, firstSub->fromSource(19683));
 
     p = SubLog::createSubLog(firstSub, createFilter("kmtvgame", true));
     p->wait();
@@ -116,6 +116,7 @@ TEST(SubLog, syncSubSub) {
     loopThd.join();
 }
 
+#ifndef _WIN32 
 TEST(SubLog, syncParentClip) {
     auto loopThd = thread([]{EventLoop::instance().start();});
 
@@ -141,3 +142,4 @@ TEST(SubLog, syncParentClip) {
     EventLoop::instance().stop();
     loopThd.join();
 }
+#endif

@@ -68,6 +68,15 @@ public:
     void readStdin(int fd);
     void mockInput(string_view s);
 
+protected:
+    virtual bool canUsePro();
+    virtual bool enableBase64() {return true;}
+
+private:
+    string base64Encode(string txt);
+    string base64Decode(string txt);
+    string decodeJsonStr(const Json::Value& v);
+
 private:
     void handleCmd(JsonMsg msg);
     DeclarCmdHandler(openFile, EventType::Write);

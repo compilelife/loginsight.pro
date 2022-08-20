@@ -1,161 +1,161 @@
 [
 {
   "directory": "/home/chenyong/my/loginsight/core",
-  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/core/linux/x86_64/release/src/main.cpp.o", "src/main.cpp"],
-  "file": "src/main.cpp"
-},
-{
-  "directory": "/home/chenyong/my/loginsight/core",
-  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.config/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/utest/linux/x86_64/release/test/benchmark.cpp.o", "test/benchmark.cpp"],
-  "file": "test/benchmark.cpp"
-},
-{
-  "directory": "/home/chenyong/my/loginsight/core",
-  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.config/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/utest/linux/x86_64/release/test/controller.cpp.o", "test/controller.cpp"],
-  "file": "test/controller.cpp"
-},
-{
-  "directory": "/home/chenyong/my/loginsight/core",
-  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.config/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/utest/linux/x86_64/release/test/filelog.cpp.o", "test/filelog.cpp"],
-  "file": "test/filelog.cpp"
-},
-{
-  "directory": "/home/chenyong/my/loginsight/core",
-  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.config/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/utest/linux/x86_64/release/test/stdout.cpp.o", "test/stdout.cpp"],
-  "file": "test/stdout.cpp"
-},
-{
-  "directory": "/home/chenyong/my/loginsight/core",
-  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.config/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/utest/linux/x86_64/release/test/linesegment.cpp.o", "test/linesegment.cpp"],
-  "file": "test/linesegment.cpp"
-},
-{
-  "directory": "/home/chenyong/my/loginsight/core",
-  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.config/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/utest/linux/x86_64/release/test/multifilelog.cpp.o", "test/multifilelog.cpp"],
-  "file": "test/multifilelog.cpp"
-},
-{
-  "directory": "/home/chenyong/my/loginsight/core",
-  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.config/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/utest/linux/x86_64/release/test/calculation.cpp.o", "test/calculation.cpp"],
-  "file": "test/calculation.cpp"
-},
-{
-  "directory": "/home/chenyong/my/loginsight/core",
-  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.config/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/utest/linux/x86_64/release/test/sublogview.cpp.o", "test/sublogview.cpp"],
-  "file": "test/sublogview.cpp"
-},
-{
-  "directory": "/home/chenyong/my/loginsight/core",
-  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.config/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/utest/linux/x86_64/release/test/monitorlog.cpp.o", "test/monitorlog.cpp"],
-  "file": "test/monitorlog.cpp"
-},
-{
-  "directory": "/home/chenyong/my/loginsight/core",
-  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.config/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/utest/linux/x86_64/release/test/sublog.cpp.o", "test/sublog.cpp"],
-  "file": "test/sublog.cpp"
-},
-{
-  "directory": "/home/chenyong/my/loginsight/core",
-  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.config/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/utest/linux/x86_64/release/test/register.cpp.o", "test/register.cpp"],
-  "file": "test/register.cpp"
-},
-{
-  "directory": "/home/chenyong/my/loginsight/core",
-  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.config/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/utest/linux/x86_64/release/test/main.cpp.o", "test/main.cpp"],
-  "file": "test/main.cpp"
-},
-{
-  "directory": "/home/chenyong/my/loginsight/core",
-  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.config/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/utest/linux/x86_64/release/test/blocklogview.cpp.o", "test/blocklogview.cpp"],
-  "file": "test/blocklogview.cpp"
-},
-{
-  "directory": "/home/chenyong/my/loginsight/core",
-  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/corelib/linux/x86_64/release/src/promisex.cpp.o", "src/promisex.cpp"],
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/corelib/linux/x86_64/debug/src/promisex.cpp.o", "src/promisex.cpp"],
   "file": "src/promisex.cpp"
 },
 {
   "directory": "/home/chenyong/my/loginsight/core",
-  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/corelib/linux/x86_64/release/src/controller.cpp.o", "src/controller.cpp"],
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/corelib/linux/x86_64/debug/src/controller.cpp.o", "src/controller.cpp"],
   "file": "src/controller.cpp"
 },
 {
   "directory": "/home/chenyong/my/loginsight/core",
-  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/corelib/linux/x86_64/release/src/filelog.cpp.o", "src/filelog.cpp"],
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/corelib/linux/x86_64/debug/src/filelog.cpp.o", "src/filelog.cpp"],
   "file": "src/filelog.cpp"
 },
 {
   "directory": "/home/chenyong/my/loginsight/core",
-  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/corelib/linux/x86_64/release/src/mem.cpp.o", "src/mem.cpp"],
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/corelib/linux/x86_64/debug/src/mem.cpp.o", "src/mem.cpp"],
   "file": "src/mem.cpp"
 },
 {
   "directory": "/home/chenyong/my/loginsight/core",
-  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/corelib/linux/x86_64/release/src/stdout.cpp.o", "src/stdout.cpp"],
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/corelib/linux/x86_64/debug/src/stdout.cpp.o", "src/stdout.cpp"],
   "file": "src/stdout.cpp"
 },
 {
   "directory": "/home/chenyong/my/loginsight/core",
-  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/corelib/linux/x86_64/release/src/eventloop.cpp.o", "src/eventloop.cpp"],
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/corelib/linux/x86_64/debug/src/eventloop.cpp.o", "src/eventloop.cpp"],
   "file": "src/eventloop.cpp"
 },
 {
   "directory": "/home/chenyong/my/loginsight/core",
-  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/corelib/linux/x86_64/release/src/linesegment.cpp.o", "src/linesegment.cpp"],
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/corelib/linux/x86_64/debug/src/linesegment.cpp.o", "src/linesegment.cpp"],
   "file": "src/linesegment.cpp"
 },
 {
   "directory": "/home/chenyong/my/loginsight/core",
-  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/corelib/linux/x86_64/release/src/pingtask.cpp.o", "src/pingtask.cpp"],
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/corelib/linux/x86_64/debug/src/pingtask.cpp.o", "src/pingtask.cpp"],
   "file": "src/pingtask.cpp"
 },
 {
   "directory": "/home/chenyong/my/loginsight/core",
-  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/corelib/linux/x86_64/release/src/logtree.cpp.o", "src/logtree.cpp"],
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/corelib/linux/x86_64/debug/src/logtree.cpp.o", "src/logtree.cpp"],
   "file": "src/logtree.cpp"
 },
 {
   "directory": "/home/chenyong/my/loginsight/core",
-  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/corelib/linux/x86_64/release/src/multifilelog.cpp.o", "src/multifilelog.cpp"],
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/corelib/linux/x86_64/debug/src/multifilelog.cpp.o", "src/multifilelog.cpp"],
   "file": "src/multifilelog.cpp"
 },
 {
   "directory": "/home/chenyong/my/loginsight/core",
-  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/corelib/linux/x86_64/release/src/calculation.cpp.o", "src/calculation.cpp"],
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/corelib/linux/x86_64/debug/src/calculation.cpp.o", "src/calculation.cpp"],
   "file": "src/calculation.cpp"
 },
 {
   "directory": "/home/chenyong/my/loginsight/core",
-  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/corelib/linux/x86_64/release/src/logview.cpp.o", "src/logview.cpp"],
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/corelib/linux/x86_64/debug/src/logview.cpp.o", "src/logview.cpp"],
   "file": "src/logview.cpp"
 },
 {
   "directory": "/home/chenyong/my/loginsight/core",
-  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/corelib/linux/x86_64/release/src/sublogview.cpp.o", "src/sublogview.cpp"],
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/corelib/linux/x86_64/debug/src/sublogview.cpp.o", "src/sublogview.cpp"],
   "file": "src/sublogview.cpp"
 },
 {
   "directory": "/home/chenyong/my/loginsight/core",
-  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/corelib/linux/x86_64/release/src/monitorlog.cpp.o", "src/monitorlog.cpp"],
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/corelib/linux/x86_64/debug/src/monitorlog.cpp.o", "src/monitorlog.cpp"],
   "file": "src/monitorlog.cpp"
 },
 {
   "directory": "/home/chenyong/my/loginsight/core",
-  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/corelib/linux/x86_64/release/src/sublog.cpp.o", "src/sublog.cpp"],
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/corelib/linux/x86_64/debug/src/sublog.cpp.o", "src/sublog.cpp"],
   "file": "src/sublog.cpp"
 },
 {
   "directory": "/home/chenyong/my/loginsight/core",
-  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/corelib/linux/x86_64/release/src/register.cpp.o", "src/register.cpp"],
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/corelib/linux/x86_64/debug/src/register.cpp.o", "src/register.cpp"],
   "file": "src/register.cpp"
 },
 {
   "directory": "/home/chenyong/my/loginsight/core",
-  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/corelib/linux/x86_64/release/src/blocklogview.cpp.o", "src/blocklogview.cpp"],
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/corelib/linux/x86_64/debug/src/blocklogview.cpp.o", "src/blocklogview.cpp"],
   "file": "src/blocklogview.cpp"
 },
 {
   "directory": "/home/chenyong/my/loginsight/core",
-  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/corelib/linux/x86_64/release/src/unix/platform.cpp.o", "src/unix/platform.cpp"],
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/corelib/linux/x86_64/debug/src/unix/platform.cpp.o", "src/unix/platform.cpp"],
   "file": "src/unix/platform.cpp"
+},
+{
+  "directory": "/home/chenyong/my/loginsight/core",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/core/linux/x86_64/debug/src/main.cpp.o", "src/main.cpp"],
+  "file": "src/main.cpp"
+},
+{
+  "directory": "/home/chenyong/my/loginsight/core",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.config/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/utest/linux/x86_64/debug/test/benchmark.cpp.o", "test/benchmark.cpp"],
+  "file": "test/benchmark.cpp"
+},
+{
+  "directory": "/home/chenyong/my/loginsight/core",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.config/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/utest/linux/x86_64/debug/test/controller.cpp.o", "test/controller.cpp"],
+  "file": "test/controller.cpp"
+},
+{
+  "directory": "/home/chenyong/my/loginsight/core",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.config/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/utest/linux/x86_64/debug/test/filelog.cpp.o", "test/filelog.cpp"],
+  "file": "test/filelog.cpp"
+},
+{
+  "directory": "/home/chenyong/my/loginsight/core",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.config/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/utest/linux/x86_64/debug/test/stdout.cpp.o", "test/stdout.cpp"],
+  "file": "test/stdout.cpp"
+},
+{
+  "directory": "/home/chenyong/my/loginsight/core",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.config/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/utest/linux/x86_64/debug/test/linesegment.cpp.o", "test/linesegment.cpp"],
+  "file": "test/linesegment.cpp"
+},
+{
+  "directory": "/home/chenyong/my/loginsight/core",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.config/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/utest/linux/x86_64/debug/test/multifilelog.cpp.o", "test/multifilelog.cpp"],
+  "file": "test/multifilelog.cpp"
+},
+{
+  "directory": "/home/chenyong/my/loginsight/core",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.config/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/utest/linux/x86_64/debug/test/calculation.cpp.o", "test/calculation.cpp"],
+  "file": "test/calculation.cpp"
+},
+{
+  "directory": "/home/chenyong/my/loginsight/core",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.config/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/utest/linux/x86_64/debug/test/sublogview.cpp.o", "test/sublogview.cpp"],
+  "file": "test/sublogview.cpp"
+},
+{
+  "directory": "/home/chenyong/my/loginsight/core",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.config/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/utest/linux/x86_64/debug/test/monitorlog.cpp.o", "test/monitorlog.cpp"],
+  "file": "test/monitorlog.cpp"
+},
+{
+  "directory": "/home/chenyong/my/loginsight/core",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.config/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/utest/linux/x86_64/debug/test/sublog.cpp.o", "test/sublog.cpp"],
+  "file": "test/sublog.cpp"
+},
+{
+  "directory": "/home/chenyong/my/loginsight/core",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.config/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/utest/linux/x86_64/debug/test/register.cpp.o", "test/register.cpp"],
+  "file": "test/register.cpp"
+},
+{
+  "directory": "/home/chenyong/my/loginsight/core",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.config/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/utest/linux/x86_64/debug/test/main.cpp.o", "test/main.cpp"],
+  "file": "test/main.cpp"
+},
+{
+  "directory": "/home/chenyong/my/loginsight/core",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.config/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.config/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.config/.xmake/packages/l/libcurl/7.84.0/208190e45693494f8b84da48dbc4c511/include", "-I", "/home/chenyong/.config/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-o", "build/.objs/utest/linux/x86_64/debug/test/blocklogview.cpp.o", "test/blocklogview.cpp"],
+  "file": "test/blocklogview.cpp"
 }]

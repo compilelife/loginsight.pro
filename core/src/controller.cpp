@@ -18,15 +18,15 @@ using namespace oatpp::encoding;
 unordered_map<string,CmdHandlerWrap> gCmdHandlers;
 
 
-static string base64Encode(string txt) {
-    return Base64::encode(txt);
+string Controller::base64Encode(string txt) {
+    return enableBase64() ? string(Base64::encode(txt)) : txt;
 }
 
-static string base64Decode(string txt) {
-    return Base64::decode(txt);
+string Controller::base64Decode(string txt) {
+    return enableBase64() ? string(Base64::decode(txt)) : txt;
 }
 
-static string decodeJsonStr(const Json::Value& v) {
+string Controller::decodeJsonStr(const Json::Value& v) {
     return base64Decode(v.asString());
 }
 
@@ -266,6 +266,10 @@ Json::Value Controller::onRootLogReady(JsonMsg msg, shared_ptr<IClosableLog> log
     return ret;
 }
 
+bool Controller::canUsePro() {
+    return mRegister.getState() != RegisterState::eTryEnd;
+}
+
 void Controller::onRootLogFinalize() {
     if (mWatchDisconnectTask) {
         mWatchDisconnectTask->stop();
@@ -279,7 +283,7 @@ void Controller::onRootLogFinalize() {
 
 //{"cmd":"openFile","id":"ui-1","path":"/tmp/1.log"}
 ImplCmdHandler(openFile) {
-    if (mRegister.getState() == eTryEnd) {
+    if (!canUsePro()) {
         send(failedAck(msg, "试用期已结束。文件打开失败"));
         return Promise::resolved(false);
     }
@@ -314,7 +318,7 @@ ImplCmdHandler(openFile) {
 
 ImplCmdHandler(openProcess) {
 #ifndef OPEN_SOURCE
-    if (mRegister.getState() == eTryEnd) {
+    if (!canUsePro()) {
         send(failedAck(msg, "试用期已结束。外部程序打开失败"));
         return Promise::resolved(false);
     }
@@ -339,7 +343,7 @@ ImplCmdHandler(openProcess) {
 }
 
 ImplCmdHandler(openMultiFile) {
-    if (mRegister.getState() == eTryEnd) {
+    if (!!canUsePro()) {
         send(failedAck(msg, "试用期已结束。日志目录打卡失败"));
         return Promise::resolved(false);
     }
@@ -529,6 +533,7 @@ ImplCmdHandler(search) {
     auto fromChar = msg["fromChar"].asUInt();
     auto reverse = msg["reverse"].asBool();
     auto isRegex = msg["regex"].asBool();
+    LOGI("pattern=%s", msg["pattern"].asCString());
     auto pattern = decodeJsonStr(msg["pattern"]);
     auto caseSense = msg["caseSense"].asBool();
 

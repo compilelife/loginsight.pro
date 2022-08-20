@@ -10,6 +10,16 @@
 using namespace std;
 using namespace std::chrono_literals;
 
+class NoLimitController : public Controller {
+protected:
+    bool canUsePro() {//测试阶段无需注册信息
+        return true;
+    }
+     bool enableBase64() {
+        return false;
+     }
+};
+
 class ControllerTest: public testing::Test {
 protected:
     unique_ptr<Controller> controller;
@@ -22,7 +32,7 @@ public:
 public:
     void SetUp() override {
         thd = thread([]{EventLoop::instance().start();});
-        controller.reset(new Controller);
+        controller.reset(new NoLimitController);
         controller->start();
     }
 
@@ -91,15 +101,15 @@ TEST_F(ControllerTest, boot) {
 }
 
 TEST_F(ControllerTest, find) {
-    controller->mockInput(R"({"cmd":"openFile","id":"ui-1","path":"/home/chenyong/work/ijk/hls/v4/ijk.log"})");
+    controller->mockInput(R"({"cmd":"openFile","id":"ui-1","path":"./sample.log"})");
     this_thread::sleep_for(5s);
 
-    controller->mockInput(R"({"id":"ui-10","cmd":"search","logId":1,"fromLine":4769,"fromChar":82,"pattern":"seekTo","caseSense":false,"reverse":true,"regex":false})");
+    controller->mockInput(R"({"id":"ui-10","cmd":"search","logId":1,"fromLine":4768,"fromChar":28,"pattern":"IJKMEDIA","caseSense":false,"reverse":true,"regex":false})");
     this_thread::sleep_for(500ms);
 
     auto reply = lastReply();
     ASSERT_TRUE(reply["found"].asBool());
-    ASSERT_EQ(1, reply["line"].asUInt64());
+    ASSERT_EQ(4697, reply["index"].asUInt64());
     ASSERT_EQ(21, reply["offset"].asUInt());
     ASSERT_EQ(8, reply["len"].asUInt());
 }
