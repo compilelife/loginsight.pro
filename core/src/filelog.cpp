@@ -4,6 +4,7 @@
 #include "blocklogview.h"
 #include <filesystem>
 #include "eventloop.h"
+#include "stdout.h"
 
 bool FileLog::open(string_view path) {
     mPath = path;

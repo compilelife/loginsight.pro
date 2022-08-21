@@ -67,13 +67,13 @@ TEST_F(ControllerTest, invalidCmd) {
 }
 
 TEST_F(ControllerTest, boot) {
-    controller->mockInput(R"({"cmd":"openFile","id":"ui-1","path":"./sample.log"})");
+    controller->mockInput(R"({"cmd":"openFile","id":"ui-1","path":"Z:\\my\\loginsight\\core\\build\\assets\\sample.log"})");
     ASSERT_REPLY(lastReply(), ReplyState::Future);
 
     controller->mockInput(R"({"cmd":"queryPromise", "id":"ui-2", "pid": 1})");
     ASSERT_REPLY(lastReply(), ReplyState::Ok);
 
-    this_thread::sleep_for(5s);//等待promise解析完成
+    this_thread::sleep_for(60s);//等待promise解析完成
     {
         auto reply = lastReply();
         ASSERT_REPLY(reply, ReplyState::Ok);
@@ -101,7 +101,7 @@ TEST_F(ControllerTest, boot) {
 }
 
 TEST_F(ControllerTest, find) {
-    controller->mockInput(R"({"cmd":"openFile","id":"ui-1","path":"./sample.log"})");
+    controller->mockInput(R"({"cmd":"openFile","id":"ui-1","path":"sample.log"})");
     this_thread::sleep_for(5s);
 
     controller->mockInput(R"({"id":"ui-10","cmd":"search","logId":1,"fromLine":4768,"fromChar":28,"pattern":"IJKMEDIA","caseSense":false,"reverse":true,"regex":false})");

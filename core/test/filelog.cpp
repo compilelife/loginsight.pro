@@ -21,7 +21,7 @@ for (size_t i = 0; i < expected.size(); i++)\
 
 TEST(FileLog, buildBlock) {
     FileLog log;
-    ASSERT_TRUE(log.open("./sample.log"));
+    ASSERT_TRUE(log.open("sample.log"));
 
     auto base = static_cast<const char*>(log.mMapInfo.addr);
     
@@ -32,7 +32,7 @@ TEST(FileLog, buildBlock) {
 
 TEST(FileLog, open) {
     FileLog log;
-    ASSERT_TRUE(log.open("./sample.log"));
+    ASSERT_TRUE(log.open("sample.log"));
 
     log.scheduleBuildBlocks()->wait();
 
@@ -43,12 +43,12 @@ TEST(FileLog, open) {
 
 TEST(FileLog, openEmptyLog) {
     FileLog log;
-    ASSERT_FALSE(log.open("./empty.log"));
+    ASSERT_FALSE(log.open("empty.log"));
 }
 
 TEST(FileLog, openNewLine) {
     FileLog log;
-    ASSERT_TRUE(log.open("./newline.log"));
+    ASSERT_TRUE(log.open("newline.log"));
 
     log.scheduleBuildBlocks()->wait();
 
@@ -59,7 +59,7 @@ TEST(FileLog, openNewLine) {
 
 TEST(FileLog, mapLine) {
     FileLog log;
-    ASSERT_TRUE(log.open("./sample.log"));
+    ASSERT_TRUE(log.open("sample.log"));
 
     log.scheduleBuildBlocks()->wait();
 

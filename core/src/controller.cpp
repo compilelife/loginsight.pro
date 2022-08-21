@@ -290,8 +290,6 @@ ImplCmdHandler(openFile) {
 
     auto path = decodeJsonStr(msg["path"]);
 
-    LOGI("path=%s", path.c_str());
-
 #ifdef OPEN_SOURCE
     if (file_size(path) >= 100*1024*1024) {
         send(failedAck(msg, "开源版只能打开100M以下的文件"));

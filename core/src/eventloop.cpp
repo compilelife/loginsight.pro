@@ -18,6 +18,11 @@ EventLoop& EventLoop::instance() {
 }
 
 EventLoop::EventLoop() {
+#ifdef _WIN32
+    WSADATA wsa_data;
+    WSAStartup(0x0201, &wsa_data);
+#endif
+
 #ifdef EVTHREAD_USE_PTHREADS_IMPLEMENTED
     evthread_use_pthreads();
 #elif EVTHREAD_USE_WINDOWS_THREADS_IMPLEMENTED

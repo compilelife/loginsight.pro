@@ -3,6 +3,7 @@
 #include <winsock.h>
 #include <Windows.h>
 #include <filesystem>
+#include "../stdout.h"
 
 struct PrivMapInfo {
     HANDLE fd;
@@ -26,10 +27,10 @@ MMapInfo createMapOfFile(string_view path) {
                      0,
                      NULL);
     void* mappedFileAddress = MapViewOfFile(mapHandle,
-                    FILE_MAP_ALL_ACCESS,
+                    FILE_MAP_READ,
                     0,
                     0,
-                    MMAP_ALLOCATOR_SIZE);
+                    0);
 
     PrivMapInfo priv;
     priv.fd = fd;
@@ -63,7 +64,7 @@ ProcessInfo openProcess(string_view cmdline) {
     info.priv = priv;
     info.stdoutFd = _fileno(fp);
 
-    return fp;
+    return info;
 }
 
 void closeProcess(ProcessInfo& info) {
@@ -72,7 +73,7 @@ void closeProcess(ProcessInfo& info) {
 }
 
 int readFd(int fd, void* buf, int howmuch) {
-    return recv(fd, buf, howmuch, 0);
+    return recv(fd, (char*)buf, howmuch, 0);
 }
 
 int getFileNo(FILE* fp) {

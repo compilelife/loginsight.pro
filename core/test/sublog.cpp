@@ -9,7 +9,7 @@
 
 TEST(SubLog, create) {
     auto log = make_shared<FileLog>();
-    log->open("./sample.log");
+    log->open("sample.log");
     log->scheduleBuildBlocks()->wait();
 
     auto&& p = SubLog::createSubLog(log, createFilter("chromium", true));
@@ -22,7 +22,7 @@ TEST(SubLog, create) {
 
 TEST(SubLog, subLogOfSubLog) {
     auto log = make_shared<FileLog>();
-    log->open("./sample.log");
+    log->open("sample.log");
     log->scheduleBuildBlocks()->wait();
 
     auto&& p = SubLog::createSubLog(log, createFilter("chromium", true));
@@ -39,7 +39,7 @@ TEST(SubLog, subLogOfSubLog) {
 
 TEST(SubLog, mapLine) {
     auto log = make_shared<FileLog>();
-    log->open("./sample.log");
+    log->open("sample.log");
     log->scheduleBuildBlocks()->wait();
 
     auto&& p = SubLog::createSubLog(log, createFilter("chromium", true));
@@ -61,7 +61,7 @@ TEST(SubLog, mapLine) {
     ASSERT_EQ(3560, secondSub->fromSource(25465));
     
 }
-
+#ifndef _WIN32 
 TEST(SubLog, syncParentAppend) {
     auto loopThd = thread([]{EventLoop::instance().start();});
 
@@ -116,7 +116,7 @@ TEST(SubLog, syncSubSub) {
     loopThd.join();
 }
 
-#ifndef _WIN32 
+
 TEST(SubLog, syncParentClip) {
     auto loopThd = thread([]{EventLoop::instance().start();});
 

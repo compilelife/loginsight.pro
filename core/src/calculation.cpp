@@ -10,6 +10,7 @@
 
 Calculation::Calculation() {
     mCoreNum = thread::hardware_concurrency();
+    LOGI("core num: %d", mCoreNum);
 }
 
 Calculation& Calculation::instance() {

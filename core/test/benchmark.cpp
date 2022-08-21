@@ -31,18 +31,18 @@ public:
 
 void prepareHugeLog() {
     LOGI("prepareHugeLog...")
-    if (exists("./huge.log"))
+    if (exists("huge.log"))
         return;
 
-    auto size = file_size("./sample.log");
+    auto size = file_size("sample.log");
     auto count = 2 * 1024 * 1024 * 1024L / size + 1;
 
-    auto f = fopen("./sample.log", "r");
+    auto f = fopen("sample.log", "r");
     auto buf = new char[size];
     fread(buf, 1, size, f);
     fclose(f);
 
-    auto fhuge = fopen("./huge.log", "w+");
+    auto fhuge = fopen("huge.log", "w+");
 
     for (size_t i = 0; i < count; i++)
     {
@@ -63,7 +63,7 @@ TEST(Benchmark, openFile) {
     prepareHugeLog();
     FileLog log;
 
-    ASSERT_TRUE(log.open("./huge.log"));
+    ASSERT_TRUE(log.open("huge.log"));
 
     MeasureTime mt("openFile");
 
