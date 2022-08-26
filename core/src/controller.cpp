@@ -11,12 +11,16 @@
 #include <fstream>
 #include <filesystem>
 #include "oatpp/encoding/Base64.hpp"
+#include <mutex>
 
 using namespace std::filesystem;
 using namespace oatpp::encoding;
 
 unordered_map<string,CmdHandlerWrap> gCmdHandlers;
-
+static struct {
+    once_flag onceFlag;
+    Controller* controller{nullptr};
+} StdinData = {};
 
 string Controller::base64Encode(string txt) {
     return enableBase64() ? string(Base64::encode(txt)) : txt;
@@ -31,73 +35,50 @@ string Controller::decodeJsonStr(const Json::Value& v) {
 }
 
 Controller::Controller() {
-    auto& evloop = EventLoop::instance();
-    auto evBase = evloop.base();
-
-    mReadStdin = event_new(evBase, getFileNo(stdin), EV_READ|EV_PERSIST, 
-        [](evutil_socket_t fd, short, void* arg){
-            auto thiz = (Controller*)arg;
-            thiz->readStdin(fd);
-        }, this);
-
-    mLineBuf = evbuffer_new();
 }
 
 Controller::~Controller() {
-    event_free(mReadStdin);
-    evbuffer_free(mLineBuf);
 }
 
 void Controller::start() {
-    event_add(mReadStdin, nullptr);
+    call_once(StdinData.onceFlag, []{
+        thread([]{
+            while (true) {
+                string line;
+                getline(cin, line);
+                EventLoop::instance().runOnMain([line]{
+                    if (StdinData.controller) {
+                        StdinData.controller->handleLine(line);
+                    }
+                });
+            }
+        }).detach();
+    });
+    StdinData.controller = this;
 }
 
 void Controller::stop() {
-    event_del(mReadStdin);
+    StdinData.controller = nullptr;
 }
 
-void Controller::readStdin(int fd) {
-    auto ret = evbuffer_read(mLineBuf, fd, -1);
-    if (ret <= 0) {
-        LOGE("something wrong with stdin");
-        event_del(mReadStdin);
-        return;
-    }
-    while(handleLine()) {}
-}
+bool Controller::handleLine(string s) {
+    Json::Value root;
+    Json::String errs;
+    stringstream ss(s);
+    auto parseRet = Json::parseFromStream(mRPCReaderBuilder, ss, &root, &errs);
 
-void Controller::mockInput(string_view s) {
-    evbuffer_add_printf(mLineBuf, "%s\n", s.data());
-    while (handleLine()) {}
-}
-
-bool Controller::handleLine() {
-    size_t len = 0;
-    auto cstr = evbuffer_readln(mLineBuf, &len, EVBUFFER_EOL_LF);
-
-    if (cstr && len > 0) {
-        Json::Value root;
-        Json::String errs;
-        stringstream ss(cstr);
-        auto parseRet = Json::parseFromStream(mRPCReaderBuilder, ss, &root, &errs);
-
-        if (parseRet) {
-            try {
-                handleCmd(root);
-            } catch (Json::LogicError e) {
-                LOGE("failed to handle %s: %s", cstr, e.what());
-            }
-        } else {
-            LOGE("invalid cmd: %s", cstr);
-            LOGE("reason: %s", errs.c_str());
+    if (parseRet) {
+        try {
+            handleCmd(root);
+        } catch (Json::LogicError e) {
+            LOGE("failed to handle %s: %s", s.c_str(), e.what());
         }
-
-        free(cstr);
-
-        return true;
+    } else {
+        LOGE("invalid cmd: %s", s.c_str());
+        LOGE("reason: %s", errs.c_str());
     }
 
-    return false;
+    return true;
 }
 
 void Controller::handleCmd(JsonMsg msg) {

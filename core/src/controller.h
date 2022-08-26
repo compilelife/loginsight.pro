@@ -46,8 +46,6 @@ enum ReplyState {
 
 class Controller {
 private:
-    event* mReadStdin;
-    evbuffer* mLineBuf;
     LogTree mLogTree;
     Json::CharReaderBuilder mRPCReaderBuilder;
     LineSegment mLineSegment;
@@ -63,10 +61,7 @@ public:
     ~Controller();
     void start();
     void stop();
-
-public:
-    void readStdin(int fd);
-    void mockInput(string_view s);
+    bool handleLine(string s);
 
 protected:
     virtual bool canUsePro();
@@ -104,7 +99,6 @@ private:
     void send(JsonMsg msg);
     shared_ptr<ILog> getLog(JsonMsg msg);
     bool handleCancelledPromise(shared_ptr<Promise>& p, JsonMsg msg);
-    bool handleLine();
     struct FindLogRet {
         LineRef line;
         FindRet extra;
