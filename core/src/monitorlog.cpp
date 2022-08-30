@@ -12,24 +12,25 @@ bool MonitorLog::open(string_view cmdline, event_base* evbase) {
         return false;
     
     mClosed = false;
-    startListenFd(evbase);
+    startListenFd();
     return true;
 }
 
 void MonitorLog::close() {
     if (mClosed)
         return;
-        
-    event_del_block(mListenEvent);
-    event_free(mListenEvent);
+
+    mClosed = true;
 
     closeProcess(mProcess);
+    mReadProcessCond.notify_all();
+    mReadProcessThd.join();
+    
     for (auto &&block : mBlocks)
         delete block;
     
     mBlocks.clear();
 
-    mClosed = true;
 }
 
 void MonitorLog::setMaxBlockCount(size_t n) {
@@ -65,17 +66,33 @@ shared_ptr<LogView> MonitorLog::view(LogLineI from, LogLineI to) const{
     return view->subview(from, to - from + 1);
 }
 
-void onPipeClosed(evutil_socket_t,short,void*) {
-    LOGI("pipe closed");
-}
+void MonitorLog::startListenFd() {
+    mReadProcessThd = thread([this]{
+        mProcessBuf = evbuffer_new();
 
-void MonitorLog::startListenFd(event_base* evbase) {
-    mListenEvent = event_new(evbase, mProcess.stdoutFd, EV_PERSIST|EV_READ,
-    [](evutil_socket_t fd, short flags, void *arg){
-        auto thiz = static_cast<MonitorLog*>(arg);
-        thiz->handleReadStdOut();
-    }, this);
-    event_add(mListenEvent, nullptr);
+        auto fd = this->mProcess.stdoutFd;
+        while(!mClosed) {
+            char buf[10240] = {0};
+            auto n = readFd(fd, buf, 10240);
+            if (n > 0) {
+                evbuffer_add(mProcessBuf, buf, n);
+                EventLoop::instance().post(EventType::Write, [this]{
+                    handleReadStdOut();
+                    return Promise::resolved(true);
+                });
+            } else {
+                activateAttr(LOG_ATTR_MAY_DISCONNECT, true);
+                break;
+            }
+
+            {//等待“主线程”处理完成
+                unique_lock<mutex> lk(mReadProcessMutex);
+                mReadProcessCond.wait(lk);
+            }
+        }
+
+        evbuffer_free(mProcessBuf);
+    });
 }
 
 MonitorLog::MemBlock* MonitorLog::peekBlock() {
@@ -88,17 +105,8 @@ MonitorLog::MemBlock* MonitorLog::peekBlock() {
         lineBegin = last->block.lineBegin + last->block.lines.size();
     }
 
-    //申请新的，要先看下第一块让不让移除
+    //申请新的块
     if (mBlocks.size() >= mMaxBlockCount) {
-        if (!EventLoop::instance().canWrite()) {
-            event_del(mListenEvent);//先取消监听，避免陷入一直被回调，一直post事件
-            EventLoop::instance().post(EventType::Write, [this]{
-                handleReadStdOut();
-                event_add(mListenEvent, nullptr);//等处理完了再监听
-                return Promise::resolved(true);
-            });
-            return nullptr;
-        }
         delete mBlocks.front();
         mBlocks.pop_front();
     }
@@ -168,36 +176,20 @@ bool MonitorLog::readStdOutInto(MemBlock* curBlock) {
         mLastBlockTail.clear();
     }
 
-    //如果一直将curBlock填充完还有数据，那就等下次回调再读
-    int totalRead = 0;
-    while (curPos < endPos) {
-        auto howmuch = min(1024, (int)(endPos - curPos));
-        auto n = readFd(mProcess.stdoutFd, pmem + curPos, howmuch);
-        if (n <= 0)
-            break;
-        totalRead += n;
-        curPos += n;
-        if (n < howmuch)
-            break;
-    }
+    auto howmuch = (size_t)(endPos - curPos);
+    auto totalRead = evbuffer_remove(mProcessBuf, pmem+curPos, howmuch);
+    if (totalRead > 0)
+        curPos += totalRead;
     
-    //libevent告诉我们有数据可以读，但是read到0，说明进程已经退出了
-    if (totalRead == 0) {
-        event_del(mListenEvent);
-        activateAttr(LOG_ATTR_MAY_DISCONNECT, true);
-    }
-
     return totalRead > 0;
 }
 
 void MonitorLog::handleReadStdOut() {
     auto* curBlock = peekBlock();
 
-    if (curBlock == nullptr)
-        return;
+    if (readStdOutInto(curBlock)) {
+        splitLinesForNewContent(curBlock);
+    }
 
-    if (!readStdOutInto(curBlock))
-        return;
-
-    splitLinesForNewContent(curBlock);
+    mReadProcessCond.notify_all();
 }

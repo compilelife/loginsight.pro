@@ -63,7 +63,7 @@ TEST_F(ControllerTest, invalidCmd) {
     ASSERT_FALSE(success);
 
     controller->handleLine(R"({"cmd":"loginsight", "id":"ui-1"})");
-    ASSERT_FALSE(lastReply()["success"].asBool());
+    ASSERT_REPLY(lastReply(), ReplyState::Fail);
 }
 
 TEST_F(ControllerTest, boot) {
@@ -73,7 +73,7 @@ TEST_F(ControllerTest, boot) {
     controller->handleLine(R"({"cmd":"queryPromise", "id":"ui-2", "pid": 1})");
     ASSERT_REPLY(lastReply(), ReplyState::Ok);
 
-    this_thread::sleep_for(5s);//等待promise解析完成
+    this_thread::sleep_for(10s);//等待promise解析完成
     {
         auto reply = lastReply();
         ASSERT_REPLY(reply, ReplyState::Ok);

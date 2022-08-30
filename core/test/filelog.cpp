@@ -74,7 +74,7 @@ static void addLine(filesystem::path p, string_view content) {
 }
 
 TEST(FileLog, fileChanged) {
-    auto logpath = filesystem::temp_directory_path()/"changed.log";
+    auto logpath = filesystem::temp_directory_path().string()+"/changed.log";
     filesystem::remove(logpath);
 
     addLine(logpath, "1");//新增一行让文件存在
@@ -93,7 +93,6 @@ TEST(FileLog, fileChanged) {
     ASSERT_TRUE(log.isAttrAtivated(LOG_ATTR_DYNAMIC_RANGE));
 
     //检查内容
-    LOGI("post begin");
     EventLoop::instance().post(EventType::Read, [&log]{
         auto checkView = [&log]{
             auto view = log.view();
@@ -105,7 +104,7 @@ TEST(FileLog, fileChanged) {
         this_thread::sleep_for(2s);
         return Promise::resolved(true);
     });
-LOGI("post end");
+
     //有read事件时，文件变化Pending，因此行数仍然是2
     addLine(logpath, "3");
     this_thread::sleep_for(1s);

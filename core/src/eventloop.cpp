@@ -2,6 +2,15 @@
 #include "event2/thread.h"
 #include "stdout.h"
 
+/**
+ * EventLoop机制：
+ * - 内部有10ms定时器(drainQueue)，不断检查mEventQueue是否有任务，如有则执行
+ * - 所有任务都会返回promise
+ * - 执行read任务期间可以继续执行其他read任务，但不能执行write任务；write任务执行期间，不能执行read/write任务
+ * - 通过post提交任务到任务队列
+ * - 其他直接由event_add添加到线程的任务，由libevent调度，穿插在drainQueue之间执行
+ */
+
 struct CppLambda {
     function<void()> handler;
 };
@@ -47,13 +56,13 @@ EventLoop::EventLoop() {
 void EventLoop::start() {
     mRunEventType = EventType::None;
     mRunCount = 0;
-    while(!mEventQueue.empty())
-        mEventQueue.pop();
     event_base_loop(mEventBase, EVLOOP_NO_EXIT_ON_EMPTY);
 }
 
 void EventLoop::stop() {
     event_base_loopexit(mEventBase, nullptr);
+    while(!mEventQueue.empty())
+        mEventQueue.pop();
 }
 
 void EventLoop::runOnMain(function<void()> callback) {

@@ -8,6 +8,9 @@
 #include "event2/event.h"
 #include "event2/buffer.h"
 #include "pingtask.h"
+#include <mutex>
+#include <thread>
+#include <condition_variable>
 
 /**
  * @brief 每次达到最大缓存的时候，删除最旧的一个block
@@ -30,8 +33,12 @@ private:
     list<MemBlock*> mBlocks;
     ProcessInfo mProcess;
 
-    event* mListenEvent;
     string mLastBlockTail;//上一个block没有换行符的遗留文本
+
+    mutex mReadProcessMutex;
+    condition_variable mReadProcessCond;
+    evbuffer* mProcessBuf;
+    thread mReadProcessThd;
 
 public:
     MonitorLog() {mAttrs = LOG_ATTR_DYNAMIC_RANGE | LOG_ATTR_MAY_DISCONNECT;}
@@ -47,7 +54,7 @@ public:
     void handleReadStdOut();
 
 private:
-    void startListenFd(event_base* evbase);
+    void startListenFd();
     MemBlock* peekBlock();
     bool readStdOutInto(MemBlock* curBlock);
     void splitLinesForNewContent(MemBlock* curBlock);

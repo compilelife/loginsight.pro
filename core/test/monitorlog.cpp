@@ -3,6 +3,7 @@
 #include <thread>
 #include "eventloop.h"
 #include <future>
+#include "stdout.h"
 
 using namespace std;
 using namespace std::chrono_literals;
@@ -11,45 +12,46 @@ class MonitorLogTest : public testing::Test {
 protected:
     event_base* evBase;
     MonitorLog log;
-    event* timer;
 
 public:
     virtual void SetUp() {
-        evBase = event_base_new();
+        thread([]{EventLoop::instance().start();}).detach();
+        evBase = EventLoop::instance().base();
     }
 
-    void runFor(long ms) {
-        timeval tv;
-        tv.tv_sec = ms / 1000;
-        tv.tv_usec = (ms % 1000) * 1000;
-        event_base_once(evBase, -1, EV_TIMEOUT, [](evutil_socket_t, short, void* arg){
-            event_base_loopbreak((event_base*)arg);
-        }, evBase, &tv);
+    // void runFor(long ms) {
+    //     timeval tv;
+    //     tv.tv_sec = ms / 1000;
+    //     tv.tv_usec = (ms % 1000) * 1000;
+    //     event_base_once(evBase, -1, EV_TIMEOUT, [](evutil_socket_t, short, void* arg){
+    //         event_base_loopbreak((event_base*)arg);
+    //     }, evBase, &tv);
 
-        event_base_loop(evBase, EVLOOP_NO_EXIT_ON_EMPTY);
-    }
+    //     event_base_loop(evBase, EVLOOP_NO_EXIT_ON_EMPTY);
+    // }
 
-    static void checkExitCb(evutil_socket_t,short,void* arg) {
-        auto thiz = (MonitorLogTest*)arg;
-        if (thiz->log.isAttrAtivated(LOG_ATTR_MAY_DISCONNECT)) {
-            evtimer_del(thiz->timer);
-            event_free(thiz->timer);
-            event_base_loopbreak(thiz->evBase);
-        } else {
-            timeval tv {0, 20000};
-            evtimer_add(thiz->timer, &tv);
-        }
-    }
+    // static void checkExitCb(evutil_socket_t,short,void* arg) {
+    //     auto thiz = (MonitorLogTest*)arg;
+    //     if (thiz->log.isAttrAtivated(LOG_ATTR_MAY_DISCONNECT)) {
+    //         evtimer_del(thiz->timer);
+    //         event_free(thiz->timer);
+    //         event_base_loopbreak(thiz->evBase);
+    //     } else {
+    //         timeval tv {0, 20000};
+    //         evtimer_add(thiz->timer, &tv);
+    //     }
+    // }
 
-    void runUntilExited() {
-        timer = evtimer_new(evBase, &MonitorLogTest::checkExitCb, this);
-        timeval tv {0, 20000};
-        evtimer_add(timer, &tv);
+    // void runUntilExited() {
+    //     timer = evtimer_new(evBase, &MonitorLogTest::checkExitCb, this);
+    //     timeval tv {0, 20000};
+    //     evtimer_add(timer, &tv);
 
-        event_base_loop(evBase, EVLOOP_NO_EXIT_ON_EMPTY);
-    }
+    //     event_base_loop(evBase, EVLOOP_NO_EXIT_ON_EMPTY);
+    // }
 
     virtual void TearDown() {
+        EventLoop::instance().stop();
     }
 };
 
@@ -58,7 +60,7 @@ TEST_F(MonitorLogTest, open) {
 
     ASSERT_TRUE(log.open(cmdline, evBase));
 
-    runFor(2500);
+    this_thread::sleep_for(2500ms);
 
     ASSERT_EQ(4, log.range().len());
 
@@ -70,7 +72,7 @@ TEST_F(MonitorLogTest, close) {
 
     ASSERT_TRUE(log.open(cmdline, evBase));
 
-    runFor(500);
+    this_thread::sleep_for(500ms);
 
     log.close();//要能立即关掉
 }
@@ -80,8 +82,9 @@ TEST_F(MonitorLogTest, oneBlock) {
 
     ASSERT_TRUE(log.open(cmdline, evBase));
 
-    runUntilExited();
-
+    while (!log.isAttrAtivated(LOG_ATTR_MAY_DISCONNECT))
+        this_thread::sleep_for(100ms);
+    
     ASSERT_EQ(1720, log.range().len());
 
     log.close();
@@ -93,7 +96,8 @@ TEST_F(MonitorLogTest, dropBlock) {
     log.setMaxBlockCount(1);
     ASSERT_TRUE(log.open(cmdline, evBase));
 
-    runUntilExited();
+    while (!log.isAttrAtivated(LOG_ATTR_MAY_DISCONNECT))
+        this_thread::sleep_for(100ms);
 
     Range expected{1720, 1721};//文件一共1722行，前1720行放一个block，最后两行放到新的block
     ASSERT_EQ(expected, log.range());

@@ -1,5 +1,8 @@
 #include "multifilelog.h"
 #include "gtest/gtest.h"
+#include <filesystem>
+
+using namespace std::filesystem;
 
 static vector<string_view> paths = {
         "multi/xaa", 
@@ -53,7 +56,7 @@ TEST(MultiFileLog, listFilesByAlpha) {
     ASSERT_EQ(paths.size(), files.size());
     for (size_t i = 0; i < paths.size(); i++)
     {
-        ASSERT_EQ(paths[i], files[i])<<i;
+        ASSERT_EQ(path(paths[i]), path(files[i]))<<i;
     }
 }
 
@@ -70,6 +73,6 @@ TEST(MultiFileLog, listFilesByNum) {
     ASSERT_EQ(expected.size(), files.size());
     for (size_t i = 0; i < expected.size(); i++)
     {
-        ASSERT_EQ(expected[i], files[i])<<i;
+        ASSERT_EQ(path(expected[i]), path(files[i]))<<i;
     }
 }
