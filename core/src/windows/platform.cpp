@@ -52,30 +52,25 @@ void unmapFile(MMapInfo& info) {
 }
 
 //https://blog.csdn.net/zyhse/article/details/110695545
-struct PrivProcessInfo {
-    FILE* fp;
-};
 
 ProcessInfo openProcess(string_view cmdline) {
     auto fp = _popen(cmdline.data(), "r");
 
-    PrivProcessInfo priv = {fp};
     ProcessInfo info;
-    info.priv = priv;
-    info.stdoutFd = _fileno(fp);
+    if (!fp)
+        return info;
+
+    info.priv = fp;
 
     return info;
 }
 
 void closeProcess(ProcessInfo& info) {
-    auto priv = std::any_cast<PrivProcessInfo>(info.priv);
-    _pclose(priv.fp);
+    auto fp = std::any_cast<FILE*>(info.priv);
+    _pclose(fp);
 }
 
-int readFd(int fd, void* buf, int howmuch) {
-    return recv(fd, (char*)buf, howmuch, 0);
-}
-
-int getFileNo(FILE* fp) {
-    return _fileno(fp);
+int readProcess(ProcessInfo& info, char* buf, int n) {
+    auto fp = std::any_cast<FILE*>(info.priv);
+    return fread(buf, 1, n , fp);
 }

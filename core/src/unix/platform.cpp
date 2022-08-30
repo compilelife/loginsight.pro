@@ -131,7 +131,6 @@ ProcessInfo openProcess(string_view cmdline) {
         return ret;
 
     ret.priv = priv;
-    ret.stdoutFd = fileno(priv.fp);
     return ret;
 }
 
@@ -140,11 +139,7 @@ void closeProcess(ProcessInfo& info) {
     pclose2(priv.fp, priv.pid);
 }
 
-int readFd(int fd, void* buf, int howmuch) {
-    return read(fd, buf, howmuch);
-}
-
-
-int getFileNo(FILE* fp) {
-    return fileno(fp);
+int readProcess(ProcessInfo& info, char* buf, int n) {
+    auto priv = any_cast<PrivProcessInfo>(info.priv);
+    return fread(buf, 1, n , priv.fp);
 }

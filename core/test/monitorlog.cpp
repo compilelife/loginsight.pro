@@ -12,63 +12,42 @@ class MonitorLogTest : public testing::Test {
 protected:
     event_base* evBase;
     MonitorLog log;
+    thread evThd;
 
 public:
     virtual void SetUp() {
-        thread([]{EventLoop::instance().start();}).detach();
+        evThd = thread([]{EventLoop::instance().start();});
         evBase = EventLoop::instance().base();
     }
 
-    // void runFor(long ms) {
-    //     timeval tv;
-    //     tv.tv_sec = ms / 1000;
-    //     tv.tv_usec = (ms % 1000) * 1000;
-    //     event_base_once(evBase, -1, EV_TIMEOUT, [](evutil_socket_t, short, void* arg){
-    //         event_base_loopbreak((event_base*)arg);
-    //     }, evBase, &tv);
-
-    //     event_base_loop(evBase, EVLOOP_NO_EXIT_ON_EMPTY);
-    // }
-
-    // static void checkExitCb(evutil_socket_t,short,void* arg) {
-    //     auto thiz = (MonitorLogTest*)arg;
-    //     if (thiz->log.isAttrAtivated(LOG_ATTR_MAY_DISCONNECT)) {
-    //         evtimer_del(thiz->timer);
-    //         event_free(thiz->timer);
-    //         event_base_loopbreak(thiz->evBase);
-    //     } else {
-    //         timeval tv {0, 20000};
-    //         evtimer_add(thiz->timer, &tv);
-    //     }
-    // }
-
-    // void runUntilExited() {
-    //     timer = evtimer_new(evBase, &MonitorLogTest::checkExitCb, this);
-    //     timeval tv {0, 20000};
-    //     evtimer_add(timer, &tv);
-
-    //     event_base_loop(evBase, EVLOOP_NO_EXIT_ON_EMPTY);
-    // }
-
     virtual void TearDown() {
         EventLoop::instance().stop();
+        evThd.join();
     }
 };
 
 TEST_F(MonitorLogTest, open) {
-    string_view cmdline = "echo 1; sleep 0.5s;echo 2; sleep 0.5s;echo 3; sleep 0.5s;echo 4; sleep 0.5s;";
+#ifdef _WIN32
+    string_view cmdline = "echo 1 & echo 2 & echo 3";//timeout会输出额外的行，先不sleep
+#else
+    string_view cmdline = "echo 1; sleep 1;echo 2; sleep 0.5;echo 3;";
+#endif
 
     ASSERT_TRUE(log.open(cmdline, evBase));
 
     this_thread::sleep_for(2500ms);
 
-    ASSERT_EQ(4, log.range().len());
+    ASSERT_EQ(3, log.range().len());
 
     log.close();
 }
 
 TEST_F(MonitorLogTest, close) {
-    string_view cmdline = "for i in {1..40};do echo $i; sleep 0.5s;done;";
+#ifdef _WIN32
+    string_view cmdline = "timeout /t 1 & timeout /t 1";
+#else
+    string_view cmdline = "sleep 1; sleep 1";
+#endif
 
     ASSERT_TRUE(log.open(cmdline, evBase));
 
@@ -78,7 +57,11 @@ TEST_F(MonitorLogTest, close) {
 }
 
 TEST_F(MonitorLogTest, oneBlock) {
+#ifdef _WIN32
+    string_view cmdline = "type 204800.log";
+#else
     string_view cmdline = "cat 204800.log";
+#endif
 
     ASSERT_TRUE(log.open(cmdline, evBase));
 
@@ -90,8 +73,12 @@ TEST_F(MonitorLogTest, oneBlock) {
     log.close();
 }
 
-TEST_F(MonitorLogTest, dropBlock) {
+TEST_F(MonitorLogTest, dropBlock) {//TODO
+#ifdef _WIN32
+    string_view cmdline = "type 204898.log";
+#else
     string_view cmdline = "cat 204898.log";
+#endif
 
     log.setMaxBlockCount(1);
     ASSERT_TRUE(log.open(cmdline, evBase));

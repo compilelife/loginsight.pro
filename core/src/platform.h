@@ -21,13 +21,11 @@ void unmapFile(MMapInfo& info);
 struct ProcessInfo
 {
     any priv;
-    int stdoutFd{-1};
-    int stderrFd{-1};
+    operator bool()  {
+        return priv.has_value();
+    }
 };
 
 ProcessInfo openProcess(string_view cmdline);
 void closeProcess(ProcessInfo& info);
-
-int readFd(int fd, void* buf, int howmuch);
-
-int getFileNo(FILE* fp);
+int readProcess(ProcessInfo& info, char* buf, int n);

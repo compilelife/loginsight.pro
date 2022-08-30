@@ -8,7 +8,7 @@
 
 bool MonitorLog::open(string_view cmdline, event_base* evbase) {
     mProcess = openProcess(cmdline);
-    if (mProcess.stdoutFd < 0)
+    if (!mProcess)
         return false;
     
     mClosed = false;
@@ -70,10 +70,9 @@ void MonitorLog::startListenFd() {
     mReadProcessThd = thread([this]{
         mProcessBuf = evbuffer_new();
 
-        auto fd = this->mProcess.stdoutFd;
         while(!mClosed) {
             char buf[10240] = {0};
-            auto n = readFd(fd, buf, 10240);
+            auto n = readProcess(mProcess, buf, 10240);
             if (n > 0) {
                 evbuffer_add(mProcessBuf, buf, n);
                 EventLoop::instance().post(EventType::Write, [this]{
@@ -113,7 +112,7 @@ MonitorLog::MemBlock* MonitorLog::peekBlock() {
 
     //申请一个新的
     auto ret = new MemBlock;
-    ret->backend.resize(200 * 1024);
+    ret->backend.resize(MORNITOR_BLOCK_SIZE);
     ret->mem.reset(ret->backend.data(), {0, ret->backend.size() - 1});
     ret->block.lineBegin = lineBegin;
 

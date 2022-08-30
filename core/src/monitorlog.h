@@ -12,6 +12,8 @@
 #include <thread>
 #include <condition_variable>
 
+#define MORNITOR_BLOCK_SIZE 204800
+
 /**
  * @brief 每次达到最大缓存的时候，删除最旧的一个block
  */
@@ -23,7 +25,7 @@ private:
         string backend;//固定200k(不能太大，避免一次丢太多行），能放多少行就多少行，预计可以放 200 * 1024 / 200 = 1000行
         //新数据可以写入的开始位置
         LogCharI writePos{0};
-        bool isBackendFull() {return writePos >= backend.capacity() || block.lines.size() >= BLOCK_LINE_NUM;}
+        bool isBackendFull() {return writePos >= MORNITOR_BLOCK_SIZE || block.lines.size() >= BLOCK_LINE_NUM;}
         //上一次new line查找完成的位置+1，即这一次应该开始查找的位置
         //不等于writePos，因为可能上次的数据不是以\n结束的
         const char* lastFind{nullptr}; //string_view::iterator
