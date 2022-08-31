@@ -40,15 +40,14 @@ target("core")
     add_files("src/main.cpp")
     add_deps("corelib")
     add_ldflags("-static-libstdc++")
+    set_basename("core.$(os)")
     if is_os("windows") then
         add_cflags("/utf-8")
         add_cxxflags("/utf-8")
         add_defines("_HAS_STD_BYTE=0")
     end
     add_packages("libevent", "jsoncpp", "libcurl", "oatpp")
-    after_install(function(target)
-        os.mv(target:installdir().."/bin/core", target:installdir().."/bin/core.linux")
-    end)
+
 
 --单元测试
 target("utest")
