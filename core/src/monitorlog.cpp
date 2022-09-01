@@ -16,6 +16,10 @@ bool MonitorLog::open(string_view cmdline, event_base* evbase) {
     return true;
 }
 
+MonitorLog::~MonitorLog() {
+    close();
+}
+
 void MonitorLog::close() {
     if (mClosed)
         return;
@@ -69,27 +73,55 @@ shared_ptr<LogView> MonitorLog::view(LogLineI from, LogLineI to) const{
 void MonitorLog::startListenFd() {
     mReadProcessThd = thread([this]{
         mProcessBuf = evbuffer_new();
+        evbuffer_enable_locking(mProcessBuf, nullptr);
+        bool eof[] = {false};
 
+        auto getCharThd = thread([this, &eof]{
+            int r = 0;
+            char ch;
+            do {
+                r = readProcess(mProcess, &ch, 1);
+                // LOGI("%d, %c", r, ch);
+                if (r > 0) {
+                    evbuffer_add(mProcessBuf, &ch, 1);
+                }
+            }while(r > 0);
+            eof[0] = true;
+        });
+
+        size_t lastLength = 0;
         while(!mClosed) {
-            char buf[10240] = {0};
-            auto n = readProcess(mProcess, buf, 10240);
-            if (n > 0) {
-                evbuffer_add(mProcessBuf, buf, n);
-                EventLoop::instance().post(EventType::Write, [this]{
+            //下面一行会一直阻塞到数据足够才会返回；只能先退而求其次，用while read,后面需要改为异步IO
+            // auto n = readProcess(mProcess, buf, 10240);
+            //TODO
+            //每隔10ms看数据是否增长，如没增长，或超过10K，则返回
+
+            this_thread::sleep_for(30ms);
+
+            auto curLength = evbuffer_get_length(mProcessBuf);
+            if (curLength > 0 && (curLength == lastLength || curLength >= 10240 || eof[0])) {
+                unique_lock<mutex> lk(mReadProcessMutex);
+
+                auto p = EventLoop::instance().post(EventType::Write, [this]{
+                    lock_guard<mutex> l(mReadProcessMutex);
                     handleReadStdOut();
+                    mReadProcessCond.notify_all();
                     return Promise::resolved(true);
-                });
+                });                
+
+                mReadProcessCond.wait(lk);
+                lastLength = evbuffer_get_length(mProcessBuf);
             } else {
+                lastLength = curLength;
+            }
+
+            if (eof[0]) {
                 activateAttr(LOG_ATTR_MAY_DISCONNECT, true);
                 break;
             }
-
-            {//等待“主线程”处理完成
-                unique_lock<mutex> lk(mReadProcessMutex);
-                mReadProcessCond.wait(lk);
-            }
         }
 
+        getCharThd.join();
         evbuffer_free(mProcessBuf);
     });
 }
@@ -153,21 +185,22 @@ void MonitorLog::splitLinesForNewContent(MemBlock* curBlock) {
             activateAttr(LOG_ATTR_DYNAMIC_RANGE, true);
             last = next;
 
-            if (last < end && curBlock->block.lines.size() >= BLOCK_LINE_NUM) {//block里存放的行数超出了，开辟新的空间来存放；极低概率进这里，只有每行字符小于7个才有可能
-                //FIXME:这是最简单的处理方法，即把剩下的数据等下次有新的输入时在处理，但会引入一些延迟
+            if (last < end && curBlock->block.lines.size() >= BLOCK_LINE_NUM) {//block里存放的行数超出了，开辟新的空间来存放
                 mLastBlockTail = buf.substr(last - start);
-                curBlock->lastFind = SV_CPP20_ITER(last);
-                return;
+                break;
             }
         }
     }
     curBlock->lastFind = SV_CPP20_ITER(last);
+    
+    if (!mLastBlockTail.empty())
+        handleReadStdOut();
 }
 
 bool MonitorLog::readStdOutInto(MemBlock* curBlock) {
     //先消化上一个block的遗留
     auto& curPos = curBlock->writePos;//下一次循环可写位置，通过引用改写
-    auto endPos = curBlock->backend.capacity();//backend结束位置，不可写的地方
+    auto endPos = MORNITOR_BLOCK_SIZE;//backend结束位置，不可写的地方
     char* pmem = curBlock->backend.data();
     if (!mLastBlockTail.empty()) {
         memcpy(pmem + curPos, mLastBlockTail.data(), mLastBlockTail.length());
@@ -177,9 +210,9 @@ bool MonitorLog::readStdOutInto(MemBlock* curBlock) {
 
     auto howmuch = (size_t)(endPos - curPos);
     auto totalRead = evbuffer_remove(mProcessBuf, pmem+curPos, howmuch);
+    // LOGI("%d, %s", totalRead, string(pmem+curPos, totalRead).c_str());
     if (totalRead > 0)
         curPos += totalRead;
-    
     return totalRead > 0;
 }
 
@@ -189,6 +222,4 @@ void MonitorLog::handleReadStdOut() {
     if (readStdOutInto(curBlock)) {
         splitLinesForNewContent(curBlock);
     }
-
-    mReadProcessCond.notify_all();
 }

@@ -11,6 +11,7 @@
 #include <sys/wait.h>
 #include <cstring>
 #include "errno.h"
+#include <signal.h>
 
 struct PrivMapInfo {
     int fd;  

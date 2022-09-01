@@ -66,12 +66,11 @@ TEST(Register, tryEnd) {
 }
 
 TEST(Register, doRegister) {
-    auto linuxOrderId = "3097eaf9a9945bcbbfadb58793ebf13f";
-    auto macOrderId = "5a151ca0d5083b0df034454dbdaaa7b0";
+    auto allPlatformOrderId = "3097eaf9a9945bcbbfadb58793ebf13f";
     Register r;
     r.init(MOCK_HOME, MOCK_UID);
     
-    auto ret = r.doRegister(linuxOrderId);
+    auto ret = r.doRegister(allPlatformOrderId);
     ASSERT_TRUE(ret.first)<<ret.second;
     ASSERT_EQ(eRegistered, r.getState());
 
@@ -79,13 +78,19 @@ TEST(Register, doRegister) {
 }
 
 TEST(Register, platformNoMatch) {
-    auto macOrderId = "5a151ca0d5083b0df034454dbdaaa7b0";
+#if defined(__linux__)
+    auto orderId = "5a151ca0d5083b0df034454dbdaaa7b0";
+#elif defined(_WIN32)
+    auto orderId = "5a151ca0d5083b0df034454dbdaaa7b0";
+#else
+    auto orderId = "e0e5a5eefa1ba17f7ac4dc9f1aed19d4";
+#endif
     Register r;
     r.init(MOCK_HOME, MOCK_UID);
 
     auto oldstate = r.getState();
 
-    auto ret = r.doRegister(macOrderId);
+    auto ret = r.doRegister(orderId);
     LOGE("%s", ret.second.c_str());
 
     ASSERT_FALSE(ret.first);

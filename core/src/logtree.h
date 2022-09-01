@@ -3,8 +3,9 @@
 #include "log.h"
 #include "def.h"
 #include <unordered_map>
+#include "json/value.h"
 
-using LogId = size_t;
+using LogId = Json::UInt;//只是为了避免 ret["logId"] = logId 时提示ambiguous
 #define INVALID_LOG_ID 0
 
 struct Node

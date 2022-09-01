@@ -44,6 +44,7 @@ private:
 
 public:
     MonitorLog() {mAttrs = LOG_ATTR_DYNAMIC_RANGE | LOG_ATTR_MAY_DISCONNECT;}
+    ~MonitorLog();
     shared_ptr<LogView> view(LogLineI from = 0, LogLineI to = InvalidLogLine) const override;
     Range range() const override;
 

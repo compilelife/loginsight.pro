@@ -100,7 +100,7 @@ void Controller::handleCmd(JsonMsg msg) {
                 if (taskPromise->isBusy()) {
                     auto promiseId = ++mPromiseIdGen;
                     auto reply = ack(msg, ReplyState::Future);
-                    reply["pid"] = promiseId;
+                    reply["pid"] = (Json::UInt)promiseId;
                     send(reply);
 
                     mTaskPromises[promiseId] = taskPromise;
@@ -131,7 +131,7 @@ shared_ptr<Promise> Controller::find(shared_ptr<ILog> log,
     auto firstLine = reverse ? (lineRef.str().substr(0, fromChar+1)) : (lineRef.str().substr(fromChar));
     auto firstLineRet = f(firstLine);
     if (firstLineRet) {
-        FindRet r{firstLineRet.offset + (reverse ? 0 : fromChar), firstLineRet.len};
+        FindRet r{(LineCharI)(firstLineRet.offset + (reverse ? 0 : fromChar)), firstLineRet.len};
         return Promise::resolved(FindLogRet{
             lineRef,
             r
@@ -464,7 +464,7 @@ ImplCmdHandler(getLines) {
 
 ImplCmdHandler(closeLog) {
     onRootLogFinalize();
-    mLogTree.delLog(msg["logId"].as<LogId>());
+    mLogTree.delLog(msg["logId"].as<Json::UInt>());
     send(ack(msg, ReplyState::Ok));
     return Promise::resolved(true);
 }

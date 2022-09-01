@@ -113,13 +113,14 @@ bool EventLoop::canWrite() {
 shared_ptr<Promise> EventLoop::post(EventType type, EventHandler callback) {
     lock_guard<recursive_mutex> l(mLock);
 
-    auto immediateRun = mThdId == this_thread::get_id()
-                     && (mRunEventType == EventType::None
-                     || mRunEventType == EventType::Read && type == EventType::Read);
+    //immediateRun机制会导致callback运行在不确定的线程上，引发可能的多线程问题
+    // auto immediateRun = mThdId == this_thread::get_id()
+    //                  && (mRunEventType == EventType::None
+    //                  || mRunEventType == EventType::Read && type == EventType::Read);
     
-    if (immediateRun) {
-        return runEvent(type, callback);
-    } else {
+    // if (immediateRun) {
+    //     return runEvent(type, callback);
+    // } else {
         auto p = make_shared<promise<void>>();
         auto ret = Promise::from(p);
         mEventQueue.push({type, [callback, p]{
@@ -128,5 +129,5 @@ shared_ptr<Promise> EventLoop::post(EventType type, EventHandler callback) {
             return ret;
         }});
         return ret;
-    }
+    // }
 }
