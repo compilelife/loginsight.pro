@@ -61,13 +61,15 @@ TEST(SubLog, mapLine) {
     ASSERT_EQ(3560, secondSub->fromSource(25465));
     
 }
-#ifndef _WIN32 //TODO: support windows
 TEST(SubLog, syncParentAppend) {
     auto loopThd = thread([]{EventLoop::instance().start();});
 
     auto log = make_shared<MonitorLog>();
-
+#ifdef _WIN32
+    string cmdLine = R"(Cscript /B 100-1-100.vbs)";
+#else
     string cmdLine = "bash -c 'for i in {1..100}; do echo $i;done;sleep 1;for i in {1..100}; do echo $i;done;'";
+#endif
     log->open(cmdLine,EventLoop::instance().base());
 
     this_thread::sleep_for(500ms);
@@ -90,8 +92,11 @@ TEST(SubLog, syncSubSub) {//TODO:单独运行正常，连续运行异常
     auto loopThd = thread([]{EventLoop::instance().start();});
 
     auto log = make_shared<MonitorLog>();
-
+#ifdef _WIN32
+    string cmdLine = R"(Cscript /B 100-1-100.vbs)";
+#else
     string cmdLine = "bash -c 'for i in {1..100}; do echo $i;done;sleep 1;for i in {1..100}; do echo $i;done;'";
+#endif
     log->open(cmdLine,EventLoop::instance().base());
 
     this_thread::sleep_for(500ms);
@@ -124,7 +129,11 @@ TEST(SubLog, syncParentClip) {
     log->setMaxBlockCount(2);
 
     //2个block最多存放65536行，当再推入100行的时候，第一个block被drop
+#ifdef _WIN32
+    string cmdLine = "Cscript /b 65536-5-10000.vbs";
+#else
     string cmdLine = "bash -c 'for i in {1..65536}; do echo $i;done;sleep 5;for i in {1..10000}; do echo $i;done;'";
+#endif
     log->open(cmdLine,EventLoop::instance().base());
 
     this_thread::sleep_for(4s);
@@ -142,4 +151,3 @@ TEST(SubLog, syncParentClip) {
     EventLoop::instance().stop();
     loopThd.join();
 }
-#endif
