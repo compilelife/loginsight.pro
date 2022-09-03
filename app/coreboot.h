@@ -11,18 +11,15 @@ public:
     explicit CoreBoot(QObject *parent = nullptr);
 
 public:
-    Q_PROPERTY(QString url MEMBER mUrl);
     Q_INVOKABLE void startLocal();
     Q_INVOKABLE void stop();
-
-private:
-    int getIdlePort();
+    Q_INVOKABLE void send(QString s);
 
 signals:
     void stateChanged(bool running);
+    void newLine(QString line);
 
 private:
-    QString mUrl;
     QProcess mProcess;
 };
 

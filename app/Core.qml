@@ -10,7 +10,6 @@ import './util.js' as Util
 Item {
   property var pendings: ({})
   property var serverCmdHandlers: ({})
-  property WebSocket channel: null
   property int idGen: 0
   property string tag: ''
 
@@ -21,11 +20,14 @@ Item {
     onStateChanged: function (running) {
       console.log(`[${tag}]`,'state changed to ', running)
       if (running) {
-        createChannel()
-      } else {
+        ready()
+      }
+      else{
         coreErrDlg.showError('websocketd异常中断, 请重启')
       }
     }
+
+    onNewLine: _onTextMsg(line)
   }
 
   Component.onCompleted: {
@@ -129,7 +131,7 @@ Item {
 
     const msg = JSON.stringify(packed)
     console.log(`[${tag}]`,'send', msg)
-    channel.sendTextMessage(msg)
+    boot.send(msg)
 
     return ret
   }
@@ -148,7 +150,7 @@ Item {
 
     const content = JSON.stringify(packed)
     console.log(`[${tag}]`,'reply', content)
-    channel.sendTextMessage(content)
+    boot.send(content)
   }
 
   function _findIndexOf(arr, predict) {
@@ -206,22 +208,5 @@ Item {
         replyMessage(msgObj, handleRet)
       }
     }
-  }
-
-  function createChannel() {
-    channel = Qt.createQmlObject(`import QtWebSockets 1.15;WebSocket{}`, this,
-                                 'coreChannel')
-    channel.textMessageReceived.connect(_onTextMsg)
-    channel.statusChanged.connect(function (status) {
-      console.log(`[${tag}]`,"websocket connect status:", status)
-      if (status === WebSocket.Open) {
-        ready()
-      } else if (status === WebSocket.Error) {
-        console.log(`[${tag}]`,channel.errorString)
-        coreErrDlg.showError('引擎异常断开，请重启')
-      }
-    })
-    channel.url = boot.url
-    channel.active = true
   }
 }
