@@ -71,6 +71,7 @@ private:
     string base64Encode(string txt);
     string base64Decode(string txt);
     string decodeJsonStr(const Json::Value& v);
+    string decodePath(string path);
 
 private:
     void handleCmd(JsonMsg msg);

@@ -34,6 +34,14 @@ string Controller::decodeJsonStr(const Json::Value& v) {
     return base64Decode(v.asString());
 }
 
+string Controller::decodePath(string p) {
+#ifdef _WIN32
+    return p[0] == '/' ? p.substr(1) : p;
+#else
+    return p;
+#endif
+}
+
 Controller::Controller() {
 }
 
@@ -269,7 +277,7 @@ ImplCmdHandler(openFile) {
         return Promise::resolved(false);
     }
 
-    auto path = decodeJsonStr(msg["path"]);
+    auto path = decodePath(decodePath(decodeJsonStr(msg["path"])));
 
 #ifdef OPEN_SOURCE
     if (file_size(path) >= 100*1024*1024) {
@@ -755,7 +763,7 @@ ImplCmdHandler(exportLog) {
         return Promise::resolved(false);
     }
 
-    auto path = decodeJsonStr(msg["path"]);
+    auto path = decodePath(decodeJsonStr(msg["path"]));
 
     return Promise::from([log, path, this, msg](bool* cancel) {
         ofstream o(path);
