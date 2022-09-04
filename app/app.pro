@@ -30,6 +30,8 @@ HEADERS += \
     nativehelper.h \
     textcodec.h
 
+DESTDIR = $$OUT_PWD
+
 copy_files.files = $$files($$PWD/bin/*)
 copy_files.path = $$OUT_PWD
 COPIES += copy_files
@@ -38,7 +40,7 @@ linux {
     QMAKE_POST_LINK="chmod +x $$OUT_PWD/*.linux"
 }
 macos {
-    QMAKE_POST_LINK="chmod +x $$OUT_PWD/*.macos"
+    QMAKE_POST_LINK="chmod +x $$OUT_PWD/*.macosx"
 ICON = Icon.icns
 QMAKE_INFO_PLIST = Info.plist
 }

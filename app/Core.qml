@@ -23,7 +23,7 @@ Item {
         ready()
       }
       else{
-        coreErrDlg.showError('websocketd异常中断, 请重启')
+        coreErrDlg.showError('引擎异常中断, 请重启')
       }
     }
 
