@@ -21,6 +21,7 @@ signals:
 
 private:
     QProcess mProcess;
+    QByteArray mLastBuf;
 };
 
 #endif // COREBOOT_H

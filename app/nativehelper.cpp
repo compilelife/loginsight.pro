@@ -116,7 +116,7 @@ QString NativeHelper::exeNativeName(QString name)
 #ifdef Q_OS_LINUX
     return name + ".linux";
 #elif defined(Q_OS_MACOS)
-    return name + ".macos";
+    return name + ".macosx";
 #elif defined(Q_OS_WIN)
     return name + ".windows.exe";
 #else
