@@ -1,0 +1,5 @@
+--appimage-extract
+PATH to qt
+libgssapi-krb5-2
+libgl1-mesa-glx
+-v qt publish app 
