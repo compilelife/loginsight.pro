@@ -325,8 +325,8 @@ ImplCmdHandler(openProcess) {
         log->setMaxBlockCount(cache);
     
     send(onRootLogReady(msg, log));
-    return Promise::resolved(true);
 #endif
+    return Promise::resolved(true);
 }
 
 ImplCmdHandler(openMultiFile) {
@@ -639,8 +639,9 @@ ImplCmdHandler(setLineSegment) {
     mLineSegment.setSegments(move(segs));
 
     send(ack(msg, ReplyState::Ok));
-    return Promise::resolved(true);
 #endif
+
+    return Promise::resolved(true);
 }
 
 string Controller::nextId() {
@@ -788,5 +789,7 @@ ImplCmdHandler(exportLog) {
         o.close();
         return *cancel;
     });
+#else
+    return Promise::resolved(true);
 #endif
 }

@@ -30,7 +30,7 @@ HEADERS += \
     nativehelper.h \
     textcodec.h
 
-DESTDIR = $$OUT_PWD
+DESTDIR = $$OUT_PWD # 控制windows将exe输出到build目录下，而非build/debug下
 
 copy_files.files = $$files($$PWD/bin/*)
 copy_files.path = $$OUT_PWD
@@ -39,8 +39,8 @@ COPIES += copy_files
 linux {
     QMAKE_POST_LINK="chmod +x $$OUT_PWD/*.linux"
 }
-macos {
-    QMAKE_POST_LINK="chmod +x $$OUT_PWD/*.macosx"
+macx {
+    QMAKE_POST_LINK="chmod +x $$OUT_PWD/*.macosx; cp $$OUT_PWD/*.macosx app.app/Contents/MacOS"
 ICON = Icon.icns
 QMAKE_INFO_PLIST = Info.plist
 }
