@@ -702,7 +702,13 @@ ImplCmdHandler(testSyntax) {
     auto lines = msg["lines"];
 
     LineSegment executor;
-    executor.setPattern(regex(pattern));
+    try{
+        executor.setPattern(regex(pattern));
+    }catch(exception e) {
+        LOGE("invalid pattern: %s. what: %s", pattern.c_str(), e.what());
+        send(failedAck(msg, "非法的正则表达式"));
+        return Promise::resolved(false);
+    }
 
     Json::Value result;
     result.resize(0);
