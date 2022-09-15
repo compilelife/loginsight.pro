@@ -124,6 +124,13 @@ struct StringCase {
     }
 };
 
+struct StringCaseReverse {
+    StringCase impl;
+    bool operator() (string_view text) {
+        return !impl(text);
+    }
+};
+
 struct RegexMatch {
     regex p;
     bool operator() (string_view text) {
@@ -131,14 +138,30 @@ struct RegexMatch {
     }
 };
 
-FilterFunction createFilter(string_view pattern, bool caseSensitive) {
-    if (caseSensitive) {
-        return StringCase {pattern.data()};
+struct RegexReverseMatch {
+    RegexMatch impl;
+    bool operator() (string_view text) {
+        return !impl(text);
     }
+};
+
+FilterFunction createFilter(string_view pattern, bool caseSensitive, bool reverse) {
+    if (caseSensitive) {
+        if (reverse)
+            return StringCaseReverse{pattern.data()};
+        else
+            return StringCase {pattern.data()};
+    }
+
+    if (reverse) 
+        return RegexReverseMatch{regex(pattern.data(), regex::icase)};
+    
     return RegexMatch{regex(pattern.data(), regex::icase)};
 }
 
-FilterFunction createFilter(regex r) {
+FilterFunction createFilter(regex r, bool reverse) {
+    if (reverse)
+        return RegexReverseMatch{r};
     return RegexMatch{r};
 }
 

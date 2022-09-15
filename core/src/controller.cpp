@@ -487,12 +487,14 @@ ImplCmdHandler(filter) {
     auto isRegex = msg["regex"].asBool();
     auto pattern = decodeJsonStr(msg["pattern"]);
     auto caseSense = msg["caseSense"].asBool();
+    auto reverse = msg["reverse"].asBool();
+
     FilterFunction filter;
     if (isRegex) {
-        filter = caseSense ? createFilter(regex(pattern))
-                    : createFilter(regex(pattern, regex_constants::ECMAScript | regex_constants::icase));
+        filter = caseSense ? createFilter(regex(pattern), reverse)
+                    : createFilter(regex(pattern, regex_constants::ECMAScript | regex_constants::icase), reverse);
     } else {
-        filter = createFilter(pattern, caseSense);
+        filter = createFilter(pattern, caseSense, reverse);
     }
 
     auto p = SubLog::createSubLog(log, filter);

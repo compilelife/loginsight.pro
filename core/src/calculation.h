@@ -54,8 +54,8 @@ vector<T> Calculation::flat(CalculationRet&& ret) {
 }
 
 using FilterFunction = function<bool(string_view)> ;
-FilterFunction createFilter(string_view pattern, bool caseSensitive);
-FilterFunction createFilter(regex pattern);
+FilterFunction createFilter(string_view pattern, bool caseSensitive, bool reverse = false);
+FilterFunction createFilter(regex pattern, bool reverse = false);
 
 struct FindRet
 {

@@ -36,19 +36,27 @@ static const string_view foo = "Loginsight a great tool to analyze LOG";
 TEST(Calculation, filterByString) {
     auto f = createFilter("loginsight", false);
     ASSERT_TRUE(f(foo));
+    f = createFilter("loginsight", false, true);
+    ASSERT_FALSE(f(foo));
 
     f = createFilter("loginsight", true);
     ASSERT_FALSE(f(foo));
+    f = createFilter("loginsight", true, true);
+    ASSERT_TRUE(f(foo));
 }
 
 TEST(Calculation, filterByRegex) {
     regex caseSense(R"(l.g)");
     auto f = createFilter(caseSense);
     ASSERT_FALSE(f(foo));
+    f = createFilter(caseSense, true);
+    ASSERT_TRUE(f(foo));
 
     regex caseUnsense(R"(l.g)", regex_constants::icase);
     f = createFilter(caseUnsense);
     ASSERT_TRUE(f(foo));
+    f = createFilter(caseUnsense, true);
+    ASSERT_FALSE(f(foo));
 }
 
 TEST(Calculation, findByString) {
