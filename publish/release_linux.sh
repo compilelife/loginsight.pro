@@ -9,6 +9,7 @@ cp ../../loginsight.desktop appdir/
 
 cd -
 cd ../core
+rm -rf .xmake
 xmake f -m release
 xmake
 cd -

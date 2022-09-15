@@ -1,3 +1,4 @@
 build-app-*
 core/core
 sample/*
+.xmake/windows/x64/project.lock

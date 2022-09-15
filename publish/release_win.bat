@@ -1,4 +1,5 @@
 cd ..\core
+rd /S /Q .xmake
 xmake f -m release
 xmake
 cd ..\publish
@@ -12,6 +13,5 @@ mkdir ..\..\release\windows
 windeployqt app.exe --dir ..\..\release\windows --qmldir ..\..\..\app
 copy app.exe ..\..\release\windows\loginsight.exe
 copy ..\..\..\core\build\windows\x64\release\core.windows.exe ..\..\release\windows
-copy core.windows.exe ..\..\release\windows\
 cd ..\..\
 rd /S /Q build\win

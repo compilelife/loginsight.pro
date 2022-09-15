@@ -3,6 +3,7 @@ cd ../app
 cd -
 
 cd ../core
+rm -rf .xmake
 xmake f -m release
 xmake
 cd -
