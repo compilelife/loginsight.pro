@@ -490,13 +490,18 @@ ImplCmdHandler(filter) {
     auto reverse = msg["reverse"].asBool();
 
     FilterFunction filter;
-    if (isRegex) {
-        filter = caseSense ? createFilter(regex(pattern), reverse)
-                    : createFilter(regex(pattern, regex_constants::ECMAScript | regex_constants::icase), reverse);
-    } else {
-        filter = createFilter(pattern, caseSense, reverse);
+    try {
+        if (isRegex) {
+            filter = caseSense ? createFilter(regex(pattern), reverse)
+                        : createFilter(regex(pattern, regex_constants::ECMAScript | regex_constants::icase), reverse);
+        } else {
+            filter = createFilter(pattern, caseSense, reverse);
+        }
+    } catch (exception e) {
+        send(failedAck(msg, "非法的正则表达式"));
+        return Promise::resolved(false);
     }
-
+    
     auto p = SubLog::createSubLog(log, filter);
     p->then([log, msg, this](shared_ptr<Promise> p){
         if (!handleCancelledPromise(p, msg)) {
@@ -527,13 +532,18 @@ ImplCmdHandler(search) {
     auto caseSense = msg["caseSense"].asBool();
 
     FindFunction f;
-    if (isRegex) {
-        f = caseSense ? createFind(regex(pattern), reverse)
-                    : createFind(regex(pattern, regex_constants::ECMAScript | regex_constants::icase), reverse);
-    } else {
-        f = createFind(pattern, caseSense, reverse);
+    try{
+        if (isRegex) {
+            f = caseSense ? createFind(regex(pattern), reverse)
+                        : createFind(regex(pattern, regex_constants::ECMAScript | regex_constants::icase), reverse);
+        } else {
+            f = createFind(pattern, caseSense, reverse);
+        }
+    }catch (exception e) {
+        send(failedAck(msg, "非法的正则表达式"));
+        return Promise::resolved(false);
     }
-
+    
     auto p = find(log, f, fromLine, fromChar, reverse);
     p->then([log, msg, this](shared_ptr<Promise> p) {
         if (!handleCancelledPromise(p, msg)) {
@@ -605,7 +615,14 @@ ImplCmdHandler(setLineSegment) {
     auto flag = regex_constants::ECMAScript;
     if (!caseSense)
         flag |= regex_constants::icase;
-    regex r(pattern, flag);
+    
+    regex r;
+    try{
+        r = regex(pattern, flag);
+    } catch (exception e) {
+        send(failedAck(msg, "非法的正则表达式"));
+        return Promise::resolved(false);
+    }
 
     vector<Segment> segs;
     for (Json::ArrayIndex i = 0; i < msg["segs"].size(); i++) {
