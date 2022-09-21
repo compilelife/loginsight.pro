@@ -4,7 +4,7 @@
 #include <filesystem>
 #include <queue>
 
-bool MultiFileLog::open(const vector<string_view>& paths) {
+bool MultiFileLog::open(const vector<string>& paths) {
     mLogs.clear();
 
     for (auto &&path : paths)
@@ -85,39 +85,3 @@ struct ListFileHelper<true> {
         return {stoi(comparePart), path};
     }
 };
-
-template<>
-struct ListFileHelper<false> {
-    using PriorityQueueType = ListFileQueue<string>;
-    static PriorityQueueType::Item createItem(string comparePart, string path) {
-        return {comparePart, path};
-    }
-};
-
-template<bool IsCompareNum>
-vector<string> listFiles(string_view path, regex comparablePatten) {
-    typename ListFileHelper<IsCompareNum>::PriorityQueueType pq;
-
-    for (auto&& entry : filesystem::recursive_directory_iterator{path}) {
-        if (entry.is_regular_file()) {
-            auto filename = entry.path().filename().string();
-            smatch result;
-            auto matched = regex_match(filename, result, comparablePatten);
-            if (matched) {
-                auto item = ListFileHelper<IsCompareNum>::createItem(result[1].str(), entry.path().string());
-                pq.q.push(item);
-            }
-        }
-    }
-
-    vector<string> result;
-    while (!pq.q.empty()) {
-        result.push_back(pq.q.top().path);
-        pq.q.pop();
-    }
-
-    return result;
-}
-
-template vector<string> listFiles<true>(string_view, regex);
-template vector<string> listFiles<false>(string_view, regex);

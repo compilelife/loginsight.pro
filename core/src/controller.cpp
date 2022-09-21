@@ -330,15 +330,16 @@ ImplCmdHandler(openProcess) {
 }
 
 ImplCmdHandler(openMultiFile) {
-    if (!!canUsePro()) {
+#ifndef OPEN_SOURCE
+    if (!canUsePro()) {
         send(failedAck(msg, "试用期已结束。日志目录打卡失败"));
         return Promise::resolved(false);
     }
 
     auto files = msg["files"];
-    vector<string_view> paths;
+    vector<string> paths;
     for (auto i = 0; i < files.size(); i++) {
-        paths.push_back(files[i].asString());
+        paths.push_back(decodePath(decodeJsonStr(files[i])));
     }
     
     auto log = make_shared<MultiFileLog>();
@@ -355,6 +356,8 @@ ImplCmdHandler(openMultiFile) {
     }, true);
     
     return p;
+#endif
+    return Promise::resolved(true);
 }
 
 //{"cmd":"queryPromise", "id":"ui-2"}
@@ -562,24 +565,6 @@ ImplCmdHandler(search) {
     }, true);
 
     return p;
-}
-
-ImplCmdHandler(listFiles) {
-    auto pattern = msg["pattern"].asString();
-    auto caseSense = msg["caseSense"].asBool();
-    auto compareNum = msg["compareNum"].asBool();
-    auto path = base64Encode(msg["path"].asString());
-
-    regex r{pattern, caseSense ? regex_constants::ECMAScript : regex_constants::icase};
-
-    auto files = compareNum ? listFiles<true>(path, r) : listFiles<false>(path, r);
-
-    auto ret = ack(msg, ReplyState::Ok);
-    for (auto &&file : files)
-        ret["paths"].append(file);
-    
-    send(ret);
-    return Promise::resolved(true);
 }
 
 //{lines:[{logid:1,line:2}]}

@@ -23,6 +23,7 @@ MMapInfo createMapOfFile(string_view path) {
     PrivMapInfo priv;
     priv.fd = open(path.data(), O_RDONLY);
     if (priv.fd < 0) {
+        LOGE("open file failed: %s", path.data());
         return {priv, nullptr};
     }
 

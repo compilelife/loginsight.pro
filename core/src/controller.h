@@ -85,7 +85,6 @@ private:
     DeclarCmdHandler(filter, EventType::Read);
     DeclarCmdHandler(search, EventType::Read);
     DeclarCmdHandler(closeLog, EventType::Write);
-    DeclarCmdHandler(listFiles, EventType::Immediate);
     DeclarCmdHandler(mapLine, EventType::Read);
     DeclarCmdHandler(setLineSegment, EventType::Write);
     DeclarCmdHandler(syncLogs, EventType::Write);
