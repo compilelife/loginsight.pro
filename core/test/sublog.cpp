@@ -173,6 +173,7 @@ TEST(SubLog, blankThenMatch) {
     sub->syncParent();
 
     ASSERT_EQ(Range(0,0), sub->range());
+    ASSERT_EQ("xyz", string(sub->view(0,0)->current().str()));
 
     EventLoop::instance().stop();
     loopThd.join();
