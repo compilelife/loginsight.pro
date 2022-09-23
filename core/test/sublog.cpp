@@ -151,3 +151,61 @@ TEST(SubLog, syncParentClip) {
     EventLoop::instance().stop();
     loopThd.join();
 }
+
+TEST(SubLog, blankThenMatch) {
+    auto loopThd = thread([]{EventLoop::instance().start();});
+
+    auto log = make_shared<MonitorLog>();
+#ifdef _WIN32
+    string cmdLine = "echo 1 && timeout /t 1 && echo \"xyz\"";
+#else
+    string cmdLine = "echo 1;sleep 1;echo 'xyz'";
+#endif
+    log->open(cmdLine,EventLoop::instance().base());
+
+    auto ret = SubLog::createSubLog(log, createFilter("xyz", true));
+    ret->wait();
+    auto sub = any_cast<shared_ptr<SubLog>>(ret->value());
+
+    ASSERT_FALSE(sub->range().valid());
+
+    this_thread::sleep_for(1.5s);
+    sub->syncParent();
+
+    ASSERT_EQ(Range(0,0), sub->range());
+
+    EventLoop::instance().stop();
+    loopThd.join();
+}
+
+TEST(SubLog, blankThenMatch2) {
+    auto loopThd = thread([]{EventLoop::instance().start();});
+
+    auto log = make_shared<MonitorLog>();
+#ifdef _WIN32
+    string cmdLine = "echo 1 && timeout /t 1 && echo \"xyz\"";
+#else
+    string cmdLine = "echo 1;sleep 1;echo 'xyz'";
+#endif
+    log->open(cmdLine,EventLoop::instance().base());
+
+    auto ret = SubLog::createSubLog(log, createFilter("xyz", true));
+    ret->wait();
+    auto sub = any_cast<shared_ptr<SubLog>>(ret->value());
+    ret = SubLog::createSubLog(sub, createFilter("xyz", true));
+    ret->wait();
+    auto sub1 = any_cast<shared_ptr<SubLog>>(ret->value());
+
+    ASSERT_FALSE(sub->range().valid());
+    ASSERT_FALSE(sub1->range().valid());
+
+    this_thread::sleep_for(1.5s);
+    sub->syncParent();
+    sub1->syncParent();
+
+    ASSERT_EQ(Range(0,0), sub->range());
+    ASSERT_EQ(Range(0,0), sub1->range());
+
+    EventLoop::instance().stop();
+    loopThd.join();
+}

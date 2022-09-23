@@ -6,7 +6,7 @@
 SubLogView::SubLogView(const SubLog* log)
     :mLog(const_cast<SubLog*>(log)) {
     mFrom = {0,0};
-    mTo = {(int)(LastIndex(log->mBlocks)), (int)(LastIndex(LastItem(log->mBlocks).lines))};
+    mTo = log->mBlocks.empty() ? mFrom : SubLogPos{(int)(LastIndex(log->mBlocks)), (int)(LastIndex(LastItem(log->mBlocks).lines))};
     mCur = mFrom;
     mCount = log->mCount;
 }
@@ -48,6 +48,10 @@ void SubLogView::next() {
 }
 
 bool SubLogView::end() {
+    if (mLog->mBlocks.empty()) {
+        return true;
+    }
+
     if (mReverse) {
         return mCur.blockIndex < mFrom.blockIndex ||
             (mCur.blockIndex == mFrom.blockIndex && mCur.lineIndex < mFrom.lineIndex);
@@ -55,6 +59,8 @@ bool SubLogView::end() {
         return mCur.blockIndex > mTo.blockIndex || 
             (mCur.blockIndex == mTo.blockIndex && mCur.lineIndex > mTo.lineIndex);
     }
+
+    return false;
 }
 
 LogLineI SubLogView::size() const {

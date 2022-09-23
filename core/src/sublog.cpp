@@ -178,6 +178,9 @@ LogLineI SubLog::fromSource(LogLineI target) const {
 }
 
 static pair<Range, Range> detectChange(Range old, Range now) {
+    if (!old.valid())
+        return {Range(), now};
+
     Range clip = now.begin == old.begin ? Range() : Range{old.begin, now.begin - 1};
     Range append = {old.end + 1, now.end};
     if  (append.begin < now.begin) {
@@ -240,7 +243,10 @@ void SubLog::appendByParentRange(Range r) {
     mCount += count;
 
     //胶合block
-    if (!mBlocks.empty()) {
+    if (mBlocks.empty()) {
+        mBlocks = blocks;
+    }
+    else{
         auto& lastOldBlock = LastItem(mBlocks);
         auto it = blocks.begin();
         auto& firstNewBlock = *it;

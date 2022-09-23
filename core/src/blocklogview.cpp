@@ -31,13 +31,15 @@ BlockLogView::BlockLogView(vector<BlockRef>&& blocks)
     :mBlocks(blocks), 
     mFirstLineInBlock(0),
     mLineIndexInBlock(0),
+    mFinalLineInBlock(0),
     mBlockIndex(0) {
     
     size_t count = 0;
     for_each_n(blocks.begin(), blocks.size(), [&count](BlockRef& b){count+=b.block->lines.size();});
     mCount = count;
 
-    mFinalLineInBlock = LastIndex(LastItem(mBlocks).block->lines);
+    if (mCount > 0)
+        mFinalLineInBlock = LastIndex(LastItem(mBlocks).block->lines);
 }
 
 BlockLogView::~BlockLogView() {
@@ -76,6 +78,9 @@ void BlockLogView::next() {
 }
 
 bool BlockLogView::end() {
+    if (mBlocks.empty())
+        return true;
+
     if (mReverse) {
         return mBlockIndex < 0 || (mBlockIndex == 0 && mLineIndexInBlock < mFirstLineInBlock);
     } else {
