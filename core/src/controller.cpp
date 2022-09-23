@@ -775,15 +775,22 @@ ImplCmdHandler(exportLog) {
     }
 
     auto path = decodePath(decodeJsonStr(msg["path"]));
+    auto from = msg["from"].as<LogLineI>();
+    auto to = msg["to"].as<LogLineI>();
+    auto all = msg["all"].asBool();
+    if (all) {
+        from = 0;
+        to = InvalidLogLine;
+    }
 
-    return Promise::from([log, path, this, msg](bool* cancel) {
+    return Promise::from([=](bool* cancel) {
         ofstream o(path);
         if (!o.is_open()) {
             send(failedAck(msg, "输出文件打开失败"));
             return false;
         }
         
-        auto view = log->view();
+        auto view = log->view(from, to);
         while (!*cancel && !view->end()) {
             auto curLine = string(view->current().str());
             o<<curLine<<endl;
