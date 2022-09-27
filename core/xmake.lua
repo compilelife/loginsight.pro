@@ -6,6 +6,7 @@ add_requires("jsoncpp", {system=false})
 add_requires("gtest 1.11.0")
 add_requires("libcurl", {system=false})
 add_requires("oatpp")
+add_requires("boost")
 
 set_languages("c++17")
 
@@ -30,7 +31,7 @@ target("corelib")
     elseif is_os("macosx") then
         add_files("src/unix/*.cpp")
     end
-    add_packages("libevent", "jsoncpp", "libcurl", "oatpp")
+    add_packages("libevent", "jsoncpp", "libcurl", "oatpp", "boost")
 
 --最终输出
 target("core")
@@ -46,7 +47,7 @@ target("core")
         add_cxxflags("/utf-8")
         add_defines("_HAS_STD_BYTE=0")
     end
-    add_packages("libevent", "jsoncpp", "libcurl", "oatpp")
+    add_packages("libevent", "jsoncpp", "libcurl", "oatpp", "boost")
 
 
 --单元测试
@@ -60,7 +61,7 @@ target("utest")
         add_cxxflags("/utf-8")
         add_defines("_HAS_STD_BYTE=0")
     end
-    add_packages("gtest","libevent", "jsoncpp", "libcurl", "oatpp")
+    add_packages("gtest","libevent", "jsoncpp", "libcurl", "oatpp", "boost")
     after_build(function(target)
         os.cp("test/assets/", "$(buildir)/")
     end)

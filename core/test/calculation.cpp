@@ -45,6 +45,18 @@ TEST(Calculation, filterByString) {
     ASSERT_TRUE(f(foo));
 }
 
+TEST(Calculation, filterByStringIgnoreCase) {
+    string_view line = "[cy]this is a line with regex meta char";
+    auto f = createFilter("[cy", false);
+    ASSERT_TRUE(f(line));
+}
+
+TEST(Calculation, findByStringIgnoreCase) {
+    string_view line = "[cy]this is a line with regex meta char";
+    auto f = createFind("[cy", false, false);
+    ASSERT_EQ((FindRet{0, 3}), f(line));
+}
+
 TEST(Calculation, filterByRegex) {
     regex caseSense(R"(l.g)");
     auto f = createFilter(caseSense);

@@ -7,6 +7,7 @@
 #include "stdout.h"
 #include <regex>
 #include <list>
+#include <boost/algorithm/string.hpp>
 
 Calculation::Calculation() {
     mCoreNum = thread::hardware_concurrency();
@@ -131,6 +132,22 @@ struct StringCaseReverse {
     }
 };
 
+typedef const boost::iterator_range<std::string::const_iterator> StringRange;
+struct StringIgnoreCase {
+    string pattern;
+    bool operator() (string_view text) {
+        auto t = string(text);
+        return boost::ifind_first(StringRange(t.begin(), t.end()), StringRange(pattern.begin(), pattern.end()));
+    }
+};
+
+struct StringIgnoreCaseReverse {
+    StringIgnoreCase impl;
+    bool operator() (string_view text) {
+        return !impl(text);
+    }
+};
+
 struct RegexMatch {
     regex p;
     bool operator() (string_view text) {
@@ -154,9 +171,9 @@ FilterFunction createFilter(string_view pattern, bool caseSensitive, bool revers
     }
 
     if (reverse) 
-        return RegexReverseMatch{regex(pattern.data(), regex::icase)};
+        return StringIgnoreCaseReverse{pattern.data()};
     
-    return RegexMatch{regex(pattern.data(), regex::icase)};
+    return StringIgnoreCase{pattern.data()};
 }
 
 FilterFunction createFilter(regex r, bool reverse) {
@@ -183,6 +200,36 @@ struct StringCaseReverseFind {
         return {
             (LineCharI)pos,
             (LineCharI)(pos == string::npos ? 0 : pattern.length())
+        };
+    }
+};
+
+struct StringIgnoreCaseFind {
+    string pattern;
+    FindRet operator () (string_view text) {
+        auto t = string(text);
+        auto ret = boost::ifind_first(StringRange(t.begin(), t.end()), StringRange(pattern.begin(), pattern.end()));
+        if (!ret)
+            return {0,0};
+
+        return {
+            (LineCharI)(ret.begin() - t.begin()),
+            (LineCharI)(ret.end() - ret.begin() + 1)
+        };
+    }
+};
+
+struct StringIgnoreCaseReverseFind {
+    string pattern;
+    FindRet operator () (string_view text) {
+        auto t = string(text);
+        auto ret = boost::ifind_last(StringRange(t.begin(), t.end()), StringRange(pattern.begin(), pattern.end()));
+        if (!ret)
+            return {0,0};
+
+        return {
+            (LineCharI)(ret.begin() - t.begin()),
+            (LineCharI)(ret.end() - ret.begin() + 1)
         };
     }
 };
@@ -225,8 +272,9 @@ FindFunction createFind(string_view pattern, bool caseSensitive, bool reverse) {
             return StringCaseFind{pattern.data()};
     }
     
-    regex r{pattern.data(), regex::icase};
-    return createFind(r, reverse);
+    if (reverse)
+        return StringIgnoreCaseReverseFind{pattern.data()};
+    return StringIgnoreCaseFind{pattern.data()};
 }
 
 FindFunction createFind(regex pattern, bool reverse) {
