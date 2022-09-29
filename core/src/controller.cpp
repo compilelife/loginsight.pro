@@ -136,6 +136,11 @@ shared_ptr<Promise> Controller::find(shared_ptr<ILog> log,
     
     //第一行比较特殊，可能在句子的一半位置开始，我们需要特殊处理下
     auto lineRef = view->current();
+    //fromChar来自ui的光标位置，光标位置放置在句子末尾的时候，fromChar = lineRef.str.length
+    //而连续搜索的时候，还会继续加1，就导致substr的时候产生exception
+    auto lineStr = lineRef.str();
+    if (reverse && fromChar + 1 >= lineStr.length()) fromChar = lineStr.length() - 1;
+    if (!reverse && fromChar > lineStr.length()) fromChar = lineStr.length();
     auto firstLine = reverse ? (lineRef.str().substr(0, fromChar+1)) : (lineRef.str().substr(fromChar));
     auto firstLineRet = f(firstLine);
     if (firstLineRet) {
