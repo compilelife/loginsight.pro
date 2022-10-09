@@ -214,7 +214,7 @@ struct StringIgnoreCaseFind {
 
         return {
             (LineCharI)(ret.begin() - t.begin()),
-            (LineCharI)(ret.end() - ret.begin() + 1)
+            (LineCharI)(ret.end() - ret.begin())
         };
     }
 };
@@ -229,7 +229,7 @@ struct StringIgnoreCaseReverseFind {
 
         return {
             (LineCharI)(ret.begin() - t.begin()),
-            (LineCharI)(ret.end() - ret.begin() + 1)
+            (LineCharI)(ret.end() - ret.begin())
         };
     }
 };
