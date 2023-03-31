@@ -3,3 +3,7 @@
 主线程运行着libevent2的loop
 
 多线程只用于CPU密集型计算
+
+BUG:
+
+- monitor log 的 range变化，导致最旧的数据丢弃，而range还没通知到上层，这时上层来请求已丢弃的范围，就会崩溃

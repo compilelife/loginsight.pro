@@ -26,7 +26,7 @@ private:
 #ifdef OPEN_SOURCE
     RegisterState mState{eOpenSource};
 #else
-    RegisterState mState{eTryEnd};
+    RegisterState mState{eRegistered};
 #endif
     string mMyDir;
     string mUniqueId;

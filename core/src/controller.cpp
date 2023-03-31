@@ -49,11 +49,20 @@ Controller::~Controller() {
 }
 
 void Controller::start() {
+    static int count = 0;
     call_once(StdinData.onceFlag, []{
         thread([]{
             while (true) {
                 string line;
                 getline(cin, line);
+                if (line.empty()) {
+                    if (++count >= 10) {
+                        LOGE("too many continous empty line, quit now");
+                        exit(1);
+                    }
+                    continue;
+                }
+                count = 0;
                 EventLoop::instance().runOnMain([line]{
                     if (StdinData.controller) {
                         StdinData.controller->handleLine(line);
@@ -709,10 +718,15 @@ ImplCmdHandler(syncLogs) {
 ImplCmdHandler(testSyntax) {
     auto pattern = decodeJsonStr(msg["pattern"]);
     auto lines = msg["lines"];
+    auto caseSense = msg["caseSense"].asBool();
+
+    auto flag = regex_constants::ECMAScript;
+    if (!caseSense)
+        flag |= regex_constants::icase;
 
     LineSegment executor;
     try{
-        executor.setPattern(regex(pattern));
+        executor.setPattern(regex(pattern, flag));
     }catch(exception e) {
         LOGE("invalid pattern: %s. what: %s", pattern.c_str(), e.what());
         send(failedAck(msg, "非法的正则表达式"));
