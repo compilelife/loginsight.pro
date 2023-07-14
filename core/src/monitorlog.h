@@ -43,7 +43,7 @@ private:
     thread mReadProcessThd;
 
 public:
-    MonitorLog() {mAttrs = LOG_ATTR_DYNAMIC_RANGE | LOG_ATTR_MAY_DISCONNECT;}
+    MonitorLog() {mAttrs = LOG_ATTR_DYNAMIC_RANGE | LOG_ATTR_MAY_DISCONNECT | LOG_ATTR_CAN_CLEAR;}
     ~MonitorLog();
     shared_ptr<LogView> view(LogLineI from = 0, LogLineI to = InvalidLogLine) const override;
     Range range() const override;
@@ -52,6 +52,7 @@ public:
     virtual bool open(string_view cmdline, event_base* evbase);
     virtual void close() override;
     void setMaxBlockCount(size_t n);
+    virtual void clear() override;
 
 public:
     void handleReadStdOut();

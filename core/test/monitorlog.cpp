@@ -91,3 +91,21 @@ TEST_F(MonitorLogTest, dropBlock) {//TODO
 
     log.close();
 }
+
+TEST_F(MonitorLogTest, clear) {
+#ifdef _WIN32
+    string_view cmdline = "type 204898.log";
+#else
+    string_view cmdline = "cat 204898.log";
+#endif
+
+    ASSERT_TRUE(log.open(cmdline, evBase));
+
+    this_thread::sleep_for(500ms);
+    log.clear();
+
+    while (!log.isAttrAtivated(LOG_ATTR_MAY_DISCONNECT))
+        this_thread::sleep_for(100ms);
+
+    log.close();
+}

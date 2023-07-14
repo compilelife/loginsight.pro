@@ -137,9 +137,10 @@ shared_ptr<Promise> Controller::find(shared_ptr<ILog> log,
                             FindFunction f, 
                             LogLineI fromLine, 
                             LogCharI fromChar, 
+                            LogLineI toLine,
                             bool reverse) {
     auto range = log->range();
-    auto view = reverse ? log->view(range.begin, fromLine) : log->view(fromLine, range.end);
+    auto view = reverse ? log->view(toLine, fromLine) : log->view(fromLine, toLine);
     if (reverse)
         view->reverse();
     
@@ -544,9 +545,9 @@ ImplCmdHandler(search) {
     auto fromChar = msg["fromChar"].asUInt();
     auto reverse = msg["reverse"].asBool();
     auto isRegex = msg["regex"].asBool();
-    LOGI("pattern=%s", msg["pattern"].asCString());
     auto pattern = decodeJsonStr(msg["pattern"]);
     auto caseSense = msg["caseSense"].asBool();
+    auto toLine = msg["toLine"].asUInt64();
 
     FindFunction f;
     try{
@@ -561,7 +562,7 @@ ImplCmdHandler(search) {
         return Promise::resolved(false);
     }
     
-    auto p = find(log, f, fromLine, fromChar, reverse);
+    auto p = find(log, f, fromLine, fromChar, toLine, reverse);
     p->then([log, msg, this](shared_ptr<Promise> p) {
         if (!handleCancelledPromise(p, msg)) {
             auto findRet = any_cast<FindLogRet>(p->value());
@@ -671,6 +672,21 @@ Json::Value Controller::prepareMsg(string_view cmd) {
     v["cmd"] = string(cmd);
     v["id"] = nextId();
     return v;
+}
+
+ImplCmdHandler(clearLog) {
+    if (!mLogTree.root()->hasAttr(LOG_ATTR_CAN_CLEAR)) {
+        send(failedAck(msg, "log can't be clear"));
+        return Promise::resolved(false);
+    }
+
+    mLogTree.travel([](Node* n){
+        n->log->clear();
+        return false;
+    });
+
+    send(ack(msg, ReplyState::Ok));
+    return Promise::resolved(true);
 }
 
 ImplCmdHandler(syncLogs) {

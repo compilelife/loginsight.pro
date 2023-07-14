@@ -259,3 +259,10 @@ void SubLog::appendByParentRange(Range r) {
         copy(it, blocks.end(), back_inserter(mBlocks));
     }
 }
+
+void SubLog::clear() {
+    mBlocks.clear();
+    mMyFrom = 0;
+    mCount = 0;
+    mMapRange = Range();
+}

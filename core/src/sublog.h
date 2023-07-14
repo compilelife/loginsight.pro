@@ -35,6 +35,7 @@ private:
     void appendByParentRange(Range r);
 public:
     void syncParent();
+    virtual void clear() override;
 
 public:
     //value as shared_ptr<SubLog>

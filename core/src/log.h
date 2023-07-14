@@ -49,6 +49,7 @@ struct Block {
 
 #define LOG_ATTR_DYNAMIC_RANGE 0x01
 #define LOG_ATTR_MAY_DISCONNECT 0x02
+#define LOG_ATTR_CAN_CLEAR 0x04
 
 class ILog {
 protected:
@@ -71,6 +72,7 @@ public:
     virtual Range range() const = 0;
     virtual LogLineI mapToSource(LogLineI index) const = 0;
     virtual LogLineI fromSource(LogLineI index) const = 0;
+    virtual void clear(){}
 };
 
 class IClosable {

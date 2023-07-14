@@ -76,6 +76,8 @@
         "ranges": "cpp",
         "filesystem": "cpp",
         "*.def": "cpp",
-        "shared_mutex": "cpp"
+        "shared_mutex": "cpp",
+        "*.ipp": "cpp",
+        "hash_set": "cpp"
     }
 }

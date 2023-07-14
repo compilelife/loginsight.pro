@@ -153,6 +153,15 @@ MonitorLog::MemBlock* MonitorLog::peekBlock() {
     return ret;
 }
 
+void MonitorLog::clear() {
+    for (auto &&block : mBlocks)
+        delete block;
+    
+    mBlocks.clear();
+    
+    activateAttr(LOG_ATTR_DYNAMIC_RANGE, true);
+}
+
 void MonitorLog::splitLinesForNewContent(MemBlock* curBlock) {
     auto pmem = curBlock->backend.data();
 

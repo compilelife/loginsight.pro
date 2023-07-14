@@ -92,6 +92,7 @@ private:
     DeclarCmdHandler(initRegister, EventType::Immediate);
     DeclarCmdHandler(doRegister, EventType::Immediate);
     DeclarCmdHandler(exportLog, EventType::Read);
+    DeclarCmdHandler(clearLog, EventType::Write);
 
 private:
     Json::Value ack(JsonMsg msg, ReplyState state);
@@ -107,6 +108,7 @@ private:
                             FindFunction f, 
                             LogLineI fromLine, 
                             LogCharI fromChar, 
+                            LogLineI toLine,
                             bool reverse);
     Json::Value onRootLogReady(JsonMsg msg, shared_ptr<IClosableLog> log);
     void onRootLogFinalize();
