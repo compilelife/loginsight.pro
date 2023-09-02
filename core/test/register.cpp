@@ -17,13 +17,7 @@ void cleanup() {
     remove(LICENSE);
 }
 
-#ifdef OPEN_SOURCE
-TEST(Register, state) {
-    Register r;
-    r.init(MOCK_HOME, MOCK_UID);
-    ASSERT_EQ(RegisterState::eOpenSource, r.getState());
-}
-#else
+
 TEST(Register, noLicense) {
     Register r;
     r.init(MOCK_HOME, MOCK_UID);
@@ -114,4 +108,3 @@ TEST(Register, invalidOrderId) {
 
     cleanup();
 }
-#endif

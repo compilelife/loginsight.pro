@@ -10,15 +10,9 @@ add_requires("boost")
 
 set_languages("c++17")
 
-option("opensource")
-    set_default(false)
-    set_showmenu(true)
-    add_defines("OPEN_SOURCE")
-
 --核心代码
 target("corelib") 
     set_kind("static")
-    set_options("opensource")
     set_installdir('../app')
     add_files("src/*.cpp|main.cpp")
     if is_os("linux") then 
@@ -36,7 +30,6 @@ target("corelib")
 --最终输出
 target("core")
     set_kind("binary")
-    set_options("opensource")
     set_installdir("../app")
     add_files("src/main.cpp")
     add_deps("corelib")

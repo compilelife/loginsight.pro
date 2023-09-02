@@ -7,7 +7,6 @@
 #define TRY_LIMIT 259200 //3天
 
 enum RegisterState {
-    eOpenSource,
     eTry,
     eTryEnd,
     eRegistered
@@ -23,11 +22,8 @@ private:
     void writeLicense(string token);
     string readLicense();
 private:
-#ifdef OPEN_SOURCE
-    RegisterState mState{eOpenSource};
-#else
     RegisterState mState{eTry};
-#endif
+
     string mMyDir;
     string mUniqueId;
     int64_t mLeftSeconds{0};

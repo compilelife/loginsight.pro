@@ -61,17 +61,13 @@ static size_t writeToString(void* content, size_t size, size_t count, void* user
  * @param orderid 订单号
  */
 pair<bool, string> Register::doRegister(string orderid) {
-#ifdef OPEN_SOURCE
-    LOGW("register on open source version");
-    return {true, ""};
-#else
     CURL* curl = curl_easy_init();
     if (!curl) {
         return {false, "curl init failed"};
     }
 
     string arg = "orderid="+orderid+"&machineid="+mUniqueId+"&platform="+getPlatform();
-    string url = "http://www.loginsight.top/api/register?"+arg;
+    string url = "https://www.loginsight.top/api/register?"+arg;
 
     string body;
     char err[CURL_ERROR_SIZE] = {0};
@@ -115,7 +111,6 @@ pair<bool, string> Register::doRegister(string orderid) {
     }
 
     return ret;
-#endif
 }
 
 static string xordecode(const Json::Value& arr, int key) {
@@ -141,8 +136,7 @@ static string xordecode(const Json::Value& arr, int key) {
 void Register::init(string mydir, string uniqueId) {
     mUniqueId = uniqueId;
     mMyDir = mydir;
-#ifdef OPEN_SOURCE
-#else
+
     auto token = readLicense();
 
     if (token.empty()) {
@@ -194,5 +188,4 @@ void Register::init(string mydir, string uniqueId) {
     } else {
         LOGE("load register info failed: %s", errs.c_str());
     }
-#endif
 }

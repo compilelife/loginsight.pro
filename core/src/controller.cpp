@@ -271,7 +271,8 @@ Json::Value Controller::onRootLogReady(JsonMsg msg, shared_ptr<IClosableLog> log
 }
 
 bool Controller::canUsePro() {
-    return mRegister.getState() != RegisterState::eTryEnd;
+    auto state = mRegister.getState();
+    return state == RegisterState::eTry || state == RegisterState::eRegistered;
 }
 
 void Controller::onRootLogFinalize() {
@@ -287,21 +288,14 @@ void Controller::onRootLogFinalize() {
 
 //{"cmd":"openFile","id":"ui-1","path":"/tmp/1.log"}
 ImplCmdHandler(openFile) {
-    if (!canUsePro()) {
-        send(failedAck(msg, "试用期已结束。文件打开失败"));
-        return Promise::resolved(false);
-    }
-
     auto path = decodePath(decodePath(decodeJsonStr(msg["path"])));
+   
+    auto log = make_shared<FileLog>();
 
-#ifdef OPEN_SOURCE
-    if (file_size(path) >= 100*1024*1024) {
-        send(failedAck(msg, "开源版只能打开100M以下的文件"));
+    if (!canUsePro() && file_size(path) >= 100*1024*1024) {
+        send(failedAck(msg, "注册专业版可打开100M以上的文件"));
         return Promise::resolved(false);
     }
-#endif
-    
-    auto log = make_shared<FileLog>();
 
     if (!log->open(path)) {
         send(failedAck(msg, "文件打开失败"));
@@ -319,7 +313,6 @@ ImplCmdHandler(openFile) {
 }
 
 ImplCmdHandler(openProcess) {
-#ifndef OPEN_SOURCE
     if (!canUsePro()) {
         send(failedAck(msg, "试用期已结束。外部程序打开失败"));
         return Promise::resolved(false);
@@ -340,14 +333,13 @@ ImplCmdHandler(openProcess) {
         log->setMaxBlockCount(cache);
     
     send(onRootLogReady(msg, log));
-#endif
+
     return Promise::resolved(true);
 }
 
 ImplCmdHandler(openMultiFile) {
-#ifndef OPEN_SOURCE
     if (!canUsePro()) {
-        send(failedAck(msg, "试用期已结束。日志目录打卡失败"));
+        send(failedAck(msg, "试用期已结束。日志目录打开失败"));
         return Promise::resolved(false);
     }
 
@@ -371,7 +363,6 @@ ImplCmdHandler(openMultiFile) {
     }, true);
     
     return p;
-#endif
     return Promise::resolved(true);
 }
 
@@ -608,7 +599,6 @@ ImplCmdHandler(mapLine) {
 }
 
 ImplCmdHandler(setLineSegment) {
-#ifndef OPEN_SOURCE
     auto pattern = decodeJsonStr(msg["pattern"]);
     auto caseSense = msg["caseSense"].asBool();
 
@@ -658,7 +648,6 @@ ImplCmdHandler(setLineSegment) {
     mLineSegment.setSegments(move(segs));
 
     send(ack(msg, ReplyState::Ok));
-#endif
 
     return Promise::resolved(true);
 }
@@ -802,7 +791,11 @@ ImplCmdHandler(doRegister) {
 }
 
 ImplCmdHandler(exportLog) {
-#ifndef OPEN_SOURCE
+    if (!canUsePro()) {
+        send(failedAck(msg, "试用期已结束。外部程序打开失败"));
+        return Promise::resolved(false);
+    }
+    
     auto log = getLog(msg);
     if (!log) {
         send(failedAck(msg, "logId not set"));
@@ -841,7 +834,4 @@ ImplCmdHandler(exportLog) {
         o.close();
         return *cancel;
     });
-#else
-    return Promise::resolved(true);
-#endif
 }
