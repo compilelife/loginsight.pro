@@ -8,6 +8,9 @@
 #include <regex>
 #include <list>
 #include <boost/algorithm/string.hpp>
+#ifdef _WIN32
+#include <shlwapi.h>
+#endif
 
 Calculation::Calculation() {
     mCoreNum = thread::hardware_concurrency();
@@ -136,8 +139,13 @@ typedef const boost::iterator_range<std::string::const_iterator> StringRange;
 struct StringIgnoreCase {
     string pattern;
     bool operator() (string_view text) {
-        auto t = string(text);
-        return boost::ifind_first(StringRange(t.begin(), t.end()), StringRange(pattern.begin(), pattern.end()));
+        #ifdef _WIN32
+        string s(text);
+        return StrStrI(s.c_str(), pattern.c_str()) != NULL;
+        #else
+        //windows上这个函数的执行速度较慢
+        return boost::ifind_first(text, pattern);
+        #endif
     }
 };
 
@@ -207,30 +215,52 @@ struct StringCaseReverseFind {
 struct StringIgnoreCaseFind {
     string pattern;
     FindRet operator () (string_view text) {
-        auto t = string(text);
-        auto ret = boost::ifind_first(StringRange(t.begin(), t.end()), StringRange(pattern.begin(), pattern.end()));
+        #ifdef _WIN32
+        string s(text);
+        auto ret = StrStrI(s.c_str(), pattern.c_str());
+        if (!ret)
+            return {0,0};
+        
+        return {
+            (LineCharI)(ret - s.c_str()),
+            (LineCharI)(pattern.length())
+        };
+        #else
+        auto ret = boost::ifind_first(text, pattern);
         if (!ret)
             return {0,0};
 
         return {
-            (LineCharI)(ret.begin() - t.begin()),
+            (LineCharI)(ret.begin() - text.begin()),
             (LineCharI)(ret.end() - ret.begin())
         };
+        #endif
     }
 };
 
 struct StringIgnoreCaseReverseFind {
     string pattern;
     FindRet operator () (string_view text) {
-        auto t = string(text);
-        auto ret = boost::ifind_last(StringRange(t.begin(), t.end()), StringRange(pattern.begin(), pattern.end()));
+        #ifdef _WIN32
+        string s(text);
+        auto ret = StrRStrI(s.c_str(), NULL, pattern.c_str());
+        if (!ret)
+            return {0,0};
+        
+        return {
+            (LineCharI)(ret - s.c_str()),
+            (LineCharI)(pattern.length())
+        };
+        #else
+        auto ret = boost::ifind_last(text, pattern);
         if (!ret)
             return {0,0};
 
         return {
-            (LineCharI)(ret.begin() - t.begin()),
+            (LineCharI)(ret.begin() - text.begin()),
             (LineCharI)(ret.end() - ret.begin())
         };
+        #endif
     }
 };
 

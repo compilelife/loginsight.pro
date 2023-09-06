@@ -33,12 +33,14 @@ target("core")
     set_installdir("../app")
     add_files("src/main.cpp")
     add_deps("corelib")
-    add_ldflags("-static-libstdc++")
     set_basename("core.$(os)")
     if is_os("windows") then
         add_cflags("/utf-8")
         add_cxxflags("/utf-8")
         add_defines("_HAS_STD_BYTE=0")
+        add_links("Shlwapi")
+    else 
+        add_ldflags("-static-libstdc++")
     end
     add_packages("libevent", "jsoncpp", "libcurl", "oatpp", "boost")
 
@@ -53,6 +55,7 @@ target("utest")
         add_cflags("/utf-8")
         add_cxxflags("/utf-8")
         add_defines("_HAS_STD_BYTE=0")
+        add_links("Shlwapi")
     end
     add_packages("gtest","libevent", "jsoncpp", "libcurl", "oatpp", "boost")
     after_build(function(target)

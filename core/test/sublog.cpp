@@ -7,6 +7,24 @@
 #include <memory>
 #include <thread>
 
+// TEST(SubLog, temp) {
+//     auto log = make_shared<FileLog>();
+// #ifdef _WIN32
+//     log->open("C:\\Users\\Administrator\\Desktop\\SCS.2023-09-04.log");
+// #else
+//     log->open("/Users/chenyong/Downloads/SCS.2023-09-04.log");
+//     #endif
+//     log->scheduleBuildBlocks()->wait();
+
+//     auto&& p = SubLog::createSubLog(log, createFilter("NotifyPRNResultFrCT strNewPRNID", false));
+    
+//     p->wait();
+
+//     auto sublog = any_cast<shared_ptr<SubLog>>(p->value());
+//     printf("line count: %d\n", sublog->range().len());
+//     ASSERT_NE(sublog, nullptr);
+// }
+
 TEST(SubLog, create) {
     auto log = make_shared<FileLog>();
     log->open("sample.log");
@@ -157,7 +175,7 @@ TEST(SubLog, blankThenMatch) {
 
     auto log = make_shared<MonitorLog>();
 #ifdef _WIN32
-    string cmdLine = "echo 1 && timeout /t 1 && echo \"xyz\"";
+    string cmdLine = "echo 1 && timeout /t 1 && echo xyz";
 #else
     string cmdLine = "echo 1;sleep 1;echo 'xyz'";
 #endif

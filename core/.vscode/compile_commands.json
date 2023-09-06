@@ -1,11 +1,6 @@
 [
 {
   "directory": "/home/chenyong/my/loginsight/core",
-  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-fvisibility=hidden", "-fvisibility-inlines-hidden", "-O3", "-std=c++17", "-I", "/home/chenyong/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.xmake/packages/l/libcurl/7.87.0/37d3175602bd443984e35c21951335f6/include", "-I", "/home/chenyong/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-I", "/home/chenyong/.xmake/packages/b/boost/1.81.0/ed23c1e8f882461b99741f60b94dc268/include", "-DNDEBUG", "-o", "build/.objs/core/linux/x86_64/release/src/main.cpp.o", "src/main.cpp"],
-  "file": "src/main.cpp"
-},
-{
-  "directory": "/home/chenyong/my/loginsight/core",
   "arguments": ["/usr/bin/gcc", "-c", "-m64", "-fvisibility=hidden", "-fvisibility-inlines-hidden", "-O3", "-std=c++17", "-I", "/home/chenyong/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.xmake/packages/l/libcurl/7.87.0/37d3175602bd443984e35c21951335f6/include", "-I", "/home/chenyong/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-I", "/home/chenyong/.xmake/packages/b/boost/1.81.0/ed23c1e8f882461b99741f60b94dc268/include", "-DNDEBUG", "-o", "build/.objs/corelib/linux/x86_64/release/src/promisex.cpp.o", "src/promisex.cpp"],
   "file": "src/promisex.cpp"
 },
@@ -158,4 +153,9 @@
   "directory": "/home/chenyong/my/loginsight/core",
   "arguments": ["/usr/bin/gcc", "-c", "-m64", "-fvisibility=hidden", "-fvisibility-inlines-hidden", "-O3", "-std=c++17", "-Isrc", "-I", "/home/chenyong/.xmake/packages/g/gtest/1.11.0/3bf329c750ff413da1bd858d79a57848/include", "-I", "/home/chenyong/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.xmake/packages/l/libcurl/7.87.0/37d3175602bd443984e35c21951335f6/include", "-I", "/home/chenyong/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-I", "/home/chenyong/.xmake/packages/b/boost/1.81.0/ed23c1e8f882461b99741f60b94dc268/include", "-DNDEBUG", "-o", "build/.objs/utest/linux/x86_64/release/test/blocklogview.cpp.o", "test/blocklogview.cpp"],
   "file": "test/blocklogview.cpp"
+},
+{
+  "directory": "/home/chenyong/my/loginsight/core",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-fvisibility=hidden", "-fvisibility-inlines-hidden", "-O3", "-std=c++17", "-I", "/home/chenyong/.xmake/packages/l/libevent/2.1.12/821021975db74b469f5f55641de42af0/include", "-I", "/home/chenyong/.xmake/packages/j/jsoncpp/1.9.5/6a59121558c24c01a73b20670010be3a/include", "-I", "/home/chenyong/.xmake/packages/l/libcurl/7.87.0/37d3175602bd443984e35c21951335f6/include", "-I", "/home/chenyong/.xmake/packages/o/oatpp/1.3.0/0f4509c6b55d49128c21c834ef94e6a0/include/oatpp-1.3.0/oatpp", "-I", "/home/chenyong/.xmake/packages/b/boost/1.81.0/ed23c1e8f882461b99741f60b94dc268/include", "-DNDEBUG", "-o", "build/.objs/core/linux/x86_64/release/src/main.cpp.o", "src/main.cpp"],
+  "file": "src/main.cpp"
 }]
