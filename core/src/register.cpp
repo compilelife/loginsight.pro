@@ -136,7 +136,9 @@ static string xordecode(const Json::Value& arr, int key) {
 void Register::init(string mydir, string uniqueId) {
     mUniqueId = uniqueId;
     mMyDir = mydir;
-
+#ifdef __APPLE__
+    mState = eRegistered;
+#else
     auto token = readLicense();
 
     if (token.empty()) {
@@ -188,4 +190,5 @@ void Register::init(string mydir, string uniqueId) {
     } else {
         LOGE("load register info failed: %s", errs.c_str());
     }
+#endif
 }
